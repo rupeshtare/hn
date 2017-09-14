@@ -1,0 +1,91 @@
+<div class="row">
+    <div class="col-sm-10">
+        <h1 [innerText]="menuForm.value.name"></h1>
+    </div>
+</div>
+<hr>
+<form [formGroup]="menuForm" (ngSubmit)="update(menuForm.value)">
+    <div class="form-group row">
+        <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+        <div>
+            <input type="text" class="form-control" formControlName="name">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputPrice" class="col-sm-2 col-form-label">Price</label>
+        <div>
+            <input type="text" class="form-control"  formControlName="price">
+        </div>
+    </div> 
+    <fieldset class="form-group" formGroupName="available">
+        <div class="row">
+            <legend class="col-form-legend col-sm-2">Availability</legend>
+            <div class="col-sm-10">
+                <div class="form-check" *ngFor="let option of availableOptions">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" [formControlName]="option">
+                        {{ option }}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </fieldset>   
+    <div class="form-group row">
+        <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
+        <div>
+            <input type="text" class="form-control"  formControlName="category">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputSubCategory" class="col-sm-2 col-form-label">Sub Category</label>
+        <div>
+            <input type="test" class="form-control"  formControlName="subCategory">
+        </div>
+    </div>
+    <fieldset class="form-group">
+        <div class="row">
+            <legend class="col-form-legend col-sm-2">Taste Type</legend>
+            <div class="col-sm-10">
+                <div class="form-check" *ngFor="let option of tasteTypeOptions">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" formControlName="tasteType" value="{{option}}">
+                        {{option}}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <div class="row">
+            <legend class="col-form-legend col-sm-2">Taste Sub Type</legend>
+            <div class="col-sm-10">
+                <div class="form-check" *ngFor="let option of subTasteTypeOptions">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" formControlName="subTasteType" value="{{option}}">
+                        {{option}}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <div class="row">
+            <legend class="col-form-legend col-sm-2">Active</legend>
+            <div class="col-sm-10">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" formControlName="active">
+                        Yes
+                    </label>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group row p-3 mb-2 bg-dark text-white">
+        <div class="col-sm-2"></div>
+        <div>
+            <button type="submit" class="btn btn-primary" [disabled]="menuForm.invalid">Update</button>
+            <button type="button" class="btn btn-light" routerLink="/admin/menus">Cancle</button>
+        </div>
+    </div>
+</form>

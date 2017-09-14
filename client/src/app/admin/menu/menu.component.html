@@ -1,0 +1,108 @@
+<div class="row">
+    <div class="col-sm-10">
+        <h1>Menu</h1>
+    </div>
+</div>
+<hr>
+<form (ngSubmit)="f.form.valid && submit()" #f="ngForm" novalidate>
+    <div class="form-group row">
+        <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+        <div>
+            <input type="text" class="form-control" name="name" placeholder="Name" [ngClass]="{ 'is-invalid': f.submitted && !name.valid }"  [(ngModel)]="model.name" #name="ngModel" required>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputPrice" class="col-sm-2 col-form-label">Price</label>
+        <div>
+            <input type="text" class="form-control" name="price" placeholder="Price" [ngClass]="{ 'is-invalid': f.submitted && !price.valid }"  [(ngModel)]="model.price" #price="ngModel" required>
+        </div>
+    </div> 
+    <fieldset class="form-group">
+        <div class="row">
+            <legend class="col-form-legend col-sm-2">Availability</legend>
+            <div class="col-sm-10">
+                <div class="form-check" *ngFor="let available of availables">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" name="available" value="{{available.value}}" [(ngModel)]="available.checked">
+                        {{ available.name }}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </fieldset>    
+    <div class="form-group row">
+        <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
+        <div>
+            <input type="text" class="form-control" name="category" placeholder="Category" [(ngModel)]="model.category">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputSubCategory" class="col-sm-2 col-form-label">Sub Category</label>
+        <div>
+            <input type="test" class="form-control" name="subCategory" placeholder="Sub Category" [(ngModel)]="model.subCategory">
+        </div>
+    </div>
+    <fieldset class="form-group">
+        <div class="row">
+            <legend class="col-form-legend col-sm-2">Taste Type</legend>
+            <div class="col-sm-10">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="tasteType" value="sp" [(ngModel)]="model.tasteType">
+                        Spicy
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="tasteType" value="sw" [(ngModel)]="model.tasteType">
+                        Sweet
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="tasteType" value="sl" [(ngModel)]="model.tasteType">
+                        Swalty
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="tasteType" value="sns" [(ngModel)]="model.tasteType">
+                        Sweet N Swalty
+                    </label>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset class="form-group">
+        <div class="row">
+            <legend class="col-form-legend col-sm-2">Taste Sub Type</legend>
+            <div class="col-sm-10">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="subTasteType" value="n" [(ngModel)]="model.tasteSubType">
+                        Normal
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="subTasteType" value="m" [(ngModel)]="model.tasteSubType">
+                        Medium
+                    </label>
+                </div>
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="subTasteType" value="h" [(ngModel)]="model.tasteSubType">
+                        High
+                    </label>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group row p-3 mb-2 bg-dark text-white">
+        <div class="col-sm-2"></div>
+        <div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-light" routerLink="/admin/menus">Cancle</button>
+        </div>
+    </div>
+</form>
