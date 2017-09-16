@@ -10,7 +10,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 export class MenuListComponent implements OnInit { 
     private menus: Array<object> = [];
-    private menuColumns : Array<string> = ["name", "price"];
+    private menuColumns : Array<string> = ["name", "price", "active", "available", "category", "subCategory", "tasteType", "subTasteType"];
+    private defaultColumns : Array<string> = ["name", "price"];
     loading = false;
 
     constructor(private menuService: MenuService) { }

@@ -1,0 +1,9 @@
+<div class="row">
+    <div class="col-sm-10">
+        <h1 [innerText]="header"></h1>
+    </div>
+    <div class="col-sm-2" *ngIf="addNew">
+        <a class="btn btn-primary" [routerLink]="addNewLink">Add New</a>
+    </div>
+</div>
+<hr>

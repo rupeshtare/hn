@@ -1,10 +1,2 @@
-<div class="row">
-    <div class="col-sm-10">
-        <h1>Menus</h1>
-    </div>
-    <div class="col-sm-2">
-        <a class="btn btn-lg btn-outline-primary" routerLink="new">Add New</a>
-    </div>
-</div>
-<hr>
-<hnTable [tableColumns]="menuColumns" [tableData]="menus"></hnTable>
+<hnPageHeader header="Menus" addNew="true"></hnPageHeader>
+<hnTable name="menu" [defaultColumns]="defaultColumns" [tableColumns]="menuColumns" [tableData]="menus"></hnTable>

@@ -9,14 +9,29 @@ import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
  
 export class TableColumnSelectorComponent implements OnInit {
     @Input() tableColumns : Array<string> = [];
+    @Input() defaultColumns : Array<string> = [];
+    @Input() selectedColoumns : Array<string> = [];
     @Output() selectColumns : EventEmitter<any> = new EventEmitter<any>();
+
     columnForm : FormGroup;
+    selectableColumns : Array<string> = [];
 
     constructor(private formBuilder: FormBuilder) { }
 
-    ngOnInit() {        
+    ngOnInit() {
+        this.selectableColumns = this.tableColumns.filter(column=>{
+            if(!this.defaultColumns.includes(column))
+                return column;
+        })
+
         this.columnForm = this.formBuilder.group(
-            this.tableColumns.reduce((prev, curr)=>{prev[curr] = true; return prev;},{})
+            this.selectableColumns.reduce((prev, curr)=>{
+                if(this.selectedColoumns.includes(curr))
+                    prev[curr]=true;
+                else
+                    prev[curr]=false;
+                return prev;
+            },{})
         )
 
         this.columnForm.valueChanges.subscribe(data=>{
