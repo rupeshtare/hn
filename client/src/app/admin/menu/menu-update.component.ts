@@ -39,7 +39,7 @@ export class MenuUpdateComponent implements OnInit {
                 subCategory : '',
                 tasteType : '',
                 subTasteType : '',
-                active : 'false',
+                active : true,
             })
         }
 

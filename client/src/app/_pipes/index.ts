@@ -1,0 +1,1 @@
+export * from './split-and-titlecase.pipe';

@@ -8,13 +8,13 @@
     <div class="form-group row">
         <label for="inputName" class="col-sm-2 col-form-label">Name</label>
         <div>
-            <input type="text" class="form-control" formControlName="name">
+            <input type="text" class="form-control" formControlName="name" [ngClass]="{ 'is-invalid': !menuForm.controls.name.valid }">
         </div>
     </div>
     <div class="form-group row">
         <label for="inputPrice" class="col-sm-2 col-form-label">Price</label>
         <div>
-            <input type="text" class="form-control"  formControlName="price">
+            <input type="text" class="form-control"  formControlName="price" [ngClass]="{ 'is-invalid': !menuForm.controls.price.valid }">
         </div>
     </div> 
     <fieldset class="form-group" formGroupName="available">

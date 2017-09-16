@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgForm as ngForm } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AlertService, MenuService } from './../_services/index';
@@ -10,27 +10,37 @@ import { AlertService, MenuService } from './../_services/index';
 })
 
 export class MenuComponent {
-    model: any = {}; 
-    loading = false;
+     menuForm : FormGroup;
+    _id : string;
+    loading : boolean = false;
     availableOptions = ['Morning', 'Noon', 'Evening', 'Night'];
-    availables = [];
-    
+    tasteTypeOptions = ['Spicy', 'Sweet', 'Salty', 'Sweet N Salty'];
+    subTasteTypeOptions = ['Normal', 'Medium', 'High'];
+
+
     constructor(
         private router: Router,
         private menuService: MenuService,
-        private alertService: AlertService){ 
-            this.setAvailability();
+        private alertService: AlertService,
+        private formBuilder: FormBuilder){ 
+
+            this.menuForm = formBuilder.group({
+                name : [null, Validators.required],
+                price : [null, Validators.required],
+                available : formBuilder.group(
+                    this.availableOptions.reduce((prev, curr)=>{prev[curr] = [false, []]; return prev;},{})
+                ),
+                category : '',
+                subCategory : '',
+                tasteType : '',
+                subTasteType : '',
+                active : true,
+            })
         }
 
-    setAvailability() {
-        this.availables = this.availableOptions.map(
-            option => ({name: option, value: option[0], checked:false})
-        )
-    }
-
-    submit() {
+    submit(data) {
         this.loading = true;
-        this.menuService.create(this.model)
+        this.menuService.create(data)
         .subscribe(
             data => {
                 this.router.navigate(['/admin/menus']);
@@ -40,10 +50,6 @@ export class MenuComponent {
                 this.loading = false;
             }
         );
-    }
-
-    updateAvailableOptions(option, event) {
-        this.model.available
     }
 
 }

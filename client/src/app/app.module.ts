@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { customHttpProvider } from "./_helpers/index";
 import { AlertComponent } from './_directives/index';
-import { AlertService } from './_services/index';
+import { AlertService, LocalStorageService, SessionStorageService } from './_services/index';
 import { AuthGuard } from './_guards/index';
 
 @NgModule({
@@ -16,10 +16,12 @@ import { AuthGuard } from './_guards/index';
   ],
   declarations: [
     AppComponent,
-    AlertComponent
+    AlertComponent,
   ],
   providers: [
     AlertService,
+    LocalStorageService,
+    SessionStorageService,
     AuthGuard,
     customHttpProvider
   ],

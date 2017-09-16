@@ -1,6 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ConnectionBackend, XHRBackend, RequestOptions, Request, RequestOptionsArgs, Response, Http, Headers} from "@angular/http";
 import { environment } from "./../../environments/environment";
+import { SessionStorageService } from "../_services/index";
 
 import { Observable } from "rxjs/Observable";
 import 'rxjs/add/operator/catch';
@@ -9,8 +10,14 @@ import 'rxjs/add/observable/throw';
 
 @Injectable()
 export class InterceptedHttp extends Http {
-    constructor(backend: ConnectionBackend, defaultOptions: RequestOptions) {
-        super(backend, defaultOptions);
+    constructor(
+        backend: ConnectionBackend,
+        defaultOptions: RequestOptions) {
+            super(backend, defaultOptions);
+        }
+
+    get sessionStorageService(){
+        return new SessionStorageService();
     }
 
     request(url: string | Request, options?: RequestOptionsArgs): Observable<Response> {
@@ -47,7 +54,7 @@ export class InterceptedHttp extends Http {
         options.headers.append('Content-Type', 'application/json');
 
         // add authorization header with jwt token
-        let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        let currentUser = this.sessionStorageService.get('currentUser');
         if (currentUser && currentUser.token) {
             options.headers.append('Authorization', 'hn ' + currentUser.token);
         }
