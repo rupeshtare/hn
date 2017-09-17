@@ -117,7 +117,8 @@ function update(_id, customerParam) {
             lastName: customerParam.lastName,
             dob: customerParam.dob,
             email: customerParam.email,
-            employment: customerParam.employment,
+            employeeType: customerParam.employeeType,
+            active: customerParam.active,
         };
 
         db.customer.update(

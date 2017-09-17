@@ -1,77 +1,77 @@
-<hnPageHeader [header]="model.firstName"></hnPageHeader>
-<form (ngSubmit)="f.form.valid && update()" #f="ngForm" novalidate>
+<hnPageHeader [header]="customerForm.value.firstName"></hnPageHeader>
+<form [formGroup]="customerForm" (ngSubmit)="update(customerForm.value)">
     <div class="form-group row">
         <label for="inputCompany" class="col-sm-2 col-form-label">Company</label>
         <div>
-            <input type="text" class="form-control" name="company" [ngClass]="{ 'is-invalid': f.submitted && !company.valid }" placeholder="Company" [(ngModel)]="model.company" #company="ngModel" required>
-        </div>
-    </div>
-    <div class="form-group row">
-        <label for="inputMobile" class="col-sm-2 col-form-label">Mobile #</label>
-        <div>
-            <input type="text" class="form-control" name="mobile" [ngClass]="{ 'is-invalid': f.submitted && !mobile.valid }" placeholder="Mobile #" [(ngModel)]="model.mobile" maxlength="10" minlength="10" #mobile="ngModel" required>
+            <input type="text" class="form-control" formControlName="company" [ngClass]="{ 'is-invalid': !customerForm.controls.company.valid }">
         </div>
     </div>
     <div class="form-group row">
         <label for="inputFirstName" class="col-sm-2 col-form-label">First Name</label>
         <div>
-            <input type="text" class="form-control" name="firstName" [ngClass]="{ 'is-invalid': f.submitted && !firstName.valid }" placeholder="First Name" [(ngModel)]="model.firstName" #firstName="ngModel" required>
+            <input type="text" class="form-control"  formControlName="firstName" [ngClass]="{ 'is-invalid': !customerForm.controls.firstName.valid }">
         </div>
     </div>
     <div class="form-group row">
         <label for="inputMiddleName" class="col-sm-2 col-form-label">Middle Name</label>
         <div>
-            <input type="text" class="form-control" name="middleName" placeholder="Middle Name" [(ngModel)]="model.middleName" #middle="ngModel">
+            <input type="text" class="form-control"  formControlName="middleName">
         </div>
     </div>
     <div class="form-group row">
         <label for="inputLastName" class="col-sm-2 col-form-label">Last Name</label>
         <div>
-            <input type="text" class="form-control" name="lastName" [ngClass]="{ 'is-invalid': f.submitted && !lastName.valid }" placeholder="Last Name" [(ngModel)]="model.lastName" #lastName="ngModel" required>
+            <input type="text" class="form-control"  formControlName="lastName" [ngClass]="{ 'is-invalid': !customerForm.controls.lastName.valid }">
         </div>
-    </div>    
+    </div>
     <div class="form-group row">
-        <label for="inputDOB" class="col-sm-2 col-form-label">Date of Birth</label>
+        <label for="inputMobile" class="col-sm-2 col-form-label">Mobile</label>
         <div>
-            <input type="text" class="form-control" name="dob" placeholder="Date of Birth" [(ngModel)]="model.dob" #dob="ngModel">
+            <input type="test" class="form-control"  formControlName="mobile" [ngClass]="{ 'is-invalid': !customerForm.controls.mobile.valid }">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputDob" class="col-sm-2 col-form-label">Date of Birth</label>
+        <div>
+            <input type="text" class="form-control"  formControlName="dob">
         </div>
     </div>
     <div class="form-group row">
         <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
         <div>
-            <input type="text" class="form-control" name="email" placeholder="Email" [(ngModel)]="model.email" #email="ngModel">
+            <input type="text" class="form-control"  formControlName="email">
         </div>
     </div>
     <fieldset class="form-group">
         <div class="row">
-            <legend class="col-form-legend col-sm-2">Employment Type</legend>
+            <legend class="col-form-legend col-sm-2">Employee Type</legend>
             <div class="col-sm-10">
-                <div class="form-check">
+                <div class="form-check" *ngFor="let option of employeeTypeOptions">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="radio" [(ngModel)]="model.employment" name="employment" value="e" #employment="ngModel" required>
-                        Employee
+                        <input class="form-check-input" type="radio" formControlName="employeeType" value="{{option}}">
+                        {{option}}
                     </label>
-                </div>
-                <div class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="radio" [(ngModel)]="model.employment" name="employment" value="c" required>
-                        Contractor
-                    </label>
-                </div>
-                <div class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="radio" [(ngModel)]="model.employment" name="employment" value="g"  required>
-                        Guest
-                    </label>
-                    <div *ngIf="f.submitted && !employment.valid" class="help-block text-danger">Employment is required</div>
                 </div>
             </div>
         </div>
     </fieldset>
-    <div class="form-group row  p-3 mb-2 bg-dark text-white">
+    <fieldset class="form-group">
+        <div class="row">
+            <legend class="col-form-legend col-sm-2">Active</legend>
+            <div class="col-sm-10">
+                <div class="form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" formControlName="active">
+                        Yes
+                    </label>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <div class="form-group row p-3 mb-2 bg-dark text-white">
         <div class="col-sm-2"></div>
         <div>
-            <button type="submit" class="btn btn-primary">Update</button>
+            <button type="submit" class="btn btn-primary" [disabled]="customerForm.invalid">Update</button>
             <button type="button" class="btn btn-light" routerLink="/admin/customers">Cancle</button>
         </div>
     </div>

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgForm as ngForm } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AlertService, CustomerService } from './../_services/index';
@@ -10,17 +10,32 @@ import { AlertService, CustomerService } from './../_services/index';
 })
 
 export class CustomerComponent {
-    model: any = {}; 
+    customerForm : FormGroup;
     loading = false;
+    employeeTypeOptions = ['Employee', 'Contractor', 'Guest'];
 
     constructor(
         private router: Router,
         private customerService: CustomerService,
-        private alertService: AlertService){ }
+        private alertService: AlertService,
+        private formBuilder: FormBuilder){ 
+            
+            this.customerForm = formBuilder.group({
+                company : [null, Validators.required],
+                firstName : [null, Validators.required],
+                middleName : '',
+                lastName : [null, Validators.required],
+                mobile : [null, Validators.required],
+                dob : '',
+                email : '',
+                employeeType : '',
+                active : true,
+            })
+        }
 
-    submit() {
+    submit(data) {
         this.loading = true;
-        this.customerService.create(this.model)
+        this.customerService.create(data)
         .subscribe(
             data => {
                 this.router.navigate(['/admin/customers']);

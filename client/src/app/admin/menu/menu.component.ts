@@ -11,7 +11,6 @@ import { AlertService, MenuService } from './../_services/index';
 
 export class MenuComponent {
      menuForm : FormGroup;
-    _id : string;
     loading : boolean = false;
     availableOptions = ['Morning', 'Noon', 'Evening', 'Night'];
     tasteTypeOptions = ['Spicy', 'Sweet', 'Salty', 'Sweet N Salty'];
