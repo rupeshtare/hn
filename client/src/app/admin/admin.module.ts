@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminComponent } from './index';
-import { TableComponent, TableColumnSelectorComponent, PageHeaderComponent } from '../_directives/index';
+import { TableComponent, TableColumnSelectorComponent, PageHeaderComponent, TablePaginationComponent } from '../_directives/index';
 import { CustomerComponent, CustomerListComponent, CustomerUpdateComponent } from './customer/index';
 import { MenuComponent, MenuListComponent, MenuUpdateComponent } from './menu/index';
 import { AdminRoutingModule } from "./admin-routing.module";
@@ -19,6 +19,7 @@ import { SplitAndTitlePipe, FormatColumn } from '../_pipes/index';
     declarations: [
         TableComponent,
         TableColumnSelectorComponent,
+        TablePaginationComponent,
         SplitAndTitlePipe,
         FormatColumn,
         PageHeaderComponent,

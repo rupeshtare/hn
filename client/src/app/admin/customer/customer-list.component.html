@@ -1,2 +1,2 @@
 <hnPageHeader header="Customers" addNew="true"></hnPageHeader>
-<hnTable name="customer" [defaultColumns]="defaultColumns" [tableColumns]="customersColumns" [tableData]="customers"></hnTable>
+<hnTable (loadData)="loadCustomers($event)" name="customer" [defaultColumns]="defaultColumns" [tableColumns]="customersColumns" [tableData]="customers"></hnTable>

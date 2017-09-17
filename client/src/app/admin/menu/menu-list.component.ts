@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MenuService } from './../_services/index';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -8,7 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 
 
-export class MenuListComponent implements OnInit { 
+export class MenuListComponent { 
     private menus: Array<object> = [];
     private menuColumns : Array<string> = ["name", "price", "active", "available", "category", "subCategory", "tasteType", "subTasteType"];
     private defaultColumns : Array<string> = ["name", "price"];
@@ -16,9 +16,9 @@ export class MenuListComponent implements OnInit {
 
     constructor(private menuService: MenuService) { }
 
-    ngOnInit() {
+    loadMenus(event: object) : void {
         this.loading = true;
-        this.menuService.getAll().subscribe(
+        this.menuService.getAll(event).subscribe(
             resp => {
                 this.menus = resp.json();
             },

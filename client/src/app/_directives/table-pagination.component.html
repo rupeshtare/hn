@@ -1,0 +1,5 @@
+<span class="text-primary">{{start}} to {{end}} of {{total}}</span> &nbsp;
+<div class="btn-group" role="group" aria-label="Basic example">
+    <button type="button" class="btn btn-outline-primary" (click)="loadPreviousData()" [disabled]="start===1"><i class="fa fa-angle-left" aria-hidden="true"></i>&nbsp; prev</button>
+    <button type="button" class="btn btn-outline-primary" (click)="loadNextData()" [disabled]="end===total">next &nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></button>
+</div>

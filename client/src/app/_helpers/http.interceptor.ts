@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ConnectionBackend, XHRBackend, RequestOptions, Request, RequestOptionsArgs, Response, Http, Headers} from "@angular/http";
+import { ConnectionBackend, XHRBackend, RequestOptions, Request, RequestOptionsArgs, Response, Http, Headers, URLSearchParams} from "@angular/http";
 import { environment } from "./../../environments/environment";
 import { SessionStorageService } from "../_services/index";
 
@@ -24,7 +24,13 @@ export class InterceptedHttp extends Http {
         return super.request(url, options).catch(this.handleError);
     }
 
-    get(url: string, options?: RequestOptionsArgs): Observable<Response> {
+    get(url: string, params?: object, options?: RequestOptionsArgs): Observable<Response> {
+        if(params !== undefined){
+            let myParams = new URLSearchParams();
+            Object.keys(params).forEach(key=>{myParams.set(key, params[key]);})
+            options = options || new RequestOptions();
+            options.params = myParams;
+        }
         url = this.updateUrl(url);
         return super.get(url, this.getRequestOptionArgs(options));
     }

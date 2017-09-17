@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, ViewChild, Output, EventEmitter } from '@angular/core';
 import { LocalStorageService } from '../_services/index';
 
 @Component({
@@ -16,6 +16,8 @@ export class TableComponent {
     @Input() tableColumns : Array<string> = [];
     @Input() tableData : Array<object> = [];
     @Input() name : string;
+
+    @Output() loadData : EventEmitter<any> = new EventEmitter<any>();
 
     private selectedColoumns : Array<string>;
 
@@ -37,5 +39,9 @@ export class TableComponent {
         this.selectedColoumns = Object.keys(columns).filter(key=>{return columns[key];});
         this.selectedColoumns = [...this.defaultColumns, ...this.selectedColoumns];
         this.localStorageService.set(this.name, this.selectedColoumns);
+    }
+
+    loadTableData(pageObject: object) : void {
+        this.loadData.emit(pageObject)
     }
 }

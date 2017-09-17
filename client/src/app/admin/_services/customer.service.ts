@@ -8,8 +8,8 @@ export class CustomerService {
 
     constructor(private http: Http) { }
 
-    getAll() {
-        return this.http.get('/customers').map((response: Response) => response);
+    getAll(params) {
+        return this.http.get('/customers', params).map((response: Response) => response);
     }
  
     getById(_id: string) {

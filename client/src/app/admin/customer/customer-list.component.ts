@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CustomerService } from './../_services/index';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -6,7 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
     templateUrl: './customer-list.component.html',
 })
 
-export class CustomerListComponent implements OnInit { 
+export class CustomerListComponent { 
     private customers : Array<object> = [];
     private customersColumns : Array<string> = ['firstName', 'middleName', 'lastName', 'mobile', 'company', 'dob', 'employeeType'];
     private defaultColumns : Array<string> = ['firstName', 'lastName']
@@ -14,9 +14,9 @@ export class CustomerListComponent implements OnInit {
 
     constructor(private customerService: CustomerService) { }
 
-    ngOnInit() {
+    loadCustomers(event: object) : void {
         this.loading = true;
-        this.customerService.getAll().subscribe(
+        this.customerService.getAll(event).subscribe(
             resp => {
                 this.customers = resp.json();
             },

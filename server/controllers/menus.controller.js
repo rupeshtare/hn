@@ -24,7 +24,7 @@ function create(req, res) {
 }
 
 function getAll(req, res) {
-    menuService.getAll()
+    menuService.getAll(req.query)
         .then(function (customers) {
             res.send(customers);
         })

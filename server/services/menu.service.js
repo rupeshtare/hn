@@ -16,10 +16,10 @@ service.delete = _delete;
 module.exports = service;
 
 
-function getAll() {
+function getAll(query) {
     var deferred = Q.defer();
 
-    db.menu.find().toArray(function (err, menu) {
+    db.menu.find({}, null, query).toArray(function (err, menu) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         deferred.resolve(menu);

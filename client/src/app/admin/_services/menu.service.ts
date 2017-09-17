@@ -8,8 +8,8 @@ export class MenuService {
 
     constructor(private http: Http) { }
 
-    getAll() {
-        return this.http.get('/menus').map((response: Response) => response);
+    getAll(params) {
+        return this.http.get('/menus', params).map((response: Response) => response);
     }
  
     getById(_id: string) {
