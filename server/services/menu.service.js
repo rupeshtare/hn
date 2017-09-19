@@ -22,7 +22,9 @@ function getAll(query) {
     db.menu.find({}, null, query).toArray(function (err, menu) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        deferred.resolve(menu);
+        db.menu.count(function (err, count){
+            deferred.resolve({total: count, data: menu});
+        })
     });
 
     return deferred.promise;

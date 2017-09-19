@@ -21,8 +21,9 @@ function getAll(query) {
 
     db.customer.find({}, null, query).toArray(function (err, customer) {
         if (err) deferred.reject(err.name + ': ' + err.message);
-
-        deferred.resolve(customer);
+        db.customer.count(function (err, count){
+            deferred.resolve({total: count, data: customer});
+        })
     });
 
     return deferred.promise;

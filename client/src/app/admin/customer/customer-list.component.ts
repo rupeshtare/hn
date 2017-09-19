@@ -8,6 +8,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 export class CustomerListComponent { 
     private customers : Array<object> = [];
+    private total : number = 0;
     private customersColumns : Array<string> = ['firstName', 'middleName', 'lastName', "active", 'mobile', 'company', 'dob', 'employeeType'];
     private defaultColumns : Array<string> = ['firstName', 'lastName']
     loading = false;
@@ -18,7 +19,7 @@ export class CustomerListComponent {
         this.loading = true;
         this.customerService.getAll(event).subscribe(
             resp => {
-                this.customers = resp.json();
+                ({total: this.total, data: this.customers} = resp.json());
             },
             (err: HttpErrorResponse) => {
                 if (err.error instanceof Error) {

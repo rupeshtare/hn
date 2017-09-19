@@ -16,6 +16,8 @@ export class TableComponent {
     @Input() tableColumns : Array<string> = [];
     @Input() tableData : Array<object> = [];
     @Input() name : string;
+    @Input() total : number = 0;
+    @Input() pageBy : number = 10;
 
     @Output() loadData : EventEmitter<any> = new EventEmitter<any>();
 
