@@ -11,7 +11,7 @@ import { Pipe, PipeTransform } from '@angular/core';
     pure: false
 })
 
-export class FormatColumn implements PipeTransform {
+export class FormatColumnPipe implements PipeTransform {
     transform(input: any): string{
         let output = '-';
         switch(Object.prototype.toString.call(input)) { 

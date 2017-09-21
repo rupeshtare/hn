@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { AdminComponent }    from './index';
 import { CustomerComponent, CustomerListComponent, CustomerUpdateComponent } from './customer/index';
 import { MenuComponent, MenuListComponent, MenuUpdateComponent } from './menu/index';
+import { OrderComponent, OrderListComponent } from './order/index';
 
 
 @NgModule({
@@ -35,6 +36,14 @@ import { MenuComponent, MenuListComponent, MenuUpdateComponent } from './menu/in
                     {
                         path: 'menus/:_id',
                         component: MenuUpdateComponent
+                    },
+                    {
+                        path: 'orders',
+                        component: OrderListComponent
+                    },
+                    {
+                        path: 'orders/new',
+                        component: OrderComponent
                     }
                 ]
             }

@@ -1,0 +1,38 @@
+<hnPageHeader header="Orders"></hnPageHeader>
+<form class="alert alert-primary" [formGroup]="orderForm" (ngSubmit)="submit(orderForm.value)">
+
+    <div class="form-group row">
+        <label class="col-2">Customer</label>
+        <div class="col-4">
+            <select class="form-control" formControlName="customer" [ngClass]="{ 'is-invalid': !orderForm.controls.customer.valid }">
+                <option *ngFor="let customer of customers" [ngValue]="customer" [innerText]="customer.firstName"></option>
+            </select>
+        </div>
+        <label class="col-2">Total Bill</label>
+        <div class="col-4">
+            <span class="form-control" [innerText]="totalBill"></span>
+        </div>
+    </div>
+    <div formArrayName="orders">
+        <div *ngFor="let order of orderForm.controls.orders.controls; let i=index">
+            <span *ngIf="orderForm.controls.orders.controls.length > 1" (click)="removeOrder(i)"><i class="fa fa-times" aria-hidden="true"></i></span>
+            <div class="form-group row" [formGroupName]="i">
+                <label class="col-2">Menu</label>
+                <div class="col-4">
+                    <select class="form-control" formControlName="menu" [ngClass]="{ 'is-invalid': !orderForm.controls.orders.controls[i].controls.menu.valid }" (change)="addOrder(i)">
+                        <option *ngFor="let menu of menus" [ngValue]="menu" [innerText]="menu.name"></option>
+                    </select>
+                </div>
+                <label class="col-2">Quantity</label>
+                <div class="col-1">
+                    <input class="form-control" type="text" formControlName="quantity" [ngClass]="{ 'is-invalid': !orderForm.controls.orders.controls[i].controls.quantity.valid }" (change)="addOrder(i)">
+                </div>
+                <label class="col-2">Amount</label>
+                <div class="col-1">
+                    <input class="form-control" type="text" formControlName="amount" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+    <button type="submit" class="col-12 btn btn-primary" [disabled]="orderForm.invalid">Add</button>
+</form>

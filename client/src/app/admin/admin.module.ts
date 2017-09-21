@@ -6,8 +6,10 @@ import { TableComponent, TableColumnSelectorComponent, PageHeaderComponent, Tabl
 import { CustomerComponent, CustomerListComponent, CustomerUpdateComponent } from './customer/index';
 import { MenuComponent, MenuListComponent, MenuUpdateComponent } from './menu/index';
 import { AdminRoutingModule } from "./admin-routing.module";
-import { CustomerService, MenuService } from './_services/index';
-import { SplitAndTitlePipe, FormatColumn } from '../_pipes/index';
+import { CustomerService, MenuService, OrderService } from './_services/index';
+import { SplitAndTitlePipe, FormatColumnPipe, ChainedAttributePipe } from '../_pipes/index';
+import { OrderComponent, OrderListComponent } from './order/index';
+
 
 @NgModule({
     imports: [
@@ -21,7 +23,8 @@ import { SplitAndTitlePipe, FormatColumn } from '../_pipes/index';
         TableColumnSelectorComponent,
         TablePaginationComponent,
         SplitAndTitlePipe,
-        FormatColumn,
+        FormatColumnPipe,
+        ChainedAttributePipe,
         PageHeaderComponent,
         AdminComponent,
         CustomerComponent,
@@ -29,11 +32,14 @@ import { SplitAndTitlePipe, FormatColumn } from '../_pipes/index';
         CustomerUpdateComponent,
         MenuComponent,
         MenuListComponent,
-        MenuUpdateComponent
+        MenuUpdateComponent,
+        OrderComponent,
+        OrderListComponent
     ],
     providers: [
         CustomerService,
-        MenuService
+        MenuService,
+        OrderService
     ]
 })
 
