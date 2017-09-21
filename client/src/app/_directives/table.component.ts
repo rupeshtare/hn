@@ -18,6 +18,7 @@ export class TableComponent {
     @Input() name : string;
     @Input() total : number = 0;
     @Input() pageBy : number = 10;
+    @Input() grid : boolean = false;
 
     @Output() loadData : EventEmitter<any> = new EventEmitter<any>();
 
@@ -45,5 +46,9 @@ export class TableComponent {
 
     loadTableData(pageObject: object) : void {
         this.loadData.emit(pageObject)
+    }
+
+    toggleView(val: boolean) : void {
+        this.grid = val;
     }
 }

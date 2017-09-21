@@ -1,8 +1,12 @@
+<div class="pull-left primary">
+    <i class="fa fa-align-justify" aria-hidden="true" [ngClass]="{ 'text-primary': grid, 'text-secondary': !grid }" (click)="toggleView(false)"></i>
+    <i class="fa fa-th" aria-hidden="true" [ngClass]="{ 'text-primary': !grid, 'text-secondary': grid }" (click)="toggleView(true)"></i>
+</div>
 <div class="pull-right"> 
     <hnTableColumnSelector (selectColumns)="setTableColoumns($event)" [defaultColumns]="defaultColumns" [tableColumns]="tableColumns" [selectedColoumns]="selectedColoumns"></hnTableColumnSelector> 
 </div>
 <br>
-<table [ngClass]="tableClass">
+<table *ngIf="!grid" [ngClass]="tableClass">
     <thead [ngClass]="tableHeaderClass">
         <tr>
             <th *ngIf="indexColumn">#</th>
@@ -16,6 +20,13 @@
         </tr>
     </tbody>
 </table>
+<div *ngIf="grid" class="row">
+    <div class="alert alert-primary col-md-3 col-sm-4" *ngFor="let data of tableData, let i = index" [routerLink]="data[selectableColumn]">
+        <div class="card-body">
+            <p *ngFor="let column of selectedColoumns"><b>{{column | splitandtitle}} : </b>{{column | chainedattribute : data | formatcolumn}}</p>
+        </div>
+    </div>
+</div>
 <br>
 <div class="pull-right"> 
     <hnPagination (loadData)="loadTableData($event)" [total]="total" [pageBy]="pageBy"></hnPagination>

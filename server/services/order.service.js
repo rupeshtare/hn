@@ -71,6 +71,9 @@ function create(orderParam) {
         }
     );
     
+    if(orders.length===0)
+        deferred.reject("Please select atleast one menu.");
+    
     orders.forEach(order=>{
         createOrder({customer: customer, order: order});
     });
@@ -117,13 +120,6 @@ function update(_id, orderParam) {
     function updateOrder() {
         // fields to update
         var set = {
-            name: orderParam.name,
-            price: orderParam.price,
-            available: orderParam.available,
-            category: orderParam.category,
-            subCategory: orderParam.subCategory,
-            tasteType: orderParam.tasteType,
-            subTasteType: orderParam.subTasteType,
             active: orderParam.active,
         };
 

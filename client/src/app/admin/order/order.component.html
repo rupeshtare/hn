@@ -34,5 +34,10 @@
             </div>
         </div>
     </div>
-    <button type="submit" class="col-12 btn btn-primary" [disabled]="orderForm.invalid">Add</button>
+    <div class="row">
+        <div class="btn btn-grp">
+            <button type="submit" class="btn btn-primary" [disabled]="orderForm.invalid">Add</button>
+            <button type="button" class="btn btn-secondary" routerLink="/admin/orders">Cancle</button>
+        </div>
+    </div>
 </form>
