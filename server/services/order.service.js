@@ -17,12 +17,14 @@ module.exports = service;
 
 
 function getAll(query) {
+    let search = {}
+    customer = query.customer ? search["customer._id"] = query.customer : null;
     var deferred = Q.defer();
 
-    db.order.find({}, null, query).toArray(function (err, order) {
+    db.order.find(search, null, query).toArray(function (err, order) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        db.order.count(function (err, count){
+        db.order.count(search, function (err, count){
             deferred.resolve({total: count, data: order});
         })
     });

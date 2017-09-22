@@ -4,6 +4,7 @@ import { AdminComponent }    from './index';
 import { CustomerComponent, CustomerListComponent, CustomerUpdateComponent } from './customer/index';
 import { MenuComponent, MenuListComponent, MenuUpdateComponent } from './menu/index';
 import { OrderComponent, OrderListComponent } from './order/index';
+import { BillingComponent } from './billing/index';
 
 
 @NgModule({
@@ -44,6 +45,10 @@ import { OrderComponent, OrderListComponent } from './order/index';
                     {
                         path: 'orders/new',
                         component: OrderComponent
+                    },
+                    {
+                        path: 'billings',
+                        component: BillingComponent
                     }
                 ]
             }

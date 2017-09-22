@@ -19,6 +19,7 @@ export class TableComponent {
     @Input() total : number = 0;
     @Input() pageBy : number = 10;
     @Input() grid : boolean = false;
+    @Input() selectable : boolean = true;
 
     @Output() loadData : EventEmitter<any> = new EventEmitter<any>();
 

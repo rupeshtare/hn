@@ -1,0 +1,16 @@
+<hnPageHeader header="Billing"></hnPageHeader>
+<form class="alert alert-primary" [formGroup]="billingForm" (ngSubmit)="submit(billingForm.value)">
+    <div class="form-group row">
+        <label class="col-1">Customer</label>
+        <div class="col-4">
+            <select class="form-control" formControlName="customer" [ngClass]="{ 'is-invalid': !billingForm.controls.customer.valid }" (change)="submit(billingForm.value)">
+                <option *ngFor="let customer of customers" [ngValue]="customer" [innerText]="customer.firstName"></option>
+            </select>
+        </div>
+        <div class="col-1"></div>
+        <h5 class="col-6">Total Bill : 
+            <span [innerText]="totalBill"></span>
+        </h5>
+    </div>
+</form>
+<hnTable name="billing" [defaultColumns]="defaultColumns" [tableColumns]="orderColumns" [tableData]="orders" [selectable]="false"></hnTable>

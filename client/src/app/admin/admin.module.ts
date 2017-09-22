@@ -9,6 +9,7 @@ import { AdminRoutingModule } from "./admin-routing.module";
 import { CustomerService, MenuService, OrderService } from './_services/index';
 import { SplitAndTitlePipe, FormatColumnPipe, ChainedAttributePipe } from '../_pipes/index';
 import { OrderComponent, OrderListComponent } from './order/index';
+import { BillingComponent } from './billing/index';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { OrderComponent, OrderListComponent } from './order/index';
         MenuListComponent,
         MenuUpdateComponent,
         OrderComponent,
-        OrderListComponent
+        OrderListComponent,
+        BillingComponent
     ],
     providers: [
         CustomerService,
