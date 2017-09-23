@@ -5,16 +5,16 @@ import { Router } from '@angular/router';
 
 
 @Component({
-    templateUrl: './billing.component.html',
+    templateUrl: './customer.billing.component.html',
 })
 
-export class BillingComponent {
+export class CustomerBillingComponent {
     billingForm : FormGroup;
     loading : boolean = false;
     totalBill : number = 0;
     private customers: Array<object> = [];
     private orders: Array<object> = [];
-    private orderColumns : Array<string> = ["order.name", "order.price", "order.quantity", "order.bill"];
+    private orderColumns : Array<string> = ["order.name", "order.quantity", "order.price", "order.bill"];
     private defaultColumns : Array<string> = ["order.name", "order.bill"];
     
 
@@ -28,7 +28,7 @@ export class BillingComponent {
     ngOnInit() : void {
 
         this.billingForm = this.formBuilder.group({
-            customer : [null, Validators.required]
+            customer : [{firstName: '', middleName: '', lastName: '', company: ''}, Validators.required]
         })
 
         this.loading = true;

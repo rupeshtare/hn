@@ -20,6 +20,7 @@ export class TableComponent {
     @Input() pageBy : number = 10;
     @Input() grid : boolean = false;
     @Input() selectable : boolean = true;
+    @Input() print: boolean = false;
 
     @Output() loadData : EventEmitter<any> = new EventEmitter<any>();
 
@@ -42,6 +43,10 @@ export class TableComponent {
     setTableColoumns(columns: any) : void {
         this.selectedColoumns = Object.keys(columns).filter(key=>{return columns[key];});
         this.selectedColoumns = [...this.defaultColumns, ...this.selectedColoumns];
+        this.selectedColoumns = this.tableColumns.filter(col=>{
+            if(this.selectedColoumns.includes(col))
+                return col;
+        });
         this.localStorageService.set(this.name, this.selectedColoumns);
     }
 

@@ -6,6 +6,7 @@ var orderService = require('services/order.service');
 // routes
 router.post('/', create);
 router.get('/', getAll);
+router.get('/company', getOrders);
 router.get('/:_id', get);
 router.put('/:_id', update);
 router.delete('/:_id', _delete);
@@ -25,6 +26,16 @@ function create(req, res) {
 
 function getAll(req, res) {
     orderService.getAll(req.query)
+        .then(function (customers) {
+            res.send(customers);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function getOrders(req, res) {
+    orderService.getOrders(req.query)
         .then(function (customers) {
             res.send(customers);
         })

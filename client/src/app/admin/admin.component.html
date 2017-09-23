@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-derk bg-dark">
+<nav id="nav" class="navbar navbar-expand-lg navbar-derk bg-dark">
     <a class="navbar-brand" routerLink="/">Nakshatra</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -14,8 +14,12 @@
             <li class="nav-item">
                 <a class="nav-link" routerLink="orders">Orders</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" routerLink="billings">Billings</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Billings</a>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" routerLink="billings/customer">Customer</a>
+                    <a class="dropdown-item" routerLink="billings/company">Company</a>
+                </div>
             </li>
         </ul>
     </div>

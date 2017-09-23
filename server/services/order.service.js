@@ -8,6 +8,7 @@ db.bind('order');
 var service = {};
 
 service.getAll = getAll;
+service.getOrders = getOrders;
 service.getById = getById;
 service.create = create;
 service.update = update;
@@ -31,6 +32,22 @@ function getAll(query) {
 
     return deferred.promise;
 }
+
+function getOrders(query) {
+    var deferred = Q.defer();
+    let key = ['customer._id', 'customer.firstName', 'customer.middleName', 'customer.lastName' ]
+    let condition = {}
+    let initial = { 'count': 0, 'total': 0 }
+    let reduce = 'function(doc, out) { out.count++; out.total += doc.order.bill; }'
+    db.order.group(key, {}, initial, reduce, function (err, order) {
+        if (err) deferred.reject(err.name + ': ' + err.message);
+
+        deferred.resolve({data: order});
+    });
+
+    return deferred.promise;
+}
+
 
 function getById(_id) {
     var deferred = Q.defer();

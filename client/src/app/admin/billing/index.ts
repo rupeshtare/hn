@@ -1,1 +1,2 @@
-export * from "./billing.component";
+export * from "./customer.billing.component";
+export * from "./company.billing.component";

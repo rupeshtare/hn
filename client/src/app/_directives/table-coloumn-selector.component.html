@@ -1,4 +1,4 @@
-<div class="button-group" [formGroup]="columnForm">
+<div id="coloumn-selector" class="button-group" [formGroup]="columnForm">
     <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown">Columns<span class="caret"></span></button>
     <ul class="dropdown-menu">
         <li *ngFor="let column of selectableColumns, let i = index" class="active">

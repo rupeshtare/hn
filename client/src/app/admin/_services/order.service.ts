@@ -7,6 +7,10 @@ export class OrderService {
 
     constructor(private http: Http) { }
 
+    getOrders(params) {
+        return this.http.get('/orders/company', params).map((response: Response) => response);
+    }
+
     getAll(params) {
         return this.http.get('/orders', params).map((response: Response) => response);
     }
