@@ -10,6 +10,7 @@ import { CustomerService, MenuService, OrderService, UserService } from './_serv
 import { SplitAndTitlePipe, FormatColumnPipe, ChainedAttributePipe } from '../_pipes/index';
 import { OrderComponent, OrderListComponent } from './order/index';
 import { CustomerBillingComponent, CompanyBillingComponent } from './billing/index';
+import { DatePickerModule } from 'angular-io-datepicker';
 
 
 @NgModule({
@@ -17,7 +18,8 @@ import { CustomerBillingComponent, CompanyBillingComponent } from './billing/ind
         CommonModule,
         FormsModule,
         AdminRoutingModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        DatePickerModule,
     ],
     declarations: [
         TableComponent,

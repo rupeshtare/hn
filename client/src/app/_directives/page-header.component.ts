@@ -12,4 +12,5 @@ export class PageHeaderComponent {
     @Input() header : string = '';
     @Input() addNew : boolean = false;
     @Input() addNewLink : string = 'new';
+    @Input() icon : string = '';
 }

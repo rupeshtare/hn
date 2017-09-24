@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 })
 
 export class CustomerBillingComponent {
-    billingForm : FormGroup;
+    customerBillingForm : FormGroup;
     loading : boolean = false;
     totalBill : number = 0;
     private customers: Array<object> = [];
@@ -27,8 +27,14 @@ export class CustomerBillingComponent {
     
     ngOnInit() : void {
 
-        this.billingForm = this.formBuilder.group({
-            customer : [{firstName: '', middleName: '', lastName: '', company: ''}, Validators.required]
+        let today = new Date();
+        let yesterday = new Date();
+        yesterday.setDate(yesterday.getDate()-1);
+
+        this.customerBillingForm = this.formBuilder.group({
+            customer : [null, Validators.required],
+            startDate : [yesterday, Validators.required],
+            endDate : [today, Validators.required]
         })
 
         this.loading = true;
@@ -45,7 +51,11 @@ export class CustomerBillingComponent {
 
     submit(data) {
         this.loading = true;
-        this.orderService.getAll({customer: data.customer._id}).subscribe(
+        this.orderService.getAll({
+            customer: data.customer._id,
+            startDate: data.startDate,
+            endDate: data.endDate
+        }).subscribe(
             resp => {
                 ({data: this.orders} = resp.json());
                 this.totalBill = this.orders.reduce((prev,curr)=>{return prev + curr["order"]["bill"];},0)

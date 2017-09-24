@@ -20,6 +20,9 @@ module.exports = service;
 function getAll(query) {
     let search = {}
     customer = query.customer ? search["customer._id"] = query.customer : null;
+    startDate = query.startDate ? new Date(query.startDate) : new Date();    
+    endDate = query.endDate ? new Date(query.endDate) : new Date();
+    search["createdOn"] = {"$gte" :  startDate, "$lte" : endDate};
     var deferred = Q.defer();
 
     db.order.find(search, null, query).sort({"createdOn": -1}).toArray(function (err, order) {
