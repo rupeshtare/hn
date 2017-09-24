@@ -6,5 +6,9 @@
                 <input class="form-check-input" type="checkbox" [formControlName]="column">&nbsp;{{ column | splitandtitle }}
             </a>
         </li>
+        <div class="dropdown-divider"></div>
+        <li class="active">
+            <a class="dropdown-item" (click)="reset()"> Reset Columns </a>
+        </li>
     </ul>
 </div>

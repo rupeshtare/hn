@@ -38,4 +38,8 @@ export class TableColumnSelectorComponent implements OnInit {
             this.selectColumns.emit(data);
         })
     }
+
+    reset() : void {
+        this.columnForm.reset({});
+    }
 }
