@@ -19,7 +19,7 @@ module.exports = service;
 function getAll(query) {
     var deferred = Q.defer();
 
-    db.customer.find({}, null, query).toArray(function (err, customer) {
+    db.customer.find({}, null, query).sort({"createdOn": -1}).toArray(function (err, customer) {
         if (err) deferred.reject(err.name + ': ' + err.message);
         db.customer.count(function (err, count){
             deferred.resolve({total: count, data: customer});
@@ -43,8 +43,10 @@ function getById(_id) {
     return deferred.promise;
 }
 
-function create(customerParam) {
+function create(req) {
     var deferred = Q.defer();
+
+    let customerParam = _.merge(req.body, {createdBy: req.user, createdOn: new Date()});
 
     // validation
     db.customer.findOne(
@@ -76,8 +78,11 @@ function create(customerParam) {
     return deferred.promise;
 }
 
-function update(_id, customerParam) {
+function update(req) {
     var deferred = Q.defer();
+
+    let customerParam = req.body;
+    let _id = req.params._id
 
     // validation
     db.customer.findById(_id, function (err, customer) {
@@ -120,6 +125,8 @@ function update(_id, customerParam) {
             email: customerParam.email,
             employeeType: customerParam.employeeType,
             active: customerParam.active,
+            updatedBy: req.user,
+            updatedOn: new Date(),
         };
 
         db.customer.update(
@@ -135,11 +142,19 @@ function update(_id, customerParam) {
     return deferred.promise;
 }
 
-function _delete(_id) {
+function _delete(req) {
     var deferred = Q.defer();
 
-    db.customer.remove(
+    let _id = req.params._id;
+    let set = {
+        active: false,
+        updatedBy: req.user,
+        updatedOn: new Date(),
+    };
+
+    db.customer.update(
         { _id: mongo.helper.toObjectID(_id) },
+        { $set: set },
         function (err) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 

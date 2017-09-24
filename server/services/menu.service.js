@@ -19,7 +19,7 @@ module.exports = service;
 function getAll(query) {
     var deferred = Q.defer();
 
-    db.menu.find({}, null, query).toArray(function (err, menu) {
+    db.menu.find({}, null, query).sort({"createdOn": -1}).toArray(function (err, menu) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         db.menu.count(function (err, count){
@@ -44,8 +44,10 @@ function getById(_id) {
     return deferred.promise;
 }
 
-function create(menuParam) {
+function create(req) {
     var deferred = Q.defer();
+
+    let menuParam = _.merge(req.body, {createdBy: req.user, createdOn: new Date()});
 
     // validation
     db.menu.findOne(
@@ -74,8 +76,11 @@ function create(menuParam) {
     return deferred.promise;
 }
 
-function update(_id, menuParam) {
+function update(req) {
     var deferred = Q.defer();
+
+    let menuParam = req.body;
+    let _id = req.params._id
 
     // validation
     db.menu.findById(_id, function (err, menu) {
@@ -111,6 +116,8 @@ function update(_id, menuParam) {
             tasteType: menuParam.tasteType,
             subTasteType: menuParam.subTasteType,
             active: menuParam.active,
+            updatedBy: req.user,
+            updatedOn: new Date(),
         };
 
         db.menu.update(
@@ -126,11 +133,19 @@ function update(_id, menuParam) {
     return deferred.promise;
 }
 
-function _delete(_id) {
+function _delete(req) {
     var deferred = Q.defer();
 
-    db.menu.remove(
+    let _id = req.params._id;
+    let set = {
+        active: false,
+        updatedBy: req.user,
+        updatedOn: new Date(),
+    };
+
+    db.menu.update(
         { _id: mongo.helper.toObjectID(_id) },
+        { $set: set },
         function (err) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 

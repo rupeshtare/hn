@@ -15,7 +15,7 @@ module.exports = router;
 
 
 function create(req, res) {
-    orderService.create(req.body)
+    orderService.create(req)
         .then(function () {
             res.sendStatus(200);
         })
@@ -59,7 +59,7 @@ function get(req, res) {
 }
 
 function update(req, res) {
-    orderService.update(req.params._id, req.body)
+    orderService.update(req)
         .then(function () {
             res.sendStatus(200);
         })
@@ -69,7 +69,7 @@ function update(req, res) {
 }
 
 function _delete(req, res) {
-    orderService.delete(req.params._id)
+    orderService.delete(req)
         .then(function () {
             res.sendStatus(200);
         })

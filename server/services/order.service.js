@@ -22,7 +22,7 @@ function getAll(query) {
     customer = query.customer ? search["customer._id"] = query.customer : null;
     var deferred = Q.defer();
 
-    db.order.find(search, null, query).toArray(function (err, order) {
+    db.order.find(search, null, query).sort({"createdOn": -1}).toArray(function (err, order) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         db.order.count(search, function (err, count){
@@ -63,8 +63,10 @@ function getById(_id) {
     return deferred.promise;
 }
 
-function create(orderParam) {
+function create(req) {
     var deferred = Q.defer();
+
+    let orderParam = req.body;
 
     let customerKeys = ["_id", "firstName", "lastName"];
     let customer = Object.keys(orderParam.customer).reduce((prev, curr)=>{
@@ -94,7 +96,7 @@ function create(orderParam) {
         deferred.reject("Please select atleast one menu.");
     
     orders.forEach(order=>{
-        createOrder({customer: customer, order: order});
+        createOrder({customer: customer, order: order, createdBy: req.user, createdOn: new Date()});
     });
 
     function createOrder(orderParam) {
@@ -110,8 +112,11 @@ function create(orderParam) {
     return deferred.promise;
 }
 
-function update(_id, orderParam) {
+function update(req) {
     var deferred = Q.defer();
+
+    let orderParam = req.body;
+    let _id = req.params._id
 
     // validation
     db.order.findById(_id, function (err, order) {
@@ -140,6 +145,8 @@ function update(_id, orderParam) {
         // fields to update
         var set = {
             active: orderParam.active,
+            updatedBy: req.user,
+            updatedOn: new Date(),
         };
 
         db.order.update(
@@ -155,11 +162,19 @@ function update(_id, orderParam) {
     return deferred.promise;
 }
 
-function _delete(_id) {
+function _delete(req) {
     var deferred = Q.defer();
 
-    db.order.remove(
+    let _id = req.params._id;
+    let set = {
+        active: false,
+        updatedBy: req.user,
+        updatedOn: new Date(),
+    };
+
+    db.order.update(
         { _id: mongo.helper.toObjectID(_id) },
+        { $set: set },
         function (err) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 
