@@ -16,6 +16,7 @@ export class OrderComponent {
     private menus: Array<object> = [];
     private customers: Array<object> = [];
 
+
     constructor(
         private router: Router,
         private customerService: CustomerService,
@@ -104,4 +105,5 @@ export class OrderComponent {
         let control = <FormArray>this.orderForm.get('orders');
         control.removeAt(i);
     }
+
 }

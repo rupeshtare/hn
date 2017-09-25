@@ -7,13 +7,13 @@ import { HttpErrorResponse } from '@angular/common/http';
     templateUrl: './order-list.component.html',
 })
 
-
 export class OrderListComponent { 
     private orders: Array<object> = [];
     private total : number = 0;
     private orderColumns : Array<string> = ["customer.firstName", "customer.lastName", "order.name", "order.price", "order.quantity", "order.bill"];
     private defaultColumns : Array<string> = ["customer.firstName", "order.name", "order.bill"];
     loading = false;
+
 
     constructor(private orderService: OrderService) { }
 
@@ -32,4 +32,5 @@ export class OrderListComponent {
             }
         )
     }
+
 }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AlertService, CustomerService } from './../_services/index';
+import { AlertService, CustomerService, CompanyService } from './../_services/index';
  
 
 @Component({
@@ -13,17 +13,20 @@ export class CustomerUpdateComponent implements OnInit {
     _id: string;
     customerForm : FormGroup;
     loading = false;
+    private companies: Array<object> = [];
     employeeTypeOptions = ['Employee', 'Contractor', 'Guest'];
+
 
     constructor(
         private router: Router,
         private route: ActivatedRoute,
         private customerService: CustomerService,
         private alertService: AlertService,
-        private formBuilder: FormBuilder){
+        private formBuilder: FormBuilder,
+        private companyService: CompanyService){
 
             this.customerForm = formBuilder.group({
-                company : [null, Validators.required],
+                company : [{}, Validators.required],
                 firstName : [null, Validators.required],
                 middleName : '',
                 lastName : [null, Validators.required],
@@ -40,6 +43,18 @@ export class CustomerUpdateComponent implements OnInit {
         }
 
     ngOnInit() {
+
+        this.loading = true;
+        this.companyService.getAll(event).subscribe(
+            resp => {
+                ({data: this.companies} = resp.json());
+            },
+            error => {
+                this.alertService.error(error);
+                this.loading = false;
+            }
+        )
+
         this.customerService.getById(this._id)
         .subscribe(
             data => {
@@ -74,6 +89,10 @@ export class CustomerUpdateComponent implements OnInit {
                 this.loading = false;
             }
         );
+    }
+
+    byName(item1: {}, item2: {}) {
+        return item1["name"] === item2["name"];
     }
 
 }

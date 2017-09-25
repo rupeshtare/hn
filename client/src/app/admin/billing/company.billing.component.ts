@@ -20,6 +20,7 @@ export class CompanyBillingComponent {
         private alertService: AlertService) { }
     
     ngOnInit() : void {
+
         this.loading = true;
         this.orderService.getOrders(event).subscribe(
             resp => {

@@ -1,0 +1,16 @@
+<hnPageHeader header="Company" icon="fa-industry"></hnPageHeader>
+<form [formGroup]="companyForm" (ngSubmit)="submit(companyForm.value)">
+    <div class="form-group row">
+        <label for="inputName" class="col-sm-2 col-form-label">Name</label>
+        <div>
+            <input type="text" class="form-control" formControlName="name" [ngClass]="{ 'is-invalid': !companyForm.controls.name.valid }">
+        </div>
+    </div>
+    <div class="form-group row p-3 mb-2 bg-dark text-white">
+        <div class="col-sm-2"></div>
+        <div>
+            <button type="submit" class="btn btn-primary" [disabled]="companyForm.invalid">Add</button>
+            <button type="button" class="btn btn-light" routerLink="/admin/companies">Cancle</button>
+        </div>
+    </div>
+</form>

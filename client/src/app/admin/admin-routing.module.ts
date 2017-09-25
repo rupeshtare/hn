@@ -5,6 +5,7 @@ import { CustomerComponent, CustomerListComponent, CustomerUpdateComponent } fro
 import { MenuComponent, MenuListComponent, MenuUpdateComponent } from './menu/index';
 import { OrderComponent, OrderListComponent } from './order/index';
 import { CustomerBillingComponent, CompanyBillingComponent } from './billing/index';
+import { CompanyListComponent, CompanyComponent } from './company/index'
 
 
 @NgModule({
@@ -53,7 +54,15 @@ import { CustomerBillingComponent, CompanyBillingComponent } from './billing/ind
                     {
                         path: 'billings/company',
                         component: CompanyBillingComponent
-                    }
+                    },
+                    {
+                        path: 'companies',
+                        component: CompanyListComponent
+                    },
+                    {
+                        path: 'companies/new',
+                        component: CompanyComponent
+                    },
                 ]
             }
         ])

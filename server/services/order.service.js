@@ -18,10 +18,14 @@ module.exports = service;
 
 
 function getAll(query) {
-    let search = {}
+    let search = {}    
+    let today = new Date();
+    let yesterday = new Date();
+    yesterday.setDate(yesterday.getDate()-1);
+
     customer = query.customer ? search["customer._id"] = query.customer : null;
-    startDate = query.startDate ? new Date(query.startDate) : new Date();    
-    endDate = query.endDate ? new Date(query.endDate) : new Date();
+    startDate = query.startDate ? new Date(query.startDate) : yesterday;    
+    endDate = query.endDate ? new Date(query.endDate) : today;
     search["createdOn"] = {"$gte" :  startDate, "$lte" : endDate};
     var deferred = Q.defer();
 

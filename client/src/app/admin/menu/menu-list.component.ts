@@ -15,6 +15,7 @@ export class MenuListComponent {
     private defaultColumns : Array<string> = ["name", "price"];
     loading = false;
 
+
     constructor(private menuService: MenuService) { }
 
     loadMenus(event: object) : void {
@@ -32,4 +33,5 @@ export class MenuListComponent {
             }
         )
     }
+
 }

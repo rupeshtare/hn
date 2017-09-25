@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CustomerService } from './../_services/index';
 import { HttpErrorResponse } from '@angular/common/http';
 
+
 @Component({
     templateUrl: './customer-list.component.html',
 })
@@ -12,6 +13,7 @@ export class CustomerListComponent {
     private customersColumns : Array<string> = ['firstName', 'middleName', 'lastName', "active", 'mobile', 'company', 'dob', 'employeeType'];
     private defaultColumns : Array<string> = ['firstName', 'lastName']
     loading = false;
+
 
     constructor(private customerService: CustomerService) { }
 
@@ -30,4 +32,5 @@ export class CustomerListComponent {
             }
         )
     }
+
 }

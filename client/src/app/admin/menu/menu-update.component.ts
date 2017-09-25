@@ -44,6 +44,7 @@ export class MenuUpdateComponent implements OnInit {
         }
 
     ngOnInit() {
+
         this.menuService.getById(this._id)
         .subscribe(
             data => {
@@ -63,7 +64,7 @@ export class MenuUpdateComponent implements OnInit {
             }
         )
     }
-    
+
     update(value) {
         this.loading = true;
         value._id = this._id;
