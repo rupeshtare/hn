@@ -23,6 +23,7 @@ export class TableComponent {
     @Input() print: boolean = false;
 
     @Output() loadData : EventEmitter<any> = new EventEmitter<any>();
+    @Output() callBackFunction : EventEmitter<any> = new EventEmitter<any>();
 
     private selectedColoumns : Array<string>;
 
@@ -56,5 +57,9 @@ export class TableComponent {
 
     toggleView(val: boolean) : void {
         this.grid = val;
+    }
+
+    selectCallBack(data: object) : void {
+        this.callBackFunction.emit(data);
     }
 }

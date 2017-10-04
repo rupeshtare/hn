@@ -5,7 +5,9 @@ import { CustomerComponent, CustomerListComponent, CustomerUpdateComponent } fro
 import { MenuComponent, MenuListComponent, MenuUpdateComponent } from './menu/index';
 import { OrderComponent, OrderListComponent } from './order/index';
 import { CustomerBillingComponent, CompanyBillingComponent } from './billing/index';
-import { CompanyListComponent, CompanyComponent } from './company/index'
+import { CompanyListComponent, CompanyComponent } from './company/index';
+import { MessMemberListComponent, MessMemberComponent } from './mess-member/index';
+import { MessListComponent } from './mess/index';
 
 
 @NgModule({
@@ -62,6 +64,18 @@ import { CompanyListComponent, CompanyComponent } from './company/index'
                     {
                         path: 'companies/new',
                         component: CompanyComponent
+                    },
+                    {
+                        path: 'mess-members',
+                        component: MessMemberListComponent
+                    },
+                    {
+                        path: 'mess-members/new',
+                        component: MessMemberComponent
+                    },
+                    {
+                        path: 'mess',
+                        component: MessListComponent
                     },
                 ]
             }

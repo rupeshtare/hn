@@ -15,7 +15,7 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let data of tableData, let i = index" [routerLink]="selectable ? data[selectableColumn] : null">
+        <tr *ngFor="let data of tableData, let i = index" [routerLink]="selectable ? data[selectableColumn] : null" (click)="selectCallBack(data)">
             <th *ngIf="indexColumn" [innerText]="i + 1"></th>
             <td *ngFor="let column of selectedColoumns" [innerText]="column | chainedattribute : data | formatcolumn"></td>
         </tr>

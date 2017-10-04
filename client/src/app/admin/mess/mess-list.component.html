@@ -1,0 +1,4 @@
+<hnPageHeader header="Members" icon="fa-users"></hnPageHeader>
+<hnTable (loadData)="loadMessMembers($event)" name="mess" [defaultColumns]="defaultColumns" [tableColumns]="messMemberColumns" [tableData]="messMembers" [total]="total" [selectable]="false" (callBackFunction)="selectMember($event)"></hnTable>
+<hnPageHeader header="Dine" icon="fa-spoon"></hnPageHeader>
+<hnTable name="dineMembers" [defaultColumns]="defaultColumns" [tableColumns]="messMemberColumns" [tableData]="dineMembers.members" [selectable]="false" ></hnTable>
