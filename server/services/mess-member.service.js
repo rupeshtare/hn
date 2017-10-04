@@ -1,12 +1,11 @@
 var config = require('config.json');
 var _ = require('lodash');
 var Q = require('q');
+var date = require('utils/date_utility');
 var mongo = require('mongoskin');
+
 var db = mongo.db(config.connectionString, { native_parser: true });
 db.bind('mess_member');
-
-var db2 = mongo.db(config.connectionString, { native_parser: true });
-db2.bind('dine');
 
 var service = {};
 
@@ -19,37 +18,40 @@ service.delete = _delete;
 
 module.exports = service;
 
-function getAllCurrent(query) {
+function getAllCurrent(params) {
     var deferred = Q.defer();
-    var filter = {"active": true};
+    var filter = { "active": true };
 
-    var currentTime = new Date();
-    if(currentTime.getHours() >= 10 && currentTime.getHours() <= 17)
-        filter["timeing"] = {"$in": ["Lunch", "Both"]};
-    else if (currentTime.getHours() >= 18 && currentTime.getHours() <= 22)
-        filter["timeing"] = {"$in": ["Dinner", "Both"]};
+    var hours = date.hours();
+    if (hours >= config.morning[0] && hours <= config.morning[1])
+        filter = _.merge(filter, { "timeing": { "$in": ["Lunch", "Both"] } });
+    else if (hours >= config.evening[0] && hours <= config.evening[1])
+        filter = _.merge(filter, { "timeing": { "$in": ["Dinner", "Both"] } });
     else
-        deferred.resolve({total: 0, data: []});
+        deferred.resolve({ total: 0, data: [] });
 
-    db.mess_member.find(filter).sort({"createdOn": -1}).toArray(function (err, messMember) {
+    var today = date.currentDate();
+    filter = _.merge(filter, { "startDate": { "$lte": today }, "endDate": { "$gte": today } })
+
+    db.mess_member.find(filter, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, messMember) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        db.mess_member.count({"active": true}, function (err, count){
-            deferred.resolve({total: count, data: messMember});
+        db.mess_member.count(filter, function (err, count) {
+            deferred.resolve({ total: count, data: messMember });
         })
     });
 
     return deferred.promise;
 }
 
-function getAll(query) {
+function getAll(params) {
     var deferred = Q.defer();
 
-    db.mess_member.find({"active": true}, null, query).sort({"createdOn": -1}).toArray(function (err, messMember) {
+    db.mess_member.find({ "active": true }, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, messMember) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        db.mess_member.count({"active": true}, function (err, count){
-            deferred.resolve({total: count, data: messMember});
+        db.mess_member.count({ "active": true }, function (err, count) {
+            deferred.resolve({ total: count, data: messMember });
         })
     });
 
@@ -63,7 +65,7 @@ function getById(_id) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         if (messMember) deferred.resolve(messMember);
-        
+
         deferred.resolve();
     });
 
@@ -73,22 +75,30 @@ function getById(_id) {
 function create(req) {
     var deferred = Q.defer();
 
-    let messMemberParam = _.merge(req.body, {createdBy: req.user, createdOn: new Date()});
+    let messMemberParam = req.body;
+
+    let filter = { "customer._id": messMemberParam.customer._id, "timeing": messMemberParam.timeing, active: messMemberParam.active };
+    if (messMemberParam.timeing === "Both")
+        filter = _.merge(filter, { "timeing": { "$in": ["Lunch", "Dinner", "Both"] } })
 
     // validation
     db.mess_member.findOne(
-        { "customer._id": messMemberParam.customer._id, active: messMemberParam.active },
+        filter,
         function (err, messMember) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 
             if (messMember) {
                 // messMembername already exists
-                deferred.reject('Mess member "' + messMemberParam.customer.firstName + '" is already taken');
+                deferred.reject('Mess member ' + messMember.customer.firstName + ' is already added for ' + messMember.timeing);
             } else {
                 createMessMember();
             }
         });
 
+    messMemberParam = _.merge(messMemberParam, {
+        "startDate": date.startOfDay(messMemberParam.startDate),
+        "endDate": date.startOfDay(messMemberParam.endDate),
+    });
     function createMessMember() {
         db.mess_member.insert(
             messMemberParam,
@@ -135,8 +145,10 @@ function update(req) {
         // fields to update
         var set = {
             active: messMemberParam.active,
-            updatedBy: req.user,
-            updatedOn: new Date(),
+            startDate: date.startOfDay(messMemberParam.startDate),
+            endDate: date.startOfDay(messMemberParam.endDate),
+            updatedBy: messMemberParam.updatedBy,
+            updatedOn: messMemberParam.updatedOn,
         };
 
         db.mess_member.update(
@@ -158,8 +170,8 @@ function _delete(req) {
     let _id = req.params._id;
     let set = {
         active: false,
-        updatedBy: req.user,
-        updatedOn: new Date(),
+        updatedBy: messMemberParam.updatedBy,
+        updatedOn: messMemberParam.updatedOn,
     };
 
     db.mess_member.update(

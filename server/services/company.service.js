@@ -16,14 +16,14 @@ service.delete = _delete;
 module.exports = service;
 
 
-function getAll(query) {
+function getAll(params) {
     var deferred = Q.defer();
 
-    db.company.find({}, null, query).sort({"createdOn": -1}).toArray(function (err, company) {
+    db.company.find({}, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, company) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        db.company.count(function (err, count){
-            deferred.resolve({total: count, data: company});
+        db.company.count(function (err, count) {
+            deferred.resolve({ total: count, data: company });
         })
     });
 
@@ -37,7 +37,7 @@ function getById(_id) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         if (company) deferred.resolve(company);
-        
+
         deferred.resolve();
     });
 
@@ -47,7 +47,7 @@ function getById(_id) {
 function create(req) {
     var deferred = Q.defer();
 
-    let companyParam = _.merge(req.body, {createdBy: req.user, createdOn: new Date()});
+    let companyParam = req.body;
 
     // validation
     db.company.findOne(
@@ -110,8 +110,8 @@ function update(req) {
         var set = {
             name: companyParam.name,
             active: companyParam.active,
-            updatedBy: req.user,
-            updatedOn: new Date(),
+            updatedBy: companyParam.updatedBy,
+            updatedOn: companyParam.updatedOn,
         };
 
         db.company.update(
@@ -130,11 +130,12 @@ function update(req) {
 function _delete(req) {
     var deferred = Q.defer();
 
+    let companyParam = req.body;
     let _id = req.params._id;
     let set = {
         active: false,
-        updatedBy: req.user,
-        updatedOn: new Date(),
+        updatedBy: companyParam.updatedBy,
+        updatedOn: companyParam.updatedOn,
     };
 
     db.company.update(

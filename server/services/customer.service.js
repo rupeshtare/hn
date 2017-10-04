@@ -16,13 +16,13 @@ service.delete = _delete;
 module.exports = service;
 
 
-function getAll(query) {
+function getAll(params) {
     var deferred = Q.defer();
 
-    db.customer.find({}, null, query).sort({"createdOn": -1}).toArray(function (err, customer) {
+    db.customer.find({}, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, customer) {
         if (err) deferred.reject(err.name + ': ' + err.message);
-        db.customer.count(function (err, count){
-            deferred.resolve({total: count, data: customer});
+        db.customer.count(function (err, count) {
+            deferred.resolve({ total: count, data: customer });
         })
     });
 
@@ -36,7 +36,7 @@ function getById(_id) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         if (customer) deferred.resolve(customer);
-        
+
         deferred.resolve();
     });
 
@@ -46,14 +46,16 @@ function getById(_id) {
 function create(req) {
     var deferred = Q.defer();
 
-    let customerParam = _.merge(req.body, {createdBy: req.user, createdOn: new Date()});
+    let customerParam = req.body;
 
     // validation
     db.customer.findOne(
-        { company: customerParam.company,
+        {
+            company: customerParam.company,
             firstName: customerParam.firstName,
             middleName: customerParam.middleName,
-            lastName: customerParam.lastName },
+            lastName: customerParam.lastName
+        },
         function (err, customer) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 
@@ -94,10 +96,12 @@ function update(req) {
             customer.lastName !== customerParam.lastName) {
             // customer has changed so check if the new customer is already taken
             db.customer.findOne(
-                { company: customerParam.company,
+                {
+                    company: customerParam.company,
                     firstName: customerParam.firstName,
                     middleName: customerParam.middleName,
-                    lastName: customerParam.lastName },
+                    lastName: customerParam.lastName
+                },
                 function (err, customer) {
                     if (err) deferred.reject(err.name + ': ' + err.message);
 
@@ -125,8 +129,8 @@ function update(req) {
             email: customerParam.email,
             employeeType: customerParam.employeeType,
             active: customerParam.active,
-            updatedBy: req.user,
-            updatedOn: new Date(),
+            updatedBy: customerParam.updatedBy,
+            updatedOn: customerParam.updatedOn,
         };
 
         db.customer.update(
@@ -145,11 +149,12 @@ function update(req) {
 function _delete(req) {
     var deferred = Q.defer();
 
+    let customerParam = req.body;
     let _id = req.params._id;
     let set = {
         active: false,
-        updatedBy: req.user,
-        updatedOn: new Date(),
+        updatedBy: customerParam.updatedBy,
+        updatedOn: customerParam.updatedOn,
     };
 
     db.customer.update(

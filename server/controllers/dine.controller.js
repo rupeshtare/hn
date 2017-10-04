@@ -7,6 +7,7 @@ var dineService = require('services/dine.service');
 router.post('/', create);
 router.get('/', getAll);
 router.post('/createOrUpdate', createOrUpdate);
+router.post('/remove', remove);
 router.get('/current', getCurrent);
 router.get('/:_id', get);
 router.put('/:_id', update);
@@ -27,6 +28,16 @@ function create(req, res) {
 
 function createOrUpdate(req, res) {
     dineService.createOrUpdate(req)
+        .then(function () {
+            res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function remove(req, res) {
+    dineService.remove(req)
         .then(function () {
             res.sendStatus(200);
         })

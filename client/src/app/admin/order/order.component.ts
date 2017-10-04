@@ -34,7 +34,7 @@ export class OrderComponent {
         })
 
         this.loading = true;
-        this.menuService.getAll(event).subscribe(
+        this.menuService.getAll({include: ['name', 'price']}).subscribe(
             resp => {
                 ({data: this.menus} = resp.json());
             },
@@ -46,7 +46,7 @@ export class OrderComponent {
                 }
             }
         )
-        this.customerService.getAll(event).subscribe(
+        this.customerService.getAll({include: ['firstName', 'lastName', 'company.name']}).subscribe(
             resp => {
                 ({data: this.customers} = resp.json());
             },

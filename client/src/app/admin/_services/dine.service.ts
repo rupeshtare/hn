@@ -27,6 +27,10 @@ export class DineService {
     createOrUpdate(menu: object) {
         return this.http.post('/dine/createOrUpdate', menu);
     }
+    
+    remove(menu: object) {
+        return this.http.post('/dine/remove', menu);
+    }
 
     update(menu: Menu) {
         return this.http.put('/dine/' + menu._id, menu);

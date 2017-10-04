@@ -1,6 +1,7 @@
 var config = require('config.json');
 var _ = require('lodash');
 var Q = require('q');
+var date = require('utils/date_utility');
 var mongo = require('mongoskin');
 var db = mongo.db(config.connectionString, { native_parser: true });
 db.bind('dine');
@@ -8,6 +9,7 @@ db.bind('dine');
 var service = {};
 
 service.createOrUpdate = createOrUpdate;
+service.remove = remove;
 service.getCurrent = getCurrent;
 service.getAll = getAll;
 service.getById = getById;
@@ -17,21 +19,26 @@ service.delete = _delete;
 
 module.exports = service;
 
+function generateId() {
+    let id = undefined;
+    let hours = date.hours();
+    if (hours >= config.morning[0] && hours <= config.morning[1])
+        id = date.dateInString() + "_lunch";
+    if (hours >= config.evening[0] && hours <= config.evening[1])
+        id = date.dateInString() + "_dinner";
+    return id;
+}
+
 function createOrUpdate(req) {
     var deferred = Q.defer();
 
-    var currentTime = new Date();
-    let dineParam = _.merge(req.body, {createdBy: req.user, createdOn: currentTime});
-    let id = undefined;
+    let dineParam = req.body;
 
-    if(currentTime.getHours() >= 10 && currentTime.getHours() <= 17)
-        id = currentTime.toLocaleDateString() + "_lunch";
-    if (currentTime.getHours() >= 18 && currentTime.getHours() <= 22)
-        id = currentTime.toLocaleDateString() + "_dinner";
-    
+    let id = generateId();
+
     db.dine.findById(id, function (err, data) {
         if (err) deferred.reject(err.name + ': ' + err.message);
-        
+
         if (data) {
             updateDineMember(data)
         } else {
@@ -57,7 +64,7 @@ function createOrUpdate(req) {
     }
 
     function createDineMember() {
-        dineParam = {_id: id, members: [dineParam], active: true}
+        dineParam = { _id: id, members: [dineParam], active: true }
         db.dine.insert(
             dineParam,
             function (err, doc) {
@@ -71,21 +78,53 @@ function createOrUpdate(req) {
 
 }
 
-function getCurrent(query) {
-    let deferred = Q.defer();
 
-    let currentTime = new Date();
-    let id = undefined;
-
-    if(currentTime.getHours() >= 10 && currentTime.getHours() <= 17)
-        id = currentTime.toLocaleDateString() + "_lunch";
-    if (currentTime.getHours() >= 18 && currentTime.getHours() <= 22)
-        id = currentTime.toLocaleDateString() + "_dinner";
+function remove(req) {
+    var deferred = Q.defer();
+    let dineParam = req.body;
+    let id = generateId();
 
     db.dine.findById(id, function (err, data) {
         if (err) deferred.reject(err.name + ': ' + err.message);
-        
-        deferred.resolve({data: data});
+
+        if (data) {
+            updateDineMember(data)
+        } else {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+        }
+    });
+
+    function updateDineMember(data) {
+        // fields to update
+        _.remove(data.members, members => members._id === dineParam._id);
+
+        var set = {
+            members: data.members
+        };
+
+        db.dine.update(
+            { _id: id },
+            { $set: set },
+            function (err, doc) {
+                if (err) deferred.reject(err.name + ': ' + err.message);
+
+                deferred.resolve();
+            });
+    }
+
+    return deferred.promise;
+
+}
+
+function getCurrent(params) {
+    let deferred = Q.defer();
+
+    let id = generateId();
+
+    db.dine.findById(id, params.include, function (err, data) {
+        if (err) deferred.reject(err.name + ': ' + err.message);
+
+        deferred.resolve({ data: data });
     });
 
     return deferred.promise;
@@ -94,11 +133,11 @@ function getCurrent(query) {
 function getAll(query) {
     var deferred = Q.defer();
 
-    db.dine.find({"active": true}, null, query).sort({"createdOn": -1}).toArray(function (err, messMember) {
+    db.dine.find({ "active": true }, null, query).sort({ "createdOn": -1 }).toArray(function (err, messMember) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        db.dine.count({"active": true}, function (err, count){
-            deferred.resolve({total: count, data: messMember});
+        db.dine.count({ "active": true }, function (err, count) {
+            deferred.resolve({ total: count, data: messMember });
         })
     });
 
@@ -112,7 +151,7 @@ function getById(_id) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         if (messMember) deferred.resolve(messMember);
-        
+
         deferred.resolve();
     });
 
@@ -122,7 +161,7 @@ function getById(_id) {
 function create(req) {
     var deferred = Q.defer();
 
-    let messMemberParam = _.merge(req.body, {createdBy: req.user, createdOn: new Date()});
+    let messMemberParam = _.merge(req.body, { createdBy: req.user, createdOn: new Date() });
 
     // validation
     db.dine.findOne(
@@ -203,12 +242,12 @@ function update(req) {
 
 function _delete(req) {
     var deferred = Q.defer();
-
+    let dineParam = req.body;
     let _id = req.params._id;
     let set = {
         active: false,
-        updatedBy: req.user,
-        updatedOn: new Date(),
+        updatedBy: dineParam.updatedBy,
+        updatedOn: dineParam.updatedOn,
     };
 
     db.dine.update(

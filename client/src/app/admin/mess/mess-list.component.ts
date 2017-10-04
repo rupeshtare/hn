@@ -2,19 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { MessService, DineService } from './../_services/index';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AlertService } from './../_services/index';
+import * as moment from 'moment';
+import * as _ from "lodash";
 
 
 @Component({
     templateUrl: './mess-list.component.html',
 })
 
-export class MessListComponent implements OnInit { 
+export class MessListComponent implements OnInit {
     private messMembers: Array<object> = [];
-    private dineMembers : object = {members: []};
-    private total : number = 0;
-    private messMemberColumns : Array<string> = ["customer.firstName", "customer.lastName", "timeing", "days", "startDate", "endDate", "active"];
-    private defaultColumns : Array<string> = ["customer.firstName", "customer.lastName", "timeing",];
-    private loading = false;
+    private dineMembers: object = { members: [] };
+    private total: number = 0;
+    private messMemberColumns: Array<string> = ["customer.firstName", "customer.lastName", "createdOn"];
+    private defaultColumns: Array<string> = ["customer.firstName", "customer.lastName"];
+    private loading: boolean = false;
+    private selectedDine: object = null;
 
 
     constructor(
@@ -24,58 +27,71 @@ export class MessListComponent implements OnInit {
 
     ngOnInit() {
         this.loading = true;
-        this.dineService.getActive({}).subscribe(
+        this.dineService.getActive({ include: ['members'] }).subscribe(
             resp => {
                 this.dineMembers = resp.json().data ? resp.json().data : this.dineMembers;
             },
-            (err: HttpErrorResponse) => {
-                if (err.error instanceof Error) {
-                    console.log("Client-side error occured.");
-                } else {
-                    this.alertService.error(err.name);
-                }
+            err => {
+                this.alertService.error(err.name);
             }
         )
 
     }
 
-    loadMessMembers(event: object) : void {
+    loadMessMembers(event: object): void {
         this.loading = true;
-        this.messMemberService.getAllActive(event).subscribe(
+        this.messMemberService.getAllActive({ include: ['customer'] }).subscribe(
             resp => {
-                ({total: this.total, data: this.messMembers} = resp.json());
+                ({ total: this.total, data: this.messMembers } = resp.json());
                 // Filter mess members who had dinner or lunch
-                this.messMembers = this.messMembers.filter(messObj=>{
-                    if(this.dineMembers["members"].every(dineObj=>{
+                this.messMembers = this.messMembers.filter(messObj => {
+                    if (this.dineMembers["members"].every(dineObj => {
                         return dineObj["_id"] !== messObj["_id"];
                     }))
-                    return messObj;
+                        return messObj;
                 });
             },
-            (err: HttpErrorResponse) => {
-                if (err.error instanceof Error) {
-                    console.log("Client-side error occured.");
-                } else {
-                    this.alertService.error("Server-side error occured.");
-                }
+            err => {
+                this.alertService.error("Server-side error occured.");
             }
         )
     }
 
-    selectMember(event: object){
-        this.messMembers = this.messMembers.filter(obj=>{if(obj["_id"] !== event["_id"]) return obj;})
+    selectMember(event: object) {
+        this.messMembers = this.messMembers.filter(obj => { if (obj["_id"] !== event["_id"]) return obj; })
         this.dineService.createOrUpdate(event).subscribe(
             resp => {
-                this.total -= 1;
-                this.dineMembers["members"].push(event);
-                this.alertService.success(event["customer"].firstName +" "+ event["customer"].lastName + " added successfully");
+                _.subtract(this.total, 1);
+                event = _.merge(event, {"createdOn": moment().format()})
+                this.dineMembers["members"] = _.concat(this.dineMembers["members"], event);
+                this.alertService.success(event["customer"].firstName + " " + event["customer"].lastName + " added successfully");
             },
-            (err: HttpErrorResponse) => {
-                if (err.error instanceof Error) {
-                    console.log("Client-side error occured.");
-                } else {
-                    this.alertService.error("Server-side error occured.");
-                }
+            err => {
+                this.alertService.error("Server-side error occured.");
+            }
+        )
+    }
+
+    selectDine(event: object) {
+        this.selectedDine = event;
+    }
+
+    unselectDine() {
+        this.selectedDine = null;
+    }
+
+    removeMember() {
+        this.dineService.remove(this.selectedDine).subscribe(
+            resp => {
+                _.omit(this.selectedDine, ['createdBy', 'createdOn']);
+                _.add(this.total, 1)
+                this.messMembers = _.concat(this.messMembers, this.selectedDine);
+                _.remove(this.dineMembers["members"], member => member["_id"] === this.selectedDine["_id"])
+                this.alertService.error(this.selectedDine["customer"].firstName + " " + this.selectedDine["customer"].lastName + " removed successfully");
+                this.selectedDine = null;
+            },
+            err => {
+                this.alertService.error("Server-side error occured.");
             }
         )
     }

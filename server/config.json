@@ -1,5 +1,13 @@
 ﻿{
     "connectionString": "mongodb://localhost:27017/hn",
     "apiUrl": "http://localhost:4000",
-    "secret": "hoteln@ksh@tr@"
+    "secret": "hoteln@ksh@tr@",
+    "morning": [
+        0,
+        17
+    ],
+    "evening": [
+        17,
+        24
+    ]
 }

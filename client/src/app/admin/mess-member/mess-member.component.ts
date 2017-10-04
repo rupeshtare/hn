@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CustomerService, MessService, AlertService } from './../_services/index';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
-
+import * as moment from 'moment';
 
 @Component({
     templateUrl: './mess-member.component.html',
@@ -26,17 +26,13 @@ export class MessMemberComponent implements OnInit {
     
     ngOnInit() : void {
 
-        let today = new Date();
-        let lastday = new Date();
-        lastday.setDate(lastday.getDate()+29);
-
         this.messMemberForm = this.formBuilder.group({
             customer : [null, Validators.required],
             timeing : 'Lunch',
             days : '30',
             active : true,
-            startDate : today,
-            endDate : lastday
+            startDate : moment(),
+            endDate : moment().add(29, 'days')
         })
 
         this.messMemberForm.get("days").valueChanges.subscribe(data=>{
@@ -44,7 +40,7 @@ export class MessMemberComponent implements OnInit {
         });
 
         this.loading = true;
-        this.customerService.getAll(event).subscribe(
+        this.customerService.getAll({include: ['firstName', 'lastName', 'company.name']}).subscribe(
             resp => {
                 ({data: this.customers} = resp.json());
             },
@@ -73,10 +69,8 @@ export class MessMemberComponent implements OnInit {
     }
 
     changeLastDate(days) {
-        let lastday = new Date();
-        lastday.setDate(lastday.getDate()+parseInt(days)-1);
         this.messMemberForm.patchValue({
-            endDate: lastday,
+            endDate: moment().add(parseInt(days), "days").subtract(1, "days"),
         });
     }
 

@@ -39,7 +39,7 @@ export class CustomerComponent {
     ngOnInit() : void {
 
         this.loading = true;
-        this.companyService.getAll(event).subscribe(
+        this.companyService.getAll({include: ['name']}).subscribe(
             resp => {
                 ({data: this.companies} = resp.json());
             },
@@ -49,7 +49,6 @@ export class CustomerComponent {
             }
         )
     }
-
 
     submit(data) {
         this.loading = true;

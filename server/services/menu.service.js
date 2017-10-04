@@ -16,14 +16,14 @@ service.delete = _delete;
 module.exports = service;
 
 
-function getAll(query) {
+function getAll(params) {
     var deferred = Q.defer();
 
-    db.menu.find({}, null, query).sort({"createdOn": -1}).toArray(function (err, menu) {
+    db.menu.find({}, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, menu) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        db.menu.count(function (err, count){
-            deferred.resolve({total: count, data: menu});
+        db.menu.count(function (err, count) {
+            deferred.resolve({ total: count, data: menu });
         })
     });
 
@@ -37,7 +37,7 @@ function getById(_id) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         if (menu) deferred.resolve(menu);
-        
+
         deferred.resolve();
     });
 
@@ -47,7 +47,7 @@ function getById(_id) {
 function create(req) {
     var deferred = Q.defer();
 
-    let menuParam = _.merge(req.body, {createdBy: req.user, createdOn: new Date()});
+    let menuParam = req.body;
 
     // validation
     db.menu.findOne(
@@ -116,8 +116,8 @@ function update(req) {
             tasteType: menuParam.tasteType,
             subTasteType: menuParam.subTasteType,
             active: menuParam.active,
-            updatedBy: req.user,
-            updatedOn: new Date(),
+            updatedBy: menuParam.updatedBy,
+            updatedOn: menuParam.updatedOn,
         };
 
         db.menu.update(
@@ -139,8 +139,8 @@ function _delete(req) {
     let _id = req.params._id;
     let set = {
         active: false,
-        updatedBy: req.user,
-        updatedOn: new Date(),
+        updatedBy: menuParam.updatedBy,
+        updatedOn: menuParam.updatedOn,
     };
 
     db.menu.update(

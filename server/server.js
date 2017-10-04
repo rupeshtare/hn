@@ -5,6 +5,8 @@ var cors = require('cors');
 var bodyParser = require('body-parser');
 var expressJwt = require('express-jwt');
 var config = require('config.json');
+var _ = require('lodash');
+var date = require('utils/date_utility');
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -22,6 +24,39 @@ app.use(expressJwt({
         return null;
     }
 }).unless({ path: ['/users/authenticate', '/users/register'] }));
+
+// Middleware to filter query params
+app.get('*', function (req, res, next) {
+
+    req.query.include = req.query.hasOwnProperty('include') ? req.query['include'].split(',').reduce((prev, curr) => { prev[curr] = 1; return prev; }, {}) : {};
+
+    let query = {};
+    if (req.query.hasOwnProperty('skip'))
+        query['skip'] = req.query['skip']
+    if (req.query.hasOwnProperty('limit'))
+        query['limit'] = req.query['limit']
+    req.query.query = query
+
+    next();
+})
+
+// Middleware to add created on & created by
+app.post('*', function (req, res, next) {
+    req.body = _.merge(req.body, { createdBy: req.user, createdOn: date.currentDate() });
+    next();
+})
+
+// Middleware to add updated on & updated by
+app.put('*', function (req, res, next) {
+    req.body = _.merge(req.body, { updatedBy: req.user, updatedOn: date.currentDate() });
+    next();
+})
+
+// Middleware to add updated on & updated by
+app.delete('*', function (req, res, next) {
+    req.body = _.merge(req.body, { updatedBy: req.user, updatedOn: date.currentDate() });
+    next();
+})
 
 // routes
 app.use('/users', require('./controllers/users.controller'));
