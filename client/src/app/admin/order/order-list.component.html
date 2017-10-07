@@ -1,2 +1,3 @@
 <hnPageHeader header="Orders" icon="fa-list-ol" addNew="true"></hnPageHeader>
-<hnTable (loadData)="loadOrders($event)" name="order" [defaultColumns]="defaultColumns" [tableColumns]="orderColumns" [tableData]="orders" [total]="total"></hnTable>
+<hnTable (loadData)="loadOrders($event)" name="order" [defaultColumns]="defaultColumns" [tableColumns]="orderColumns" [tableData]="orders"
+    [selectable]="false" [total]="total"></hnTable>

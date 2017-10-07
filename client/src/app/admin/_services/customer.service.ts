@@ -23,8 +23,12 @@ export class CustomerService {
     update(customer: Customer) {
         return this.http.put('/customers/' + customer._id, customer);
     }
- 
-    delete(_id: string) {
-        return this.http.delete('/customers/' + _id);
+
+    active(_id: string) {
+        return this.http.delete('/customers/active/' + _id);
+    }
+
+    deactive(_id: string) {
+        return this.http.delete('/customers/deactive/' + _id);
     }
 }

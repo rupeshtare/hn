@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
 })
 
 export class CompanyComponent {
-    companyForm : FormGroup;
-    loading : boolean = false;    
+    companyForm: FormGroup;
+    loading: boolean = false;
 
 
     constructor(
@@ -19,26 +19,24 @@ export class CompanyComponent {
         private alertService: AlertService,
         private formBuilder: FormBuilder) { }
 
-     ngOnInit() : void {
+    ngOnInit(): void {
 
         this.companyForm = this.formBuilder.group({
-            name : [null, Validators.required],
-            active : true,
+            name: [null, Validators.required]
         })
-     }
+    }
 
     submit(data) {
         this.loading = true;
         this.companyService.create(data)
-        .subscribe(
+            .subscribe(
             data => {
                 this.router.navigate(['/admin/companies']);
             },
             error => {
                 this.alertService.error(error);
                 this.loading = false;
-            }
-        );
+            });
     }
 
 }

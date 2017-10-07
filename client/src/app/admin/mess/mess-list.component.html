@@ -5,6 +5,6 @@
 <hnTable name="dineMembers" [defaultColumns]="defaultColumns" [tableColumns]="messMemberColumns" [tableData]="dineMembers.members"
     [selectable]="false" (callBackFunction)="selectDine($event)"></hnTable>
 <div *ngIf="selectedDine">
-    <button type="button" class="btn btn-primary" (click)="removeMember()">Remove</button>
+    <button type="button" class="btn btn-danger" (click)="removeMember()">Remove</button>
     <button type="button" class="btn btn-light" (click)="unselectDine()">Cancle</button>
 </div>

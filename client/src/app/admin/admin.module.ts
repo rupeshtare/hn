@@ -11,8 +11,8 @@ import { SplitAndTitlePipe, FormatColumnPipe, ChainedAttributePipe } from '../_p
 import { OrderComponent, OrderListComponent } from './order/index';
 import { CustomerBillingComponent, CompanyBillingComponent } from './billing/index';
 import { DatePickerModule } from 'angular-io-datepicker';
-import { CompanyListComponent, CompanyComponent } from './company/index';
-import { MessMemberListComponent, MessMemberComponent } from './mess-member/index';
+import { CompanyListComponent, CompanyComponent, CompanyUpdateComponent } from './company/index';
+import { MessMemberListComponent, MessMemberComponent, MessMemberUpdateComponent } from './mess-member/index';
 import { MessListComponent } from './mess/index';
 
 
@@ -46,8 +46,10 @@ import { MessListComponent } from './mess/index';
         PdfComponent,
         CompanyListComponent,
         CompanyComponent,
+        CompanyUpdateComponent,
         MessMemberListComponent,
         MessMemberComponent,
+        MessMemberUpdateComponent,
         MessListComponent
     ],
     providers: [

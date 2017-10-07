@@ -1,8 +1,8 @@
 <hnPageHeader header="Mess Member" icon="fa-spoon"></hnPageHeader>
-<form [formGroup]="messMemberForm" (ngSubmit)="submit(messMemberForm.value)">    
+<form [formGroup]="messMemberForm" (ngSubmit)="update(messMemberForm.value)">
     <div class="form-group row">
         <label for="inputCustomer" class="col-sm-2 col-form-label">Customer</label>
-        <select class="form-control  col-3" formControlName="customer" [ngClass]="{ 'is-invalid': !messMemberForm.controls.customer.valid }">
+        <select class="form-control  col-3" formControlName="customer" [compareWith]="byUserName" [ngClass]="{ 'is-invalid': !messMemberForm.controls.customer.valid }">
             <option *ngFor="let customer of customers" [ngValue]="customer" [innerText]="customer.firstName"></option>
         </select>
     </div>
@@ -43,8 +43,10 @@
     <div class="form-group row p-3 mb-2 bg-dark text-white">
         <div class="col-sm-2"></div>
         <div>
-            <button type="submit" class="btn btn-primary" [disabled]="messMemberForm.invalid">Add</button>
+            <button type="submit" class="btn btn-primary" [disabled]="messMemberForm.invalid">Update</button>
             <button type="button" class="btn btn-light" routerLink="/admin/mess-members">Cancle</button>
+            <button *ngIf="messMemberForm.value.active" type="button" class="btn btn-danger" (click)="deactive()">Deactive</button>
+            <button *ngIf="!messMemberForm.value.active" type="button" class="btn btn-success" (click)="active()">Active</button>
         </div>
     </div>
 </form>

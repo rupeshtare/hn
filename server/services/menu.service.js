@@ -19,7 +19,7 @@ module.exports = service;
 function getAll(params) {
     var deferred = Q.defer();
 
-    db.menu.find({}, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, menu) {
+    db.menu.find(params._filter, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, menu) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         db.menu.count(function (err, count) {
@@ -115,7 +115,6 @@ function update(req) {
             subCategory: menuParam.subCategory,
             tasteType: menuParam.tasteType,
             subTasteType: menuParam.subTasteType,
-            active: menuParam.active,
             updatedBy: menuParam.updatedBy,
             updatedOn: menuParam.updatedOn,
         };
@@ -137,8 +136,9 @@ function _delete(req) {
     var deferred = Q.defer();
 
     let _id = req.params._id;
+    let menuParam = req.body;
     let set = {
-        active: false,
+        active: menuParam.active,
         updatedBy: menuParam.updatedBy,
         updatedOn: menuParam.updatedOn,
     };

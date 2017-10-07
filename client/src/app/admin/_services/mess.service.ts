@@ -31,8 +31,12 @@ export class MessService {
     update(menu: Menu) {
         return this.http.put('/mess-members/' + menu._id, menu);
     }
- 
-    delete(_id: string) {
-        return this.http.delete('/mess-members/' + _id);
+
+    active(_id: string) {
+        return this.http.delete('/mess-members/active/' + _id);
+    }
+
+    deactive(_id: string) {
+        return this.http.delete('/mess-members/deactive/' + _id);
     }
 }

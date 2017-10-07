@@ -8,4 +8,5 @@ export interface Customer {
     dob         : string;
     email       : string;
     employment  : string;
+    active      : boolean;
 }

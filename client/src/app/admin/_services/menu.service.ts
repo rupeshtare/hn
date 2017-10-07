@@ -27,4 +27,12 @@ export class MenuService {
     delete(_id: string) {
         return this.http.delete('/menus/' + _id);
     }
+
+    active(_id: string) {
+        return this.http.delete('/menus/active/' + _id);
+    }
+
+    deactive(_id: string) {
+        return this.http.delete('/menus/deactive/' + _id);
+    }
 }

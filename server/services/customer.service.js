@@ -19,7 +19,7 @@ module.exports = service;
 function getAll(params) {
     var deferred = Q.defer();
 
-    db.customer.find({}, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, customer) {
+    db.customer.find(params._filter, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, customer) {
         if (err) deferred.reject(err.name + ': ' + err.message);
         db.customer.count(function (err, count) {
             deferred.resolve({ total: count, data: customer });
@@ -51,7 +51,7 @@ function create(req) {
     // validation
     db.customer.findOne(
         {
-            company: customerParam.company,
+            company: customerParam.company._id,
             firstName: customerParam.firstName,
             middleName: customerParam.middleName,
             lastName: customerParam.lastName
@@ -63,11 +63,11 @@ function create(req) {
                 // customername already exists
                 deferred.reject('Customer "' + customerParam.firstName + '" is already taken');
             } else {
-                createMenu();
+                createCustomer();
             }
         });
 
-    function createMenu() {
+    function createCustomer() {
         db.customer.insert(
             customerParam,
             function (err, doc) {
@@ -90,7 +90,7 @@ function update(req) {
     db.customer.findById(_id, function (err, customer) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        if (customer.company !== customerParam.company ||
+        if (customer.company._id !== customerParam.company._id ||
             customer.firstName !== customerParam.firstName ||
             customer.middleName !== customerParam.middleName ||
             customer.lastName !== customerParam.lastName) {
@@ -128,7 +128,6 @@ function update(req) {
             dob: customerParam.dob,
             email: customerParam.email,
             employeeType: customerParam.employeeType,
-            active: customerParam.active,
             updatedBy: customerParam.updatedBy,
             updatedOn: customerParam.updatedOn,
         };
@@ -152,7 +151,7 @@ function _delete(req) {
     let customerParam = req.body;
     let _id = req.params._id;
     let set = {
-        active: false,
+        active: customerParam.active,
         updatedBy: customerParam.updatedBy,
         updatedOn: customerParam.updatedOn,
     };

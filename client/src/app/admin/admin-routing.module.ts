@@ -1,12 +1,12 @@
-import { NgModule }     from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AdminComponent }    from './index';
+import { AdminComponent } from './index';
 import { CustomerComponent, CustomerListComponent, CustomerUpdateComponent } from './customer/index';
 import { MenuComponent, MenuListComponent, MenuUpdateComponent } from './menu/index';
 import { OrderComponent, OrderListComponent } from './order/index';
 import { CustomerBillingComponent, CompanyBillingComponent } from './billing/index';
-import { CompanyListComponent, CompanyComponent } from './company/index';
-import { MessMemberListComponent, MessMemberComponent } from './mess-member/index';
+import { CompanyListComponent, CompanyComponent, CompanyUpdateComponent } from './company/index';
+import { MessMemberListComponent, MessMemberComponent, MessMemberUpdateComponent } from './mess-member/index';
 import { MessListComponent } from './mess/index';
 
 
@@ -66,12 +66,20 @@ import { MessListComponent } from './mess/index';
                         component: CompanyComponent
                     },
                     {
+                        path: 'companies/:_id',
+                        component: CompanyUpdateComponent
+                    },
+                    {
                         path: 'mess-members',
                         component: MessMemberListComponent
                     },
                     {
                         path: 'mess-members/new',
                         component: MessMemberComponent
+                    },
+                    {
+                        path: 'mess-members/:_id',
+                        component: MessMemberUpdateComponent
                     },
                     {
                         path: 'mess',

@@ -2,32 +2,32 @@
 <form [formGroup]="customerForm" (ngSubmit)="update(customerForm.value)">
     <div class="form-group row">
         <label for="inputCompany" class="col-sm-2 col-form-label">Company</label>
-        <select class="form-control col-3" [compareWith]="byName" formControlName="company" [ngClass]="{ 'is-invalid': !customerForm.controls.company.valid }">
+        <select class="form-control col-3" [compareWith]="byCompanyName" formControlName="company" [ngClass]="{ 'is-invalid': !customerForm.controls.company.valid }">
             <option *ngFor="let company of companies" [ngValue]="company" [innerText]="company.name"></option>
         </select>
     </div>
     <div class="form-group row">
         <label for="inputFirstName" class="col-sm-2 col-form-label">First Name</label>
         <div>
-            <input type="text" class="form-control"  formControlName="firstName" [ngClass]="{ 'is-invalid': !customerForm.controls.firstName.valid }">
+            <input type="text" class="form-control" formControlName="firstName" [ngClass]="{ 'is-invalid': !customerForm.controls.firstName.valid }">
         </div>
     </div>
     <div class="form-group row">
         <label for="inputMiddleName" class="col-sm-2 col-form-label">Middle Name</label>
         <div>
-            <input type="text" class="form-control"  formControlName="middleName">
+            <input type="text" class="form-control" formControlName="middleName">
         </div>
     </div>
     <div class="form-group row">
         <label for="inputLastName" class="col-sm-2 col-form-label">Last Name</label>
         <div>
-            <input type="text" class="form-control"  formControlName="lastName" [ngClass]="{ 'is-invalid': !customerForm.controls.lastName.valid }">
+            <input type="text" class="form-control" formControlName="lastName" [ngClass]="{ 'is-invalid': !customerForm.controls.lastName.valid }">
         </div>
     </div>
     <div class="form-group row">
         <label for="inputMobile" class="col-sm-2 col-form-label">Mobile</label>
         <div>
-            <input type="test" class="form-control"  formControlName="mobile" [ngClass]="{ 'is-invalid': !customerForm.controls.mobile.valid }">
+            <input type="test" class="form-control" formControlName="mobile" [ngClass]="{ 'is-invalid': !customerForm.controls.mobile.valid }">
         </div>
     </div>
     <div class="form-group row">
@@ -39,7 +39,7 @@
     <div class="form-group row">
         <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
         <div>
-            <input type="text" class="form-control"  formControlName="email">
+            <input type="text" class="form-control" formControlName="email">
         </div>
     </div>
     <fieldset class="form-group">
@@ -55,24 +55,13 @@
             </div>
         </div>
     </fieldset>
-    <fieldset class="form-group">
-        <div class="row">
-            <legend class="col-form-legend col-sm-2">Active</legend>
-            <div class="col-sm-10">
-                <div class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" formControlName="active">
-                        Yes
-                    </label>
-                </div>
-            </div>
-        </div>
-    </fieldset>
     <div class="form-group row p-3 mb-2 bg-dark text-white">
         <div class="col-sm-2"></div>
         <div>
             <button type="submit" class="btn btn-primary" [disabled]="customerForm.invalid">Update</button>
             <button type="button" class="btn btn-light" routerLink="/admin/customers">Cancle</button>
+            <button *ngIf="customerForm.value.active" type="button" class="btn btn-danger" (click)="deactive()">Deactive</button>
+            <button *ngIf="!customerForm.value.active" type="button" class="btn btn-success" (click)="active()">Active</button>
         </div>
     </div>
 </form>

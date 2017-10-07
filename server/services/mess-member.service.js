@@ -20,23 +20,23 @@ module.exports = service;
 
 function getAllCurrent(params) {
     var deferred = Q.defer();
-    var filter = { "active": true };
+    var _filter = { "active": true };
 
     var hours = date.hours();
     if (hours >= config.morning[0] && hours <= config.morning[1])
-        filter = _.merge(filter, { "timeing": { "$in": ["Lunch", "Both"] } });
+        _filter = _.merge(_filter, { "timeing": { "$in": ["Lunch", "Both"] } });
     else if (hours >= config.evening[0] && hours <= config.evening[1])
-        filter = _.merge(filter, { "timeing": { "$in": ["Dinner", "Both"] } });
+        _filter = _.merge(_filter, { "timeing": { "$in": ["Dinner", "Both"] } });
     else
         deferred.resolve({ total: 0, data: [] });
 
     var today = date.currentDate();
-    filter = _.merge(filter, { "startDate": { "$lte": today }, "endDate": { "$gte": today } })
+    _filter = _.merge(_filter, { "startDate": { "$lte": today }, "endDate": { "$gte": today } })
 
-    db.mess_member.find(filter, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, messMember) {
+    db.mess_member.find(_filter, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, messMember) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        db.mess_member.count(filter, function (err, count) {
+        db.mess_member.count(_filter, function (err, count) {
             deferred.resolve({ total: count, data: messMember });
         })
     });
@@ -47,10 +47,10 @@ function getAllCurrent(params) {
 function getAll(params) {
     var deferred = Q.defer();
 
-    db.mess_member.find({ "active": true }, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, messMember) {
+    db.mess_member.find(params._filter, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, messMember) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        db.mess_member.count({ "active": true }, function (err, count) {
+        db.mess_member.count(params._filter, function (err, count) {
             deferred.resolve({ total: count, data: messMember });
         })
     });
@@ -77,13 +77,13 @@ function create(req) {
 
     let messMemberParam = req.body;
 
-    let filter = { "customer._id": messMemberParam.customer._id, "timeing": messMemberParam.timeing, active: messMemberParam.active };
+    let _filter = { "customer._id": messMemberParam.customer._id, "timeing": messMemberParam.timeing, active: messMemberParam.active };
     if (messMemberParam.timeing === "Both")
-        filter = _.merge(filter, { "timeing": { "$in": ["Lunch", "Dinner", "Both"] } })
+        _filter = _.merge(_filter, { "timeing": { "$in": ["Lunch", "Dinner", "Both"] } })
 
     // validation
     db.mess_member.findOne(
-        filter,
+        _filter,
         function (err, messMember) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 
@@ -122,16 +122,27 @@ function update(req) {
     db.mess_member.findById(_id, function (err, messMember) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        if (messMember.customer._id !== messMemberParam.customer._id) {
+        if (messMember.customer._id !== messMemberParam.customer._id ||
+            messMember.timeing !== messMemberParam.timeing) {
             // messMember has changed so check if the new messMember is already taken
-            db.mess_member.findOne(
-                { customer: messMemberParam.customer },
+            let _filter = {
+                "customer._id": messMemberParam.customer._id,
+                "timeing": messMemberParam.timeing,
+                active: true
+            };
+
+            if (messMemberParam.timeing === "Both" && messMember.timeing === "Lunch")
+                _filter = _.merge(_filter, { "timeing": { "$in": ["Dinner", "Both"] } })
+            if (messMemberParam.timeing === "Both" && messMember.timeing === "Dinner")
+                _filter = _.merge(_filter, { "timeing": { "$in": ["Lunch", "Both"] } })
+
+            db.mess_member.findOne(_filter,
                 function (err, messMember) {
                     if (err) deferred.reject(err.name + ': ' + err.message);
 
                     if (messMember) {
                         // messMembername already exists
-                        deferred.reject('Mess Member "' + messMember.customer.firstName + '" is already taken')
+                        deferred.reject('Mess member ' + messMember.customer.firstName + ' is already added for ' + messMember.timeing);
                     } else {
                         updateMessMember();
                     }
@@ -144,7 +155,7 @@ function update(req) {
     function updateMessMember() {
         // fields to update
         var set = {
-            active: messMemberParam.active,
+            timeing: messMemberParam.timeing,
             startDate: date.startOfDay(messMemberParam.startDate),
             endDate: date.startOfDay(messMemberParam.endDate),
             updatedBy: messMemberParam.updatedBy,
@@ -168,8 +179,10 @@ function _delete(req) {
     var deferred = Q.defer();
 
     let _id = req.params._id;
+    let messMemberParam = req.body
+    console.log(messMemberParam);
     let set = {
-        active: false,
+        active: messMemberParam.active,
         updatedBy: messMemberParam.updatedBy,
         updatedOn: messMemberParam.updatedOn,
     };

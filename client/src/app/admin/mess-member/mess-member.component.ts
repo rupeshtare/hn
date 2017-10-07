@@ -30,7 +30,6 @@ export class MessMemberComponent implements OnInit {
             customer : [null, Validators.required],
             timeing : 'Lunch',
             days : '30',
-            active : true,
             startDate : moment(),
             endDate : moment().add(29, 'days')
         })
@@ -40,16 +39,13 @@ export class MessMemberComponent implements OnInit {
         });
 
         this.loading = true;
-        this.customerService.getAll({include: ['firstName', 'lastName', 'company.name']}).subscribe(
+        this.customerService.getAll({active: true, include: ['firstName', 'lastName', 'company.name']}).subscribe(
             resp => {
                 ({data: this.customers} = resp.json());
             },
-            (err: HttpErrorResponse) => {
-                if (err.error instanceof Error) {
-                    console.log("Client-side error occured.");
-                } else {
-                    console.log("Server-side error occured.");
-                }
+            error => {
+                this.alertService.error(error);
+                this.loading = false;
             }
         )
     }

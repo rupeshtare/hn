@@ -6,4 +6,5 @@ export interface Menu {
     subCatogory : string;
     tasteType   : string;
     tasteSubType: string;
+    active      : boolean;
 }

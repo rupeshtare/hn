@@ -18,11 +18,10 @@ module.exports = service;
 
 function getAll(params) {
     var deferred = Q.defer();
-
-    db.company.find({}, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, company) {
+    db.company.find(params._filter, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, company) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
-        db.company.count(function (err, count) {
+        db.company.count(params._filter, function (err, count) {
             deferred.resolve({ total: count, data: company });
         })
     });
@@ -109,7 +108,6 @@ function update(req) {
         // fields to update
         var set = {
             name: companyParam.name,
-            active: companyParam.active,
             updatedBy: companyParam.updatedBy,
             updatedOn: companyParam.updatedOn,
         };
@@ -133,7 +131,7 @@ function _delete(req) {
     let companyParam = req.body;
     let _id = req.params._id;
     let set = {
-        active: false,
+        active: companyParam.active,
         updatedBy: companyParam.updatedBy,
         updatedOn: companyParam.updatedOn,
     };

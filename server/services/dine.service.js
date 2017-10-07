@@ -222,7 +222,6 @@ function update(req) {
     function updateMessMember() {
         // fields to update
         var set = {
-            active: messMemberParam.active,
             updatedBy: req.user,
             updatedOn: new Date(),
         };
@@ -245,7 +244,7 @@ function _delete(req) {
     let dineParam = req.body;
     let _id = req.params._id;
     let set = {
-        active: false,
+        active: dineParam.active,
         updatedBy: dineParam.updatedBy,
         updatedOn: dineParam.updatedOn,
     };

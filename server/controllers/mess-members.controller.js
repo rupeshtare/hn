@@ -2,6 +2,7 @@ var config = require('config.json');
 var express = require('express');
 var router = express.Router();
 var messMemberService = require('services/mess-member.service');
+var _ = require('lodash');
 
 // routes
 router.post('/', create);
@@ -9,7 +10,8 @@ router.get('/', getAll);
 router.get('/current', getAllCurrent);
 router.get('/:_id', get);
 router.put('/:_id', update);
-router.delete('/:_id', _delete);
+router.delete('/active/:_id', active);
+router.delete('/deactive/:_id', deactive);
 
 module.exports = router;
 
@@ -68,7 +70,19 @@ function update(req, res) {
         });
 }
 
-function _delete(req, res) {
+function active(req, res) {
+    req.body = _.merge(req.body, { active: true });
+    messMemberService.delete(req)
+        .then(function () {
+            res.sendStatus(200);
+        })
+        .catch(function (err) {
+            res.status(400).send(err);
+        });
+}
+
+function deactive(req, res) {
+    req.body = _.merge(req.body, { active: false });
     messMemberService.delete(req)
         .then(function () {
             res.sendStatus(200);

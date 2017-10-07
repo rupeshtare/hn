@@ -27,22 +27,21 @@ app.use(expressJwt({
 
 // Middleware to filter query params
 app.get('*', function (req, res, next) {
-
     req.query.include = req.query.hasOwnProperty('include') ? req.query['include'].split(',').reduce((prev, curr) => { prev[curr] = 1; return prev; }, {}) : {};
 
-    let query = {};
-    if (req.query.hasOwnProperty('skip'))
-        query['skip'] = req.query['skip']
-    if (req.query.hasOwnProperty('limit'))
-        query['limit'] = req.query['limit']
-    req.query.query = query
+    req.query._filter = _.omit(req.query, ['skip', 'limit', 'include']);
+
+    if(req.query._filter.hasOwnProperty("active"))
+        req.query._filter["active"] = req.query["active"] === "true";
+
+    req.query.query = _.pick(req.query, ['skip', 'limit'])
 
     next();
 })
 
 // Middleware to add created on & created by
 app.post('*', function (req, res, next) {
-    req.body = _.merge(req.body, { createdBy: req.user, createdOn: date.currentDate() });
+    req.body = _.merge(req.body, { createdBy: req.user, createdOn: date.currentDate(), active: true });
     next();
 })
 

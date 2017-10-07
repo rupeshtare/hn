@@ -149,7 +149,6 @@ function update(req) {
     function updateOrder() {
         // fields to update
         var set = {
-            active: orderParam.active,
             updatedBy: orderParam.updatedBy,
             updatedOn: orderParam.updatedOn,
         };
@@ -172,7 +171,7 @@ function _delete(req) {
 
     let _id = req.params._id;
     let set = {
-        active: false,
+        active: orderParam.active,
         updatedBy: orderParam.updatedBy,
         updatedOn: orderParam.updatedOn,
     };

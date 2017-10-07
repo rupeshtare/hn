@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MenuService } from './../_services/index';
+import { AlertService, MenuService } from './../_services/index';
 import { HttpErrorResponse } from '@angular/common/http';
 
 
@@ -8,30 +8,28 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 
 
-export class MenuListComponent { 
+export class MenuListComponent {
     private menus: Array<object> = [];
-    private total : number = 0;
-    private menuColumns : Array<string> = ["name", "price", "active", "available", "category", "subCategory", "tasteType", "subTasteType"];
-    private defaultColumns : Array<string> = ["name", "price"];
+    private total: number = 0;
+    private menuColumns: Array<string> = ["name", "price", "active", "available", "category", "subCategory", "tasteType", "subTasteType"];
+    private defaultColumns: Array<string> = ["name", "price"];
     loading = false;
 
 
-    constructor(private menuService: MenuService) { }
+    constructor(
+        private menuService: MenuService,
+        private alertService: AlertService) { }
 
-    loadMenus(event: object) : void {
+    loadMenus(event: object): void {
         this.loading = true;
         this.menuService.getAll(event).subscribe(
             resp => {
-                ({total: this.total, data: this.menus} = resp.json());
+                ({ total: this.total, data: this.menus } = resp.json());
             },
-            (err: HttpErrorResponse) => {
-                if (err.error instanceof Error) {
-                    console.log("Client-side error occured.");
-                } else {
-                    console.log("Server-side error occured.");
-                }
-            }
-        )
+            error => {
+                this.alertService.error(error);
+                this.loading = false;
+            });
     }
 
 }

@@ -9,23 +9,23 @@ import { Router } from '@angular/router';
 })
 
 export class CompanyListComponent {
-    companyForm : FormGroup;
-    loading : boolean = false;
+    companyForm: FormGroup;
+    loading: boolean = false;
     private companies: Array<object> = [];
-    private companyColumns : Array<string> = ["name"];
-    private defaultColumns : Array<string> = ["name"];
+    private companyColumns: Array<string> = ["name", "active"];
+    private defaultColumns: Array<string> = ["name"];
 
 
     constructor(
         private router: Router,
         private companyService: CompanyService,
         private alertService: AlertService) { }
-    
-    loadCompnies(event: object) : void {
+
+    loadCompnies(event: object): void {
         this.loading = true;
         this.companyService.getAll(event).subscribe(
             resp => {
-                ({data: this.companies} = resp.json());
+                ({ data: this.companies } = resp.json());
             },
             error => {
                 this.alertService.error(error);

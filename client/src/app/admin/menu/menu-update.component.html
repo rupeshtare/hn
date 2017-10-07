@@ -9,9 +9,9 @@
     <div class="form-group row">
         <label for="inputPrice" class="col-sm-2 col-form-label">Price</label>
         <div>
-            <input type="text" class="form-control"  formControlName="price" [ngClass]="{ 'is-invalid': !menuForm.controls.price.valid }">
+            <input type="text" class="form-control" formControlName="price" [ngClass]="{ 'is-invalid': !menuForm.controls.price.valid }">
         </div>
-    </div> 
+    </div>
     <fieldset class="form-group" formGroupName="available">
         <div class="row">
             <legend class="col-form-legend col-sm-2">Availability</legend>
@@ -24,17 +24,17 @@
                 </div>
             </div>
         </div>
-    </fieldset>   
+    </fieldset>
     <div class="form-group row">
         <label for="inputCategory" class="col-sm-2 col-form-label">Category</label>
         <div>
-            <input type="text" class="form-control"  formControlName="category">
+            <input type="text" class="form-control" formControlName="category">
         </div>
     </div>
     <div class="form-group row">
         <label for="inputSubCategory" class="col-sm-2 col-form-label">Sub Category</label>
         <div>
-            <input type="test" class="form-control"  formControlName="subCategory">
+            <input type="test" class="form-control" formControlName="subCategory">
         </div>
     </div>
     <fieldset class="form-group">
@@ -63,24 +63,13 @@
             </div>
         </div>
     </fieldset>
-    <fieldset class="form-group">
-        <div class="row">
-            <legend class="col-form-legend col-sm-2">Active</legend>
-            <div class="col-sm-10">
-                <div class="form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" type="checkbox" formControlName="active">
-                        Yes
-                    </label>
-                </div>
-            </div>
-        </div>
-    </fieldset>
     <div class="form-group row p-3 mb-2 bg-dark text-white">
         <div class="col-sm-2"></div>
         <div>
             <button type="submit" class="btn btn-primary" [disabled]="menuForm.invalid">Update</button>
             <button type="button" class="btn btn-light" routerLink="/admin/menus">Cancle</button>
+            <button *ngIf="menuForm.value.active" type="button" class="btn btn-danger" (click)="deactive()">Deactive</button>
+            <button *ngIf="!menuForm.value.active" type="button" class="btn btn-success" (click)="active()">Active</button>
         </div>
     </div>
 </form>
