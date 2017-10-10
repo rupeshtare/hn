@@ -2,9 +2,7 @@ var config = require('config.json');
 var _ = require('lodash');
 var Q = require('q');
 var date = require('utils/date_utility');
-var mongo = require('mongoskin');
-var db = mongo.db(config.connectionString, { native_parser: true });
-db.bind('order');
+var db = require('utils/db_utility');
 
 var service = {};
 
@@ -17,34 +15,46 @@ service.delete = _delete;
 
 module.exports = service;
 
+var collection = "order";
 
 function getAll(params) {
+    customer = params.customer ? params.query["customer._id"] = params.customer : null;
+    startDate = params.startDate ? date.startOfDay(params.startDate) : date.startOfDay();
+    endDate = params.endDate ? date.startOfDay(params.endDate) : date.currentDate();
+    _.merge(params.query, { "createdOn": { "$gte": startDate, "$lte": endDate } })
+
+    var deferred = Q.defer();
+
+    db.find(collection, query = params.query, fields = params.include, sort = { "createdOn": -1 }, skip = params.skip, limit = params.limit)
+        .toArray(function (err, order) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+
+            db.count(collection, query = params.query)
+                .then((count) => {
+                    deferred.resolve({ total: count, data: order });
+                })
+                .catch((err) => {
+                    deferred.reject(err.name + ': ' + err.message);
+                });
+        });
+
+    return deferred.promise;
+}
+
+function getOrders(params) {
     let search = {}
-    customer = params.customer ? search["customer._id"] = params.customer : null;
+    company = params.company ? params.company : null;
+    customers = db2.customer.distinct('_id', { "company._id": company })
+    customer = _.merge(search, { "customer._id": { "$in": customers } });
     startDate = params.startDate ? date.startOfDay(params.startDate) : date.startOfDay();
     endDate = params.endDate ? date.startOfDay(params.endDate) : date.currentDate();
     search = _.merge(search, { "createdOn": { "$gte": startDate, "$lte": endDate } })
 
     var deferred = Q.defer();
-
-    db.order.find(search, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, order) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        db.order.count(search, function (err, count) {
-            deferred.resolve({ total: count, data: order });
-        })
-    });
-
-    return deferred.promise;
-}
-
-function getOrders(query) {
-    var deferred = Q.defer();
     let key = ['customer._id', 'customer.firstName', 'customer.middleName', 'customer.lastName']
-    let condition = {}
     let initial = { 'count': 0, 'total': 0 }
     let reduce = 'function(doc, out) { out.count++; out.total += doc.order.bill; }'
-    db.order.group(key, {}, initial, reduce, function (err, order) {
+    db.order.group(key, search, initial, reduce, function (err, order) {
         if (err) deferred.reject(err.name + ': ' + err.message);
 
         deferred.resolve({ data: order });
@@ -57,22 +67,22 @@ function getOrders(query) {
 function getById(_id) {
     var deferred = Q.defer();
 
-    db.order.findById(_id, function (err, order) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
+    db.findById(collection, _id)
+        .then((order) => {
+            if (order) deferred.resolve(order);
 
-        if (order) deferred.resolve(order);
-
-        deferred.resolve();
-    });
+            deferred.resolve();
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
+        });
 
     return deferred.promise;
 }
 
 function create(req) {
     var deferred = Q.defer();
-
     let orderParam = req.body;
-
     let customerKeys = ["_id", "firstName", "lastName"];
     let customer = Object.keys(orderParam.customer).reduce((prev, curr) => {
         if (customerKeys.includes(curr)) prev[curr] = orderParam.customer[curr]; return prev;
@@ -98,19 +108,19 @@ function create(req) {
         );
 
     if (orders.length === 0)
-        deferred.reject("Please select atleast one menu.");
+        deferred.reject("Please select at least one menu.");
 
     orders.forEach(order => {
         createOrder({ customer: customer, order: order, createdBy: req.user, createdOn: date.currentDate() });
     });
 
     function createOrder(orderParam) {
-        db.order.insert(
-            orderParam,
-            function (err, doc) {
-                if (err) deferred.reject(err.name + ': ' + err.message);
-
+        db.insert(collection, orderParam)
+            .then((doc) => {
                 deferred.resolve();
+            })
+            .catch((err) => {
+                deferred.reject(err.name + ': ' + err.message);
             });
     }
 
@@ -119,32 +129,33 @@ function create(req) {
 
 function update(req) {
     var deferred = Q.defer();
-
     let orderParam = req.body;
     let _id = req.params._id
 
     // validation
-    db.order.findById(_id, function (err, order) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        if (order.name !== orderParam.name) {
-            // order has changed so check if the new order is already taken
-            db.order.findOne(
-                { name: orderParam.name },
-                function (err, order) {
-                    if (err) deferred.reject(err.name + ': ' + err.message);
-
-                    if (order) {
-                        // ordername already exists
-                        deferred.reject('Order "' + order.name + '" is already taken')
-                    } else {
-                        updateOrder();
-                    }
-                });
-        } else {
-            updateOrder();
-        }
-    });
+    db.findById(collection, _id)
+        .then((order) => {
+            if (order.name !== orderParam.name) {
+                // order has changed so check if the new order is already taken
+                db.findOne(collection, { name: orderParam.name })
+                    .then((order) => {
+                        if (order) {
+                            // ordername already exists
+                            deferred.reject('Order "' + order.name + '" is already taken')
+                        } else {
+                            updateOrder();
+                        }
+                    })
+                    .catch((err) => {
+                        deferred.reject(err.name + ': ' + err.message);
+                    });
+            } else {
+                updateOrder();
+            }
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
+        });
 
     function updateOrder() {
         // fields to update
@@ -153,13 +164,12 @@ function update(req) {
             updatedOn: orderParam.updatedOn,
         };
 
-        db.order.update(
-            { _id: mongo.helper.toObjectID(_id) },
-            { $set: set },
-            function (err, doc) {
-                if (err) deferred.reject(err.name + ': ' + err.message);
-
+        db.update(collection, { _id: db.objectID(_id) }, { $set: set })
+            .then((doc) => {
                 deferred.resolve();
+            })
+            .catch((err) => {
+                deferred.reject(err.name + ': ' + err.message);
             });
     }
 
@@ -168,7 +178,6 @@ function update(req) {
 
 function _delete(req) {
     var deferred = Q.defer();
-
     let _id = req.params._id;
     let set = {
         active: orderParam.active,
@@ -176,13 +185,12 @@ function _delete(req) {
         updatedOn: orderParam.updatedOn,
     };
 
-    db.order.update(
-        { _id: mongo.helper.toObjectID(_id) },
-        { $set: set },
-        function (err) {
-            if (err) deferred.reject(err.name + ': ' + err.message);
-
+    db.update(collection, { _id: db.objectID(_id) }, { $set: set })
+        .then((doc) => {
             deferred.resolve();
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
         });
 
     return deferred.promise;

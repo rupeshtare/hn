@@ -1,9 +1,7 @@
 var config = require('config.json');
 var _ = require('lodash');
 var Q = require('q');
-var mongo = require('mongoskin');
-var db = mongo.db(config.connectionString, { native_parser: true });
-db.bind('company');
+var db = require('utils/db_utility');
 
 var service = {};
 
@@ -15,16 +13,23 @@ service.delete = _delete;
 
 module.exports = service;
 
+var collection = "company";
 
 function getAll(params) {
     var deferred = Q.defer();
-    db.company.find(params._filter, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, company) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
 
-        db.company.count(params._filter, function (err, count) {
-            deferred.resolve({ total: count, data: company });
-        })
-    });
+    db.find(collection, query = params.query, fields = params.include, sort = { "createdOn": -1 }, skip = params.skip, limit = params.limit)
+        .toArray(function (err, company) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+
+            db.count(collection, query = params.query)
+                .then((count) => {
+                    deferred.resolve({ total: count, data: company });
+                })
+                .catch((err) => {
+                    deferred.reject(err.name + ': ' + err.message);
+                });
+        });
 
     return deferred.promise;
 }
@@ -32,43 +37,43 @@ function getAll(params) {
 function getById(_id) {
     var deferred = Q.defer();
 
-    db.company.findById(_id, function (err, company) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        if (company) deferred.resolve(company);
-
-        deferred.resolve();
-    });
+    db.findById(collection, _id)
+        .then((company) => {
+            if (company) deferred.resolve(company);
+            deferred.resolve();
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
+        });
 
     return deferred.promise;
 }
 
 function create(req) {
     var deferred = Q.defer();
-
     let companyParam = req.body;
 
     // validation
-    db.company.findOne(
-        { name: companyParam.name },
-        function (err, company) {
-            if (err) deferred.reject(err.name + ': ' + err.message);
-
+    db.findOne(collection, { name: companyParam.name })
+        .then((company) => {
             if (company) {
-                // companyname already exists
+                // company name already exists
                 deferred.reject('Company "' + companyParam.name + '" is already taken');
             } else {
                 createCompany();
             }
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
         });
 
     function createCompany() {
-        db.company.insert(
-            companyParam,
-            function (err, doc) {
-                if (err) deferred.reject(err.name + ': ' + err.message);
-
+        db.insert(collection, companyParam)
+            .then((doc) => {
                 deferred.resolve();
+            })
+            .catch((err) => {
+                deferred.reject(err.name + ': ' + err.message);
             });
     }
 
@@ -77,32 +82,33 @@ function create(req) {
 
 function update(req) {
     var deferred = Q.defer();
-
     let companyParam = req.body;
     let _id = req.params._id
 
     // validation
-    db.company.findById(_id, function (err, company) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        if (company.name !== companyParam.name) {
-            // company has changed so check if the new company is already taken
-            db.company.findOne(
-                { name: companyParam.name },
-                function (err, company) {
-                    if (err) deferred.reject(err.name + ': ' + err.message);
-
-                    if (company) {
-                        // companyname already exists
-                        deferred.reject('Company "' + company.name + '" is already taken')
-                    } else {
-                        updateCompany();
-                    }
-                });
-        } else {
-            updateCompany();
-        }
-    });
+    db.findById(collection, _id)
+        .then((company) => {
+            if (company.name !== companyParam.name) {
+                // company has changed so check if the new company is already taken
+                db.findOne(collection, { name: companyParam.name })
+                    .then((company) => {
+                        if (company) {
+                            // companyname already exists
+                            deferred.reject('Company "' + company.name + '" is already taken')
+                        } else {
+                            updateCompany();
+                        }
+                    })
+                    .catch((err) => {
+                        deferred.reject(err.name + ': ' + err.message);
+                    });
+            } else {
+                updateCompany();
+            }
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
+        });
 
     function updateCompany() {
         // fields to update
@@ -112,13 +118,12 @@ function update(req) {
             updatedOn: companyParam.updatedOn,
         };
 
-        db.company.update(
-            { _id: mongo.helper.toObjectID(_id) },
-            { $set: set },
-            function (err, doc) {
-                if (err) deferred.reject(err.name + ': ' + err.message);
-
+        db.update(collection, { _id: db.objectID(_id) }, { $set: set })
+            .then((doc) => {
                 deferred.resolve();
+            })
+            .catch((err) => {
+                deferred.reject(err.name + ': ' + err.message);
             });
     }
 
@@ -127,7 +132,6 @@ function update(req) {
 
 function _delete(req) {
     var deferred = Q.defer();
-
     let companyParam = req.body;
     let _id = req.params._id;
     let set = {
@@ -136,13 +140,12 @@ function _delete(req) {
         updatedOn: companyParam.updatedOn,
     };
 
-    db.company.update(
-        { _id: mongo.helper.toObjectID(_id) },
-        { $set: set },
-        function (err) {
-            if (err) deferred.reject(err.name + ': ' + err.message);
-
+    db.update(collection, { _id: db.objectID(_id) }, { $set: set })
+        .then((doc) => {
             deferred.resolve();
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
         });
 
     return deferred.promise;

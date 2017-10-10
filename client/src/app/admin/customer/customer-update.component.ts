@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AlertService, CustomerService, CompanyService } from './../_services/index';
+import * as moment from 'moment';
 
 
 @Component({
@@ -26,7 +27,7 @@ export class CustomerUpdateComponent implements OnInit {
         private companyService: CompanyService) {
 
         this.customerForm = formBuilder.group({
-            company: [{}, Validators.required],
+            company: [null, Validators.required],
             firstName: [null, Validators.required],
             middleName: '',
             lastName: [null, Validators.required],
@@ -34,7 +35,7 @@ export class CustomerUpdateComponent implements OnInit {
             dob: '',
             email: '',
             employeeType: '',
-            active: true,
+            active: null,
         })
 
         this.route.params.subscribe(params => {
@@ -45,15 +46,6 @@ export class CustomerUpdateComponent implements OnInit {
     ngOnInit() {
 
         this.loading = true;
-        this.companyService.getAll({ include: ['name'] }).subscribe(
-            resp => {
-                ({ data: this.companies } = resp.json());
-            },
-            error => {
-                this.alertService.error(error);
-                this.loading = false;
-            }
-        )
 
         this.customerService.getById(this._id)
             .subscribe(
@@ -64,7 +56,7 @@ export class CustomerUpdateComponent implements OnInit {
                     middleName: data.middleName,
                     lastName: data.lastName,
                     mobile: data.mobile,
-                    dob: data.dob,
+                    dob: data.dob ? moment(data.dob).toDate() : moment().toDate(),
                     email: data.email,
                     employeeType: data.employeeType,
                     active: data.active,
@@ -72,8 +64,16 @@ export class CustomerUpdateComponent implements OnInit {
             },
             error => {
                 this.alertService.error(error);
-            }
-            )
+            });
+
+        this.companyService.getAll({ active: true, include: ['name'] }).subscribe(
+            resp => {
+                ({ data: this.companies } = resp.json());
+            },
+            error => {
+                this.alertService.error(error);
+                this.loading = false;
+            });
     }
 
     update(value) {
@@ -87,8 +87,7 @@ export class CustomerUpdateComponent implements OnInit {
             error => {
                 this.alertService.error(error);
                 this.loading = false;
-            }
-            );
+            });
     }
 
     byCompanyName(item1: object, item2: object) {

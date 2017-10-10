@@ -29,12 +29,10 @@ app.use(expressJwt({
 app.get('*', function (req, res, next) {
     req.query.include = req.query.hasOwnProperty('include') ? req.query['include'].split(',').reduce((prev, curr) => { prev[curr] = 1; return prev; }, {}) : {};
 
-    req.query._filter = _.omit(req.query, ['skip', 'limit', 'include']);
+    req.query.query = _.omit(req.query, ['skip', 'limit', 'include']);
 
-    if(req.query._filter.hasOwnProperty("active"))
-        req.query._filter["active"] = req.query["active"] === "true";
-
-    req.query.query = _.pick(req.query, ['skip', 'limit'])
+    if(req.query.query.hasOwnProperty("active"))
+        req.query.query["active"] = req.query["active"] === "true";
 
     next();
 })

@@ -1,2 +1,21 @@
 <hnPageHeader header="Billing" icon="fa-credit-card"></hnPageHeader>
-<hnTable name="companyBilling" [defaultColumns]="defaultColumns" [tableColumns]="orderColumns" [tableData]="orders" [selectable]="false" [print]="true"></hnTable>
+<form class="alert alert-primary" [formGroup]="companyBillingForm" (ngSubmit)="submit(companyBillingForm.value)">
+    <div class="form-group row">
+        <label id="company-label" class="col-1">Company</label>
+        <select class="form-control col-3" formControlName="company" [ngClass]="{ 'is-invalid': !companyBillingForm.controls.company.valid }">
+            <option *ngFor="let company of companies" [ngValue]="company._id" [innerText]="company.name"></option>
+        </select>
+        <label id="company-label" class="col-1">Start Date </label>
+        <date-picker class="form-control col-3" format="DD-MM-YYYY" [showClearButton]="false" formControlName="startDate" [ngClass]="{ 'is-invalid': !companyBillingForm.controls.startDate.valid }"></date-picker>
+        <label id="company-label" class="col-1">End Date </label>
+        <date-picker class="form-control col-3" format="DD-MM-YYYY" [showClearButton]="false" formControlName="endDate" [ngClass]="{ 'is-invalid': !companyBillingForm.controls.endDate.valid }"></date-picker>
+    </div>
+    <div class="row">
+        <div class="btn btn-grp">
+            <button type="submit" class="btn btn-primary" [disabled]="companyBillingForm.invalid">Add</button>
+            <button type="button" class="btn btn-secondary" routerLink="/admin/billings">Cancle</button>
+        </div>
+    </div>
+</form>
+<hnTable name="companyBilling" [defaultColumns]="defaultColumns" [tableColumns]="orderColumns" [tableData]="orders" [selectable]="false"
+    [print]="true"></hnTable>

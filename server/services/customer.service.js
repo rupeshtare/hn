@@ -1,9 +1,7 @@
 var config = require('config.json');
 var _ = require('lodash');
 var Q = require('q');
-var mongo = require('mongoskin');
-var db = mongo.db(config.connectionString, { native_parser: true });
-db.bind('customer');
+var db = require('utils/db_utility');
 
 var service = {};
 
@@ -15,16 +13,23 @@ service.delete = _delete;
 
 module.exports = service;
 
+var collection = "customer";
 
 function getAll(params) {
     var deferred = Q.defer();
 
-    db.customer.find(params._filter, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, customer) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-        db.customer.count(function (err, count) {
-            deferred.resolve({ total: count, data: customer });
-        })
-    });
+    db.find(collection, query = params.query, fields = params.include, sort = { "createdOn": -1 }, skip = params.skip, limit = params.limit)
+        .toArray(function (err, customer) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
+
+            db.count(collection, query = params.query)
+                .then((count) => {
+                    deferred.resolve({ total: count, data: customer });
+                })
+                .catch((err) => {
+                    deferred.reject(err.name + ': ' + err.message);
+                });
+        });
 
     return deferred.promise;
 }
@@ -32,48 +37,49 @@ function getAll(params) {
 function getById(_id) {
     var deferred = Q.defer();
 
-    db.customer.findById(_id, function (err, customer) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        if (customer) deferred.resolve(customer);
-
-        deferred.resolve();
-    });
+    db.findById(collection, _id)
+        .then((customer) => {
+            if (customer) deferred.resolve(customer);
+            deferred.resolve();
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
+        });
 
     return deferred.promise;
 }
 
 function create(req) {
     var deferred = Q.defer();
-
     let customerParam = req.body;
 
     // validation
-    db.customer.findOne(
+    db.findOne(collection,
         {
             company: customerParam.company._id,
             firstName: customerParam.firstName,
             middleName: customerParam.middleName,
             lastName: customerParam.lastName
-        },
-        function (err, customer) {
-            if (err) deferred.reject(err.name + ': ' + err.message);
-
+        })
+        .then((customer) => {
             if (customer) {
                 // customername already exists
                 deferred.reject('Customer "' + customerParam.firstName + '" is already taken');
             } else {
                 createCustomer();
             }
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
         });
 
     function createCustomer() {
-        db.customer.insert(
-            customerParam,
-            function (err, doc) {
-                if (err) deferred.reject(err.name + ': ' + err.message);
-
+        db.insert(collection, customerParam)
+            .then((doc) => {
                 deferred.resolve();
+            })
+            .catch((err) => {
+                deferred.reject(err.name + ': ' + err.message);
             });
     }
 
@@ -82,40 +88,42 @@ function create(req) {
 
 function update(req) {
     var deferred = Q.defer();
-
     let customerParam = req.body;
     let _id = req.params._id
 
     // validation
-    db.customer.findById(_id, function (err, customer) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        if (customer.company._id !== customerParam.company._id ||
-            customer.firstName !== customerParam.firstName ||
-            customer.middleName !== customerParam.middleName ||
-            customer.lastName !== customerParam.lastName) {
-            // customer has changed so check if the new customer is already taken
-            db.customer.findOne(
-                {
-                    company: customerParam.company,
-                    firstName: customerParam.firstName,
-                    middleName: customerParam.middleName,
-                    lastName: customerParam.lastName
-                },
-                function (err, customer) {
-                    if (err) deferred.reject(err.name + ': ' + err.message);
-
-                    if (customer) {
-                        // customername already exists
-                        deferred.reject('Customer "' + customer.firstName + '" is already taken')
-                    } else {
-                        updateMenu();
-                    }
-                });
-        } else {
-            updateMenu();
-        }
-    });
+    db.findById(collection, _id)
+        .then((customer) => {
+            if (customer.company._id !== customerParam.company._id ||
+                customer.firstName !== customerParam.firstName ||
+                customer.middleName !== customerParam.middleName ||
+                customer.lastName !== customerParam.lastName) {
+                // customer has changed so check if the new customer is already taken
+                db.findOne(collection,
+                    {
+                        company: customerParam.company,
+                        firstName: customerParam.firstName,
+                        middleName: customerParam.middleName,
+                        lastName: customerParam.lastName
+                    })
+                    .then((customer) => {
+                        if (customer) {
+                            // customername already exists
+                            deferred.reject('Customer "' + customer.firstName + '" is already taken')
+                        } else {
+                            updateMenu();
+                        }
+                    })
+                    .catch((err) => {
+                        deferred.reject(err.name + ': ' + err.message);
+                    });
+            } else {
+                updateMenu();
+            }
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
+        });
 
     function updateMenu() {
         // fields to update
@@ -132,13 +140,12 @@ function update(req) {
             updatedOn: customerParam.updatedOn,
         };
 
-        db.customer.update(
-            { _id: mongo.helper.toObjectID(_id) },
-            { $set: set },
-            function (err, doc) {
-                if (err) deferred.reject(err.name + ': ' + err.message);
-
+        db.update(collection, { _id: db.objectID(_id) }, { $set: set })
+            .then((doc) => {
                 deferred.resolve();
+            })
+            .catch((err) => {
+                deferred.reject(err.name + ': ' + err.message);
             });
     }
 
@@ -147,7 +154,6 @@ function update(req) {
 
 function _delete(req) {
     var deferred = Q.defer();
-
     let customerParam = req.body;
     let _id = req.params._id;
     let set = {
@@ -156,13 +162,12 @@ function _delete(req) {
         updatedOn: customerParam.updatedOn,
     };
 
-    db.customer.update(
-        { _id: mongo.helper.toObjectID(_id) },
-        { $set: set },
-        function (err) {
-            if (err) deferred.reject(err.name + ': ' + err.message);
-
+    db.update(collection, { _id: db.objectID(_id) }, { $set: set })
+        .then((doc) => {
             deferred.resolve();
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
         });
 
     return deferred.promise;

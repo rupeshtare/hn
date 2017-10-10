@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { AlertService, CustomerService, CompanyService } from './../_services/index';
+import * as moment from 'moment';
 
 
 @Component({
@@ -29,17 +30,16 @@ export class CustomerComponent {
             middleName: '',
             lastName: [null, Validators.required],
             mobile: [null, Validators.required],
-            dob: '',
+            dob: moment().toDate(),
             email: '',
-            employeeType: '',
-            active: true,
+            employeeType: this.employeeTypeOptions[0],
         })
     }
 
     ngOnInit(): void {
 
         this.loading = true;
-        this.companyService.getAll({active: true, include: ['name'] }).subscribe(
+        this.companyService.getAll({ active: true, include: ['name'] }).subscribe(
             resp => {
                 ({ data: this.companies } = resp.json());
             },

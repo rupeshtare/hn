@@ -1,9 +1,7 @@
 var config = require('config.json');
 var _ = require('lodash');
 var Q = require('q');
-var mongo = require('mongoskin');
-var db = mongo.db(config.connectionString, { native_parser: true });
-db.bind('menu');
+var db = require('utils/db_utility');
 
 var service = {};
 
@@ -15,17 +13,23 @@ service.delete = _delete;
 
 module.exports = service;
 
+var collection = "menu";
 
 function getAll(params) {
     var deferred = Q.defer();
 
-    db.menu.find(params._filter, params.include, params.query).sort({ "createdOn": -1 }).toArray(function (err, menu) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
+    db.find(collection, query = params.query, fields = params.include, sort = { "createdOn": -1 }, skip = params.skip, limit = params.limit)
+        .toArray(function (err, menu) {
+            if (err) deferred.reject(err.name + ': ' + err.message);
 
-        db.menu.count(function (err, count) {
-            deferred.resolve({ total: count, data: menu });
-        })
-    });
+            db.count(collection, query = params.query)
+                .then((count) => {
+                    deferred.resolve({ total: count, data: menu });
+                })
+                .catch((err) => {
+                    deferred.reject(err.name + ': ' + err.message);
+                });
+        });
 
     return deferred.promise;
 }
@@ -33,43 +37,43 @@ function getAll(params) {
 function getById(_id) {
     var deferred = Q.defer();
 
-    db.menu.findById(_id, function (err, menu) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        if (menu) deferred.resolve(menu);
-
-        deferred.resolve();
-    });
+    db.findById(collection, _id)
+        .then((menu) => {
+            if (menu) deferred.resolve(menu);
+            deferred.resolve();
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
+        });
 
     return deferred.promise;
 }
 
 function create(req) {
     var deferred = Q.defer();
-
     let menuParam = req.body;
 
     // validation
-    db.menu.findOne(
-        { name: menuParam.name },
-        function (err, menu) {
-            if (err) deferred.reject(err.name + ': ' + err.message);
-
+    db.findOne(collection, { name: menuParam.name })
+        .then((menu) => {
             if (menu) {
                 // menuname already exists
                 deferred.reject('Menu "' + menuParam.name + '" is already taken');
             } else {
                 createMenu();
             }
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
         });
 
     function createMenu() {
-        db.menu.insert(
-            menuParam,
-            function (err, doc) {
-                if (err) deferred.reject(err.name + ': ' + err.message);
-
+        db.insert(collection, menuParam)
+            .then((doc) => {
                 deferred.resolve();
+            })
+            .catch((err) => {
+                deferred.reject(err.name + ': ' + err.message);
             });
     }
 
@@ -78,32 +82,33 @@ function create(req) {
 
 function update(req) {
     var deferred = Q.defer();
-
     let menuParam = req.body;
     let _id = req.params._id
 
     // validation
-    db.menu.findById(_id, function (err, menu) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
-
-        if (menu.name !== menuParam.name) {
-            // menu has changed so check if the new menu is already taken
-            db.menu.findOne(
-                { name: menuParam.name },
-                function (err, menu) {
-                    if (err) deferred.reject(err.name + ': ' + err.message);
-
-                    if (menu) {
-                        // menuname already exists
-                        deferred.reject('Menu "' + menu.name + '" is already taken')
-                    } else {
-                        updateMenu();
-                    }
-                });
-        } else {
-            updateMenu();
-        }
-    });
+    db.findById(collection, _id)
+        .then((menu) => {
+            if (menu.name !== menuParam.name) {
+                // menu has changed so check if the new menu is already taken
+                db.findOne(collection, { name: menuParam.name })
+                    .then((menu) => {
+                        if (menu) {
+                            // menuname already exists
+                            deferred.reject('Menu "' + menu.name + '" is already taken')
+                        } else {
+                            updateMenu();
+                        }
+                    })
+                    .catch((err) => {
+                        deferred.reject(err.name + ': ' + err.message);
+                    });
+            } else {
+                updateMenu();
+            }
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
+        });
 
     function updateMenu() {
         // fields to update
@@ -119,13 +124,12 @@ function update(req) {
             updatedOn: menuParam.updatedOn,
         };
 
-        db.menu.update(
-            { _id: mongo.helper.toObjectID(_id) },
-            { $set: set },
-            function (err, doc) {
-                if (err) deferred.reject(err.name + ': ' + err.message);
-
+        db.update(collection, { _id: db.objectID(_id) }, { $set: set })
+            .then((doc) => {
                 deferred.resolve();
+            })
+            .catch((err) => {
+                deferred.reject(err.name + ': ' + err.message);
             });
     }
 
@@ -134,7 +138,6 @@ function update(req) {
 
 function _delete(req) {
     var deferred = Q.defer();
-
     let _id = req.params._id;
     let menuParam = req.body;
     let set = {
@@ -143,13 +146,12 @@ function _delete(req) {
         updatedOn: menuParam.updatedOn,
     };
 
-    db.menu.update(
-        { _id: mongo.helper.toObjectID(_id) },
-        { $set: set },
-        function (err) {
-            if (err) deferred.reject(err.name + ': ' + err.message);
-
+    db.update(collection, { _id: db.objectID(_id) }, { $set: set })
+        .then((doc) => {
             deferred.resolve();
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
         });
 
     return deferred.promise;

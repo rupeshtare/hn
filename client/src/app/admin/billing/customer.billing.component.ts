@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CustomerService, OrderService, AlertService } from './../_services/index';
 import { Router } from '@angular/router';
 import * as moment from 'moment';
@@ -35,7 +35,7 @@ export class CustomerBillingComponent {
         })
 
         this.loading = true;
-        this.customerService.getAll(event).subscribe(
+        this.customerService.getAll({}).subscribe(
             resp => {
                 ({ data: this.customers } = resp.json());
             },
@@ -48,11 +48,7 @@ export class CustomerBillingComponent {
 
     submit(data) {
         this.loading = true;
-        this.orderService.getAll({
-            customer: data.customer._id,
-            startDate: data.startDate,
-            endDate: data.endDate
-        }).subscribe(
+        this.orderService.getAll(data).subscribe(
             resp => {
                 ({ data: this.orders } = resp.json());
                 this.totalBill = this.orders.reduce((prev, curr) => { return prev + curr["order"]["bill"]; }, 0)
@@ -60,8 +56,7 @@ export class CustomerBillingComponent {
             error => {
                 this.alertService.error(error);
                 this.loading = false;
-            }
-            );
+            });
     }
 
 }
