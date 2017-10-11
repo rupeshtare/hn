@@ -10,7 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class CustomerListComponent { 
     private customers : Array<object> = [];
     private total : number = 0;
-    private customersColumns : Array<string> = ['firstName', 'middleName', 'lastName', "active", 'mobile', 'company', 'dob', 'employeeType'];
+    private customersColumns : Array<string> = ['firstName', 'middleName', 'lastName', "active", 'mobile', 'company.name', 'dob', 'employeeType'];
     private defaultColumns : Array<string> = ['firstName', 'lastName']
     loading = false;
 

@@ -21,6 +21,7 @@ function getAll(params) {
     customer = params.customer ? params.query["customer._id"] = params.customer : null;
     startDate = params.startDate ? date.startOfDay(params.startDate) : date.startOfDay();
     endDate = params.endDate ? date.startOfDay(params.endDate) : date.currentDate();
+    params.query = _.omit(params.query, ["startDate", "endDate", "customer"])
     _.merge(params.query, { "createdOn": { "$gte": startDate, "$lte": endDate } })
 
     var deferred = Q.defer();
@@ -42,23 +43,29 @@ function getAll(params) {
 }
 
 function getOrders(params) {
-    let search = {}
-    company = params.company ? params.company : null;
-    customers = db2.customer.distinct('_id', { "company._id": company })
-    customer = _.merge(search, { "customer._id": { "$in": customers } });
-    startDate = params.startDate ? date.startOfDay(params.startDate) : date.startOfDay();
-    endDate = params.endDate ? date.startOfDay(params.endDate) : date.currentDate();
-    search = _.merge(search, { "createdOn": { "$gte": startDate, "$lte": endDate } })
-
     var deferred = Q.defer();
-    let key = ['customer._id', 'customer.firstName', 'customer.middleName', 'customer.lastName']
-    let initial = { 'count': 0, 'total': 0 }
-    let reduce = 'function(doc, out) { out.count++; out.total += doc.order.bill; }'
-    db.order.group(key, search, initial, reduce, function (err, order) {
-        if (err) deferred.reject(err.name + ': ' + err.message);
+    let _filter = {};
+    company = params.company ? params.company : null;
+    db.distinct("customer", "_id", { "company._id": company })
+        .then((customers) => {
+            customers = customers.map((key) => { return key.toString(); })
+            _.merge(_filter, { "customer._id": { "$in": customers } });
+            startDate = params.startDate ? date.startOfDay(params.startDate) : date.startOfDay();
+            endDate = params.endDate ? date.startOfDay(params.endDate) : date.currentDate();
+            _.merge(_filter, { "createdOn": { "$gte": startDate, "$lte": endDate } })
 
-        deferred.resolve({ data: order });
-    });
+            let _id = { customer: '$customer._id', firstName: '$customer.firstName', lastName: '$customer.lastName' }
+            let _sum = "$order.bill"
+            db.aggregate(collection, _id, _filter, _sum)
+                .toArray(function (err, orders) {
+                    if (err) deferred.reject(err.name + ': ' + err.message);
+
+                    deferred.resolve({ data: orders });
+                });
+        })
+        .catch((err) => {
+            customers = [];
+        })
 
     return deferred.promise;
 }

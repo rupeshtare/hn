@@ -14,6 +14,7 @@ db.update = update;
 db.updateMany = updateMany;
 db.objectID = ObjectID;
 db.distinct = distinct;
+db.aggregate = aggregate;
 
 module.exports = db;
 
@@ -89,5 +90,16 @@ function updateMany(coll, filter, doc, options) {
 
 function distinct(coll, key, query, options) {
     options = options !== undefined ? options : {};
-    return dbObj.collection(coll).updateMany(key, query, options);
+    return dbObj.collection(coll).distinct(key, query, options);
+}
+
+function aggregate(coll, key, _filter, _sum) {
+    return dbObj.collection(coll).aggregate([
+        {
+            $match: _filter
+        },
+        {
+            $group: { _id: key, total: { $sum: _sum } }
+        }
+    ]);
 }

@@ -15,8 +15,8 @@ export class CompanyBillingComponent {
     totalBill: number = 0;
     private companies: Array<object> = [];
     private orders: Array<object> = [];
-    private orderColumns: Array<string> = ["customer.firstName", "customer.lastName", "total"];
-    private defaultColumns: Array<string> = ["customer.firstName", "total"];
+    private orderColumns: Array<string> = ["_id.firstName", "_id.lastName", "total"];
+    private defaultColumns: Array<string> = ["_id.firstName", "total"];
 
 
     constructor(
@@ -29,7 +29,7 @@ export class CompanyBillingComponent {
 
         this.companyBillingForm = this.formBuilder.group({
             company: [null, Validators.required],
-            startDate: [moment().startOf('day').toDate(), Validators.required],
+            startDate: [moment().startOf('month').toDate(), Validators.required],
             endDate: [moment().add(1, "days").startOf('day').toDate(), Validators.required]
         })
 
