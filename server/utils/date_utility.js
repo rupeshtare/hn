@@ -14,7 +14,7 @@ function hours() {
 }
 
 function startOfDay(date) {
-    return typeof date !== 'undefined' ? moment(date).startOf('day').toDate() : moment().startOf('day').toDate();
+    return typeof date !== 'undefined' ? moment(date, 'ddd MMM DD YYYY hh:mm:ss ZZ').startOf('day').toDate() : moment().startOf('day').toDate();
 }
 
 function currentDate() {
@@ -26,9 +26,9 @@ function dateInString(date) {
 }
 
 function yestreday() {
-    return moment().subtract(1,"days").toDate();
+    return moment().subtract(1, "days").toDate();
 }
 
 function yestredayStartOfDay() {
-    return startOfDay(moment().subtract(1,"days"));
+    return startOfDay(moment().subtract(1, "days"));
 }
