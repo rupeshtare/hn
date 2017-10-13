@@ -8,6 +8,7 @@ import { CustomerBillingComponent, CompanyBillingComponent } from './billing/ind
 import { CompanyListComponent, CompanyComponent, CompanyUpdateComponent } from './company/index';
 import { MessMemberListComponent, MessMemberComponent, MessMemberUpdateComponent } from './mess-member/index';
 import { MessListComponent } from './mess/index';
+import { AuthGuard } from './../_guards/index';
 
 
 @NgModule({
@@ -16,74 +17,109 @@ import { MessListComponent } from './mess/index';
             {
                 path: '',
                 component: AdminComponent,
+                canActivateChild: [AuthGuard],
                 children: [
                     {
                         path: 'customers',
-                        component: CustomerListComponent
+                        component: CustomerListComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['customer']}
                     },
                     {
                         path: 'customers/new',
-                        component: CustomerComponent
+                        component: CustomerComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['customer']}
                     },
                     {
                         path: 'customers/:_id',
-                        component: CustomerUpdateComponent
+                        component: CustomerUpdateComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['customer']}
                     },
                     {
                         path: 'menus',
-                        component: MenuListComponent
+                        component: MenuListComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['menu']}
                     },
                     {
                         path: 'menus/new',
-                        component: MenuComponent
+                        component: MenuComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['menu']}
                     },
                     {
                         path: 'menus/:_id',
-                        component: MenuUpdateComponent
+                        component: MenuUpdateComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['menu']}
                     },
                     {
                         path: 'orders',
-                        component: OrderListComponent
+                        component: OrderListComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['order']}
                     },
                     {
                         path: 'orders/new',
-                        component: OrderComponent
+                        component: OrderComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['order']}
                     },
                     {
                         path: 'billings/customer',
-                        component: CustomerBillingComponent
+                        component: CustomerBillingComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['billing']}
                     },
                     {
                         path: 'billings/company',
-                        component: CompanyBillingComponent
+                        component: CompanyBillingComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['billing']}
                     },
                     {
                         path: 'companies',
-                        component: CompanyListComponent
+                        component: CompanyListComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['company']}
                     },
                     {
                         path: 'companies/new',
-                        component: CompanyComponent
+                        component: CompanyComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['company']}
                     },
                     {
                         path: 'companies/:_id',
-                        component: CompanyUpdateComponent
+                        component: CompanyUpdateComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['company']}
                     },
                     {
                         path: 'mess-members',
-                        component: MessMemberListComponent
+                        component: MessMemberListComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['mess-member']}
                     },
                     {
                         path: 'mess-members/new',
-                        component: MessMemberComponent
+                        component: MessMemberComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['mess-member']}
                     },
                     {
                         path: 'mess-members/:_id',
-                        component: MessMemberUpdateComponent
+                        component: MessMemberUpdateComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['mess-member']}
                     },
                     {
                         path: 'mess',
-                        component: MessListComponent
+                        component: MessListComponent,
+                        canActivate: [AuthGuard],
+                        data: {roles: ['admin', 'super-admin'], permissions: ['mess']}
                     },
                 ]
             }

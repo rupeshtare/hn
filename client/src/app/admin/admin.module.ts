@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminComponent } from './index';
-import { TableComponent, TableColumnSelectorComponent, PageHeaderComponent, TablePaginationComponent, PdfComponent } from '../_directives/index';
+import { HasPermissionDirective, TableComponent, TableColumnSelectorComponent, PageHeaderComponent, TablePaginationComponent, PdfComponent } from '../_directives/index';
 import { CustomerComponent, CustomerListComponent, CustomerUpdateComponent } from './customer/index';
 import { MenuComponent, MenuListComponent, MenuUpdateComponent } from './menu/index';
 import { AdminRoutingModule } from "./admin-routing.module";
@@ -50,7 +50,8 @@ import { MessListComponent } from './mess/index';
         MessMemberListComponent,
         MessMemberComponent,
         MessMemberUpdateComponent,
-        MessListComponent
+        MessListComponent,
+        HasPermissionDirective
     ],
     providers: [
         CustomerService,
@@ -59,7 +60,7 @@ import { MessListComponent } from './mess/index';
         UserService,
         CompanyService,
         MessService,
-        DineService
+        DineService,
     ]
 })
 

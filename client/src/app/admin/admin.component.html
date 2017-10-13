@@ -6,26 +6,26 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-            <li class="nav-item">
+            <li class="nav-item" [hasPermission]="['order']">
                 <a class="nav-link" routerLink="orders"><i class="fa fa-list-ol" aria-hidden="true"></i>  Orders</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" routerLink="mess"><i class="fa fa-spoon" aria-hidden="true"></i>  Mess</a>
+                <a class="nav-link" routerLink="mess" [hasPermission]="['mess']"><i class="fa fa-spoon" aria-hidden="true"></i>  Mess</a>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" [hasPermission]="['billing']">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-credit-card" aria-hidden="true"></i>  Billing</a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" routerLink="billings/customer"><i class="fa fa-users" aria-hidden="true"></i>  Customer</a>
                     <a class="dropdown-item" routerLink="billings/company"><i class="fa fa-industry" aria-hidden="true"></i>  Company</a>
                 </div>
             </li>
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown" [hasPermission]="['company', 'menu', 'customer', 'mess-member']">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-gear" aria-hidden="true"></i>  Settings</a>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" routerLink="companies"><i class="fa fa-industry" aria-hidden="true"></i>  Company</a>
-                    <a class="dropdown-item" routerLink="menus"><i class="fa fa-coffee" aria-hidden="true"></i>  Menus</a>
-                    <a class="dropdown-item" routerLink="customers"><i class="fa fa-users" aria-hidden="true"></i>  Customers</a>
-                    <a class="dropdown-item" routerLink="mess-members"><i class="fa fa-spoon" aria-hidden="true"></i>  Mess Members</a>
+                    <a class="dropdown-item" routerLink="companies" [hasPermission]="['company']"><i class="fa fa-industry" aria-hidden="true"></i>  Company</a>
+                    <a class="dropdown-item" routerLink="menus" [hasPermission]="['menu']"><i class="fa fa-coffee" aria-hidden="true"></i>  Menus</a>
+                    <a class="dropdown-item" routerLink="customers" [hasPermission]="['customer']"><i class="fa fa-users" aria-hidden="true"></i>  Customers</a>
+                    <a class="dropdown-item" routerLink="mess-members" [hasPermission]="['mess-member']"><i class="fa fa-spoon" aria-hidden="true"></i>  Mess Members</a>
                 </div>
             </li>
         </ul>

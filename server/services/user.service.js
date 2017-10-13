@@ -28,6 +28,8 @@ function authenticate(username, password) {
                     username: user.username,
                     firstName: user.firstName,
                     lastName: user.lastName,
+                    role: user.role,
+                    permissions: user.permissions,
                     token: jwt.sign({ id: user._id, username: user.username }, config.secret)
                 });
             } else {
