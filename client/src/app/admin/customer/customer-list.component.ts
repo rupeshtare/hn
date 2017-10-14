@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CustomerService } from './../_services/index';
+import { CustomerService, AlertService } from './../_services/index';
 import { HttpErrorResponse } from '@angular/common/http';
 
 
@@ -7,30 +7,28 @@ import { HttpErrorResponse } from '@angular/common/http';
     templateUrl: './customer-list.component.html',
 })
 
-export class CustomerListComponent { 
-    private customers : Array<object> = [];
-    private total : number = 0;
-    private customersColumns : Array<string> = ['firstName', 'middleName', 'lastName', "active", 'mobile', 'company.name', 'dob', 'employeeType'];
-    private defaultColumns : Array<string> = ['firstName', 'lastName']
-    loading = false;
+export class CustomerListComponent {
+    private loading = false;
+    public customers: Array<object> = [];
+    public total = 0;
+    public customersColumns: Array<string> = ['firstName', 'middleName', 'lastName',
+        'active', 'mobile', 'company.name', 'dob', 'employeeType'];
+    public defaultColumns: Array<string> = ['firstName', 'lastName'];
 
 
-    constructor(private customerService: CustomerService) { }
+    constructor(
+        private customerService: CustomerService,
+        private alertService: AlertService) { }
 
-    loadCustomers(event: object) : void {
+    loadCustomers(event: object): void {
         this.loading = true;
         this.customerService.getAll(event).subscribe(
             resp => {
-                ({total: this.total, data: this.customers} = resp.json());
+                ({ total: this.total, data: this.customers } = resp.json());
             },
-            (err: HttpErrorResponse) => {
-                if (err.error instanceof Error) {
-                    console.log("Client-side error occured.");
-                } else {
-                    console.log("Server-side error occured.");
-                }
-            }
-        )
+            err => {
+                this.alertService.error(err);
+            });
     }
 
 }

@@ -11,11 +11,11 @@ import * as moment from 'moment';
 })
 
 export class CustomerUpdateComponent implements OnInit {
-    _id: string;
-    customerForm: FormGroup;
-    loading = false;
-    private companies: Array<object> = [];
-    employeeTypeOptions = ['Employee', 'Contractor', 'Guest'];
+    private _id: string;
+    private loading = false;
+    public companies: Array<object> = [];
+    public employeeTypeOptions = ['Employee', 'Contractor', 'Guest'];
+    public customerForm: FormGroup;
 
 
     constructor(
@@ -36,11 +36,11 @@ export class CustomerUpdateComponent implements OnInit {
             email: '',
             employeeType: '',
             active: null,
-        })
+        });
 
         this.route.params.subscribe(params => {
             this._id = params._id;
-        })
+        });
     }
 
     ngOnInit() {
@@ -62,16 +62,16 @@ export class CustomerUpdateComponent implements OnInit {
                     active: data.active,
                 });
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
             });
 
         this.companyService.getAll({ active: true, include: ['name'] }).subscribe(
             resp => {
                 ({ data: this.companies } = resp.json());
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
@@ -84,14 +84,14 @@ export class CustomerUpdateComponent implements OnInit {
             data => {
                 this.router.navigate(['/admin/customers']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
 
     byCompanyName(item1: object, item2: object) {
-        return item1["name"] === item2["name"];
+        return item1['name'] === item2['name'];
     }
 
     deactive() {
@@ -101,8 +101,8 @@ export class CustomerUpdateComponent implements OnInit {
             data => {
                 this.router.navigate(['/admin/customers']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
@@ -114,8 +114,8 @@ export class CustomerUpdateComponent implements OnInit {
             data => {
                 this.router.navigate(['/admin/customers']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }

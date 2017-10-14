@@ -12,7 +12,15 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 
 export class SplitAndTitlePipe implements PipeTransform {
-    transform(input:string): string{
-        return input.length > 0 ? input.split(/(?=[.])/)[input.split(/(?=[.])/).length -1].split(/(?=[A-Z .])/).map(txt =>{if(txt[0]==="."){return txt[1].toUpperCase() + txt.substr(2);} return txt[0].toUpperCase() + txt.substr(1);}).join(" ") : "";
+    transform(input: string): string {
+        return input.length > 0 ? input.split(/(?=[.])/)[input.split(/(?=[.])/).length - 1]
+            .split(/(?=[A-Z .])/)
+            .map(txt => {
+                if (txt[0] === '.') {
+                    return txt[1].toUpperCase() + txt.substr(2);
+                }
+                return txt[0].toUpperCase() + txt.substr(1);
+            })
+            .join(' ') : '';
     }
 }

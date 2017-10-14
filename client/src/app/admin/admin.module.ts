@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AdminComponent } from './index';
-import { HasPermissionDirective, TableComponent, TableColumnSelectorComponent, PageHeaderComponent, TablePaginationComponent, PdfComponent } from '../_directives/index';
+import { PermissionDirective, TableComponent, TableColumnSelectorComponent, PageHeaderComponent,
+    TablePaginationComponent, PdfComponent } from '../_directives/index';
 import { CustomerComponent, CustomerListComponent, CustomerUpdateComponent } from './customer/index';
 import { MenuComponent, MenuListComponent, MenuUpdateComponent } from './menu/index';
-import { AdminRoutingModule } from "./admin-routing.module";
+import { AdminRoutingModule } from './admin-routing.module';
 import { CustomerService, MenuService, OrderService, UserService, CompanyService, MessService, DineService } from './_services/index';
 import { SplitAndTitlePipe, FormatColumnPipe, ChainedAttributePipe } from '../_pipes/index';
 import { OrderComponent, OrderListComponent } from './order/index';
@@ -51,7 +52,7 @@ import { MessListComponent } from './mess/index';
         MessMemberComponent,
         MessMemberUpdateComponent,
         MessListComponent,
-        HasPermissionDirective
+        PermissionDirective
     ],
     providers: [
         CustomerService,

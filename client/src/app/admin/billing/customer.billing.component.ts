@@ -9,14 +9,14 @@ import * as moment from 'moment';
     templateUrl: './customer.billing.component.html',
 })
 
-export class CustomerBillingComponent {
-    customerBillingForm: FormGroup;
-    loading: boolean = false;
-    totalBill: number = 0;
-    private customers: Array<object> = [];
-    private orders: Array<object> = [];
-    private orderColumns: Array<string> = ["order.name", "order.quantity", "order.price", "order.bill"];
-    private defaultColumns: Array<string> = ["order.name", "order.bill"];
+export class CustomerBillingComponent implements OnInit {
+    private loading = false;
+    private totalBill = 0;
+    public customers: Array<object> = [];
+    public orders: Array<object> = [];
+    public orderColumns: Array<string> = ['order.name', 'order.quantity', 'order.price', 'order.bill'];
+    public defaultColumns: Array<string> = ['order.name', 'order.bill'];
+    public customerBillingForm: FormGroup;
 
 
     constructor(
@@ -31,30 +31,29 @@ export class CustomerBillingComponent {
         this.customerBillingForm = this.formBuilder.group({
             customer: [null, Validators.required],
             startDate: [moment().startOf('day').toDate(), Validators.required],
-            endDate: [moment().add(1, "days").startOf('day').toDate(), Validators.required]
-        })
+            endDate: [moment().add(1, 'days').startOf('day').toDate(), Validators.required]
+        });
 
         this.loading = true;
         this.customerService.getAll({}).subscribe(
             resp => {
                 ({ data: this.customers } = resp.json());
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
-            }
-        )
+            });
     }
 
-    submit(data) {
+    submit(values) {
         this.loading = true;
-        this.orderService.getAll(data).subscribe(
+        this.orderService.getAll(values).subscribe(
             resp => {
                 ({ data: this.orders } = resp.json());
-                this.totalBill = this.orders.reduce((prev, curr) => { return prev + curr["order"]["bill"]; }, 0)
+                this.totalBill = this.orders.reduce((prev, curr) => prev + curr['order']['bill'], 0);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }

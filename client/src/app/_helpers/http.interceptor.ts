@@ -1,9 +1,12 @@
-import { Injectable } from "@angular/core";
-import { ConnectionBackend, XHRBackend, RequestOptions, Request, RequestOptionsArgs, Response, Http, Headers, URLSearchParams} from "@angular/http";
-import { environment } from "./../../environments/environment";
-import { SessionStorageService } from "../_services/index";
+import { Injectable } from '@angular/core';
+import {
+    ConnectionBackend, XHRBackend, RequestOptions, Request, RequestOptionsArgs,
+    Response, Http, Headers, URLSearchParams
+} from '@angular/http';
+import { environment } from './../../environments/environment';
+import { SessionStorageService } from '../_services/index';
 
-import { Observable } from "rxjs/Observable";
+import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
@@ -13,10 +16,10 @@ export class InterceptedHttp extends Http {
     constructor(
         backend: ConnectionBackend,
         defaultOptions: RequestOptions) {
-            super(backend, defaultOptions);
-        }
+        super(backend, defaultOptions);
+    }
 
-    get sessionStorageService(){
+    get sessionStorageService() {
         return new SessionStorageService();
     }
 
@@ -25,9 +28,9 @@ export class InterceptedHttp extends Http {
     }
 
     get(url: string, params?: object, options?: RequestOptionsArgs): Observable<Response> {
-        if(params !== undefined){
-            let myParams = new URLSearchParams();
-            Object.keys(params).forEach(key=>{myParams.set(key, params[key]);})
+        if (params !== undefined) {
+            const myParams = new URLSearchParams();
+            Object.keys(params).forEach(key => { myParams.set(key, params[key]); });
             options = options || new RequestOptions();
             options.params = myParams;
         }
@@ -51,16 +54,16 @@ export class InterceptedHttp extends Http {
     }
 
     private updateUrl(req: string) {
-        return  environment.origin + req;
+        return environment.origin + req;
     }
 
-    private getRequestOptionArgs(options?: RequestOptionsArgs) : RequestOptionsArgs {
+    private getRequestOptionArgs(options?: RequestOptionsArgs): RequestOptionsArgs {
         options = options || new RequestOptions();
         options.headers = options.headers || new Headers();
         options.headers.append('Content-Type', 'application/json');
 
         // add authorization header with jwt token
-        let currentUser = this.sessionStorageService.get('currentUser');
+        const currentUser = this.sessionStorageService.get('currentUser');
         if (currentUser && currentUser.token) {
             options.headers.append('Authorization', 'hn ' + currentUser.token);
         }

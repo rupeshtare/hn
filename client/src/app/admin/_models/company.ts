@@ -1,5 +1,5 @@
 export interface Company {
-    _id         : string;
-    company     : string;
-    active      : boolean;
+    _id: string;
+    company: string;
+    active: boolean;
 }

@@ -10,12 +10,12 @@ import * as moment from 'moment';
 })
 
 export class MessMemberUpdateComponent implements OnInit {
-    messMemberForm: FormGroup;
-    _id: string;
-    loading: boolean = false;
-    timeingOptions = ['Lunch', 'Dinner', 'Both'];
-    daysOptions = [15, 30];
-    private customers: Array<object> = [];
+    private _id: string;
+    private loading = false;
+    public timeingOptions = ['Lunch', 'Dinner', 'Both'];
+    public daysOptions = [15, 30];
+    public customers: Array<object> = [];
+    public messMemberForm: FormGroup;
 
 
     constructor(
@@ -28,7 +28,7 @@ export class MessMemberUpdateComponent implements OnInit {
 
         this.route.params.subscribe(params => {
             this._id = params._id;
-        })
+        });
 
         this.messMemberForm = this.formBuilder.group({
             customer: [null, Validators.required],
@@ -37,13 +37,13 @@ export class MessMemberUpdateComponent implements OnInit {
             startDate: moment(),
             endDate: moment().add(29, 'days'),
             active: null
-        })
+        });
 
     }
 
     ngOnInit(): void {
 
-        this.messMemberForm.get("days").valueChanges.subscribe(data => {
+        this.messMemberForm.get('days').valueChanges.subscribe(data => {
             this.changeLastDate(data);
         });
 
@@ -53,8 +53,7 @@ export class MessMemberUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-            }
-        )
+            });
 
         this.messMemberService.getById(this._id)
             .subscribe(
@@ -73,28 +72,28 @@ export class MessMemberUpdateComponent implements OnInit {
             });
     }
 
-    update(data) {
+    update(values) {
         this.loading = true;
-        data._id = this._id;
-        this.messMemberService.update(data)
+        values._id = this._id;
+        this.messMemberService.update(values)
             .subscribe(
             data => {
                 this.router.navigate(['/admin/mess-members']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
 
     changeLastDate(days) {
         this.messMemberForm.patchValue({
-            endDate: moment().add(parseInt(days), "days").subtract(1, "days"),
+            endDate: moment().add(parseInt(days, 10), 'days').subtract(1, 'days')
         });
     }
 
     byUserName(item1: object, item2: object) {
-        return item1["firstName"] === item2["firstName"];
+        return item1['firstName'] === item2['firstName'];
     }
 
     deactive() {
@@ -104,8 +103,8 @@ export class MessMemberUpdateComponent implements OnInit {
             data => {
                 this.router.navigate(['/admin/mess-members']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
@@ -117,8 +116,8 @@ export class MessMemberUpdateComponent implements OnInit {
             data => {
                 this.router.navigate(['/admin/mess-members']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }

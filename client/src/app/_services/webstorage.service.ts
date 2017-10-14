@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { WebStorageUtility } from "./webstorage.utility";
+import { Injectable } from '@angular/core';
+import { WebStorageUtility } from './webstorage.utility';
 
 export class WebStorageService {
     constructor(private storage: Storage) { }

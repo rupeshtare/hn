@@ -3,11 +3,11 @@ import { SessionStorageService } from '../_services/index';
 import * as _ from 'lodash';
 
 @Directive({
-    selector: '[hasPermission]'
+    selector: '[hnPermission]'
 })
 
-export class HasPermissionDirective implements OnInit {
-    @Input('hasPermission') permissions: Array<string>;
+export class PermissionDirective implements OnInit {
+    @Input() hnPermission: Array<string>;
 
     constructor(
         private _elem: ElementRef,
@@ -18,16 +18,15 @@ export class HasPermissionDirective implements OnInit {
     }
 
     applyPermission() {
-        let currentUser = this.sessionStorageService.get('currentUser');
-        let permissions = currentUser && currentUser.permissions && currentUser.permissions.length > 0 ? currentUser.permissions : [];
-        let hasPermission = _.some(_.map(this.permissions, (perm => { return permissions.indexOf(perm) > -1 })));
+        const currentUser = this.sessionStorageService.get('currentUser');
+        const permissions = currentUser && currentUser.permissions && currentUser.permissions.length > 0 ? currentUser.permissions : [];
+        const hnPermission = _.some(_.map(this.hnPermission, (perm => permissions.indexOf(perm) > -1)));
 
-        let userRole = currentUser.role ? currentUser.role : '';
+        const userRole = currentUser.role ? currentUser.role : '';
 
-        if (userRole === 'super-admin' || hasPermission) {
+        if (userRole === 'super-admin' || hnPermission) {
             this._elem.nativeElement.style.display = '';
-        }
-        else {
+        } else {
             this._elem.nativeElement.style.display = 'none';
         }
     }

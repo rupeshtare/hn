@@ -1,9 +1,9 @@
-<hnPageHeader header="Members" icon="fa-users"></hnPageHeader>
-<hnTable (loadData)="loadMessMembers($event)" name="mess" [defaultColumns]="defaultColumns" [tableColumns]="messMemberColumns"
-    [tableData]="messMembers" [total]="total" [selectable]="false" (callBackFunction)="selectMember($event)"></hnTable>
-<hnPageHeader header="Dine" icon="fa-spoon"></hnPageHeader>
-<hnTable name="dineMembers" [defaultColumns]="defaultColumns" [tableColumns]="messMemberColumns" [tableData]="dineMembers.members"
-    [selectable]="false" (callBackFunction)="selectDine($event)"></hnTable>
+<hn-page-header header="Members" icon="fa-users"></hn-page-header>
+<hn-table (loadData)="loadMessMembers($event)" name="mess" [defaultColumns]="defaultColumns" [tableColumns]="messMemberColumns"
+    [tableData]="messMembers" [total]="total" [selectable]="false" (callBackFunction)="selectMember($event)"></hn-table>
+<hn-page-header header="Dine" icon="fa-spoon"></hn-page-header>
+<hn-table name="dineMembers" [defaultColumns]="defaultColumns" [tableColumns]="messMemberColumns" [tableData]="dineMembers.members"
+    [selectable]="false" (callBackFunction)="selectDine($event)"></hn-table>
 <div *ngIf="selectedDine">
     <button type="button" class="btn btn-danger" (click)="removeMember()">Remove</button>
     <button type="button" class="btn btn-light" (click)="unselectDine()">Cancle</button>

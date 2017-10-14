@@ -9,11 +9,12 @@ import { Router } from '@angular/router';
 })
 
 export class CompanyListComponent {
-    companyForm: FormGroup;
-    loading: boolean = false;
-    private companies: Array<object> = [];
-    private companyColumns: Array<string> = ["name", "active"];
-    private defaultColumns: Array<string> = ["name"];
+    private loading = false;
+    public total = 0;
+    public companies: Array<object> = [];
+    public companyColumns: Array<string> = ['name', 'active'];
+    public defaultColumns: Array<string> = ['name'];
+    public companyForm: FormGroup;
 
 
     constructor(
@@ -25,13 +26,12 @@ export class CompanyListComponent {
         this.loading = true;
         this.companyService.getAll(event).subscribe(
             resp => {
-                ({ data: this.companies } = resp.json());
+                ({ total: this.total, data: this.companies } = resp.json());
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
-            }
-        )
+            });
     }
 
 }

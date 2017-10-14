@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
-import * as _ from "lodash";
+import * as _ from 'lodash';
 
 import { CompanyService, AlertService } from './../_services/index';
 
@@ -10,10 +10,10 @@ import { CompanyService, AlertService } from './../_services/index';
     templateUrl: './company-update.component.html',
 })
 
-export class CompanyUpdateComponent {
-    companyForm: FormGroup;
-    _id: string;
-    loading: boolean = false;
+export class CompanyUpdateComponent implements OnInit {
+    private _id: string;
+    private loading = false;
+    public companyForm: FormGroup;
 
 
     constructor(
@@ -25,12 +25,12 @@ export class CompanyUpdateComponent {
 
         this.route.params.subscribe(params => {
             this._id = params._id;
-        })
+        });
 
         this.companyForm = this.formBuilder.group({
             name: [null, Validators.required],
             active: null
-        })
+        });
     }
 
     ngOnInit(): void {
@@ -43,8 +43,8 @@ export class CompanyUpdateComponent {
                     active: data.active
                 });
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
             });
     }
 
@@ -56,8 +56,8 @@ export class CompanyUpdateComponent {
             data => {
                 this.router.navigate(['/admin/companies']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
@@ -69,8 +69,8 @@ export class CompanyUpdateComponent {
             data => {
                 this.router.navigate(['/admin/companies']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
@@ -82,8 +82,8 @@ export class CompanyUpdateComponent {
             data => {
                 this.router.navigate(['/admin/companies']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }

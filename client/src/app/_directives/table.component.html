@@ -1,10 +1,10 @@
 <div class="pull-left primary">
     <i class="fa fa-align-justify" aria-hidden="true" [ngClass]="{ 'text-primary': grid, 'text-secondary': !grid }" (click)="toggleView(false)"></i>
     <i class="fa fa-th" aria-hidden="true" [ngClass]="{ 'text-primary': !grid, 'text-secondary': grid }" (click)="toggleView(true)"></i>
-    <hnPdf *ngIf="print"></hnPdf>
+    <hn-pdf *ngIf="print"></hn-pdf>
 </div>
 <div class="pull-right"> 
-    <hnTableColumnSelector (selectColumns)="setTableColoumns($event)" [defaultColumns]="defaultColumns" [tableColumns]="tableColumns" [selectedColoumns]="selectedColoumns"></hnTableColumnSelector> 
+    <hn-table-column-selector (selectColumns)="setTableColoumns($event)" [defaultColumns]="defaultColumns" [tableColumns]="tableColumns" [selectedColoumns]="selectedColoumns"></hn-table-column-selector> 
 </div>
 <br>
 <table *ngIf="!grid" [ngClass]="tableClass">
@@ -30,5 +30,5 @@
 </div>
 <br>
 <div class="pull-right"> 
-    <hnPagination (loadData)="loadTableData($event)" [total]="total" [pageBy]="pageBy"></hnPagination>
+    <hn-pagination (loadData)="loadTableData($event)" [total]="total" [pageBy]="pageBy"></hn-pagination>
 </div>

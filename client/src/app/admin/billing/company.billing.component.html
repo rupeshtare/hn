@@ -1,4 +1,4 @@
-<hnPageHeader header="Billing" icon="fa-credit-card"></hnPageHeader>
+<hn-page-header header="Billing" icon="fa-credit-card"></hn-page-header>
 <form class="alert alert-primary" [formGroup]="companyBillingForm" (ngSubmit)="submit(companyBillingForm.value)">
     <div class="form-group row">
         <label id="company-label" class="col-1">Company</label>
@@ -17,5 +17,5 @@
         </div>
     </div>
 </form>
-<hnTable name="companyBilling" [defaultColumns]="defaultColumns" [tableColumns]="orderColumns" [tableData]="orders" [selectable]="false"
-    [print]="true"></hnTable>
+<hn-table name="companyBilling" [defaultColumns]="defaultColumns" [tableColumns]="orderColumns" [tableData]="orders" [selectable]="false"
+    [print]="true"></hn-table>

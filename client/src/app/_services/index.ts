@@ -1,2 +1,2 @@
 export * from './alert.service';
-export * from './webstorage.service'
+export * from './webstorage.service';

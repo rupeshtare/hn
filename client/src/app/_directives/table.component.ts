@@ -1,65 +1,67 @@
-import { Component, Input, ViewChild, Output, EventEmitter } from '@angular/core';
+import { Component, Input, ViewChild, Output, EventEmitter, OnInit } from '@angular/core';
 import { LocalStorageService } from '../_services/index';
 
 @Component({
-    moduleId: module.id,
-    selector: 'hnTable',
-    templateUrl: 'table.component.html'
+    moduleId: module.id,
+    selector: 'hn-table',
+    templateUrl: 'table.component.html'
 })
- 
-export class TableComponent {
-    @Input() tableClass : string = 'table table-hover';
-    @Input() tableHeaderClass : string = 'thead-inverse';
-    @Input() indexColumn : boolean = true;
-    @Input() selectableColumn : string = '_id';
-    @Input() defaultColumns : Array<string> = [];
-    @Input() tableColumns : Array<string> = [];
-    @Input() tableData : Array<object> = [];
-    @Input() name : string;
-    @Input() total : number = 0;
-    @Input() pageBy : number = 10;
-    @Input() grid : boolean = false;
-    @Input() selectable : boolean = true;
-    @Input() print: boolean = false;
 
-    @Output() loadData : EventEmitter<any> = new EventEmitter<any>();
-    @Output() callBackFunction : EventEmitter<any> = new EventEmitter<any>();
+export class TableComponent implements OnInit {
+    @Input() tableClass = 'table table-hover';
+    @Input() tableHeaderClass = 'thead-inverse';
+    @Input() indexColumn = true;
+    @Input() selectableColumn = '_id';
+    @Input() defaultColumns: Array<string> = [];
+    @Input() tableColumns: Array<string> = [];
+    @Input() tableData: Array<object> = [];
+    @Input() name: string;
+    @Input() total = 0;
+    @Input() pageBy = 10;
+    @Input() grid = false;
+    @Input() selectable = true;
+    @Input() print = false;
 
-    private selectedColoumns : Array<string>;
+    @Output() loadData: EventEmitter<any> = new EventEmitter<any>();
+    @Output() callBackFunction: EventEmitter<any> = new EventEmitter<any>();
 
-    constructor(private localStorageService : LocalStorageService) { }
+    public selectedColoumns: Array<string>;
 
-    ngOnInit(){
+    constructor(private localStorageService: LocalStorageService) { }
+
+    ngOnInit() {
         this.getTableColoumns();
     }
 
-    getTableColoumns() : void {
-        let columns = this.localStorageService.get(this.name);
-        if(columns)
+    getTableColoumns(): void {
+        const columns = this.localStorageService.get(this.name);
+        if (columns) {
             this.selectedColoumns = columns;
-        else
+        } else {
             this.selectedColoumns = this.defaultColumns;
+        }
     }
 
-    setTableColoumns(columns: any) : void {
-        this.selectedColoumns = Object.keys(columns).filter(key=>{return columns[key];});
+    setTableColoumns(columns: any): void {
+        this.selectedColoumns = Object.keys(columns).filter(key => columns[key]);
         this.selectedColoumns = [...this.defaultColumns, ...this.selectedColoumns];
-        this.selectedColoumns = this.tableColumns.filter(col=>{
-            if(this.selectedColoumns.includes(col))
+        this.selectedColoumns = this.tableColumns.filter(col => {
+            if (this.selectedColoumns.includes(col)) {
                 return col;
+            }
         });
         this.localStorageService.set(this.name, this.selectedColoumns);
     }
 
-    loadTableData(pageObject: object) : void {
-        this.loadData.emit(pageObject)
+    loadTableData(pageObject: object): void {
+        this.loadData.emit(pageObject);
     }
 
-    toggleView(val: boolean) : void {
+    toggleView(val: boolean): void {
         this.grid = val;
     }
 
-    selectCallBack(data: object) : void {
+    selectCallBack(data: object): void {
         this.callBackFunction.emit(data);
     }
 }

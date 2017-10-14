@@ -8,11 +8,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 
 export class OrderListComponent {
-    private orders: Array<object> = [];
-    private total: number = 0;
-    private orderColumns: Array<string> = ["customer.firstName", "customer.lastName", "order.name", "order.price", "order.quantity", "order.bill"];
-    private defaultColumns: Array<string> = ["customer.firstName", "order.name", "order.bill"];
-    loading = false;
+    private loading = false;
+    public orders: Array<object> = [];
+    public total = 0;
+    public orderColumns: Array<string> = ['customer.firstName', 'customer.lastName', 'order.name',
+        'order.price', 'order.quantity', 'order.bill'];
+    public defaultColumns: Array<string> = ['customer.firstName', 'order.name', 'order.bill'];
 
 
     constructor(
@@ -25,8 +26,8 @@ export class OrderListComponent {
             resp => {
                 ({ total: this.total, data: this.orders } = resp.json());
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }

@@ -9,12 +9,12 @@ import { Router } from '@angular/router';
     templateUrl: './order.component.html',
 })
 
-export class OrderComponent {
-    orderForm: FormGroup;
-    loading: boolean = false;
-    totalBill: number = 0;
-    private menus: Array<object> = [];
-    private customers: Array<object> = [];
+export class OrderComponent implements OnInit {
+    private loading = false;
+    public totalBill = 0;
+    public menus: Array<object> = [];
+    public customers: Array<object> = [];
+    public orderForm: FormGroup;
 
 
     constructor(
@@ -31,7 +31,7 @@ export class OrderComponent {
             customer: [null, Validators.required],
             active: true,
             orders: this.formBuilder.array([this.initOrder()])
-        })
+        });
 
         this.loading = true;
         this.menuService.getAll({ active: true, include: ['name', 'price'] })
@@ -39,8 +39,8 @@ export class OrderComponent {
             resp => {
                 ({ data: this.menus } = resp.json());
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
 
@@ -49,21 +49,21 @@ export class OrderComponent {
             resp => {
                 ({ data: this.customers } = resp.json());
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
 
-    submit(data) {
+    submit(values) {
         this.loading = true;
-        this.orderService.create(data)
+        this.orderService.create(values)
             .subscribe(
             data => {
                 this.router.navigate(['/admin/orders']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
@@ -78,25 +78,29 @@ export class OrderComponent {
 
     calculateTotalAmount(control: FormArray) {
         this.totalBill = control.controls.reduce((prev, curr) => {
-            if (curr.value.menu !== null) prev += (curr.value.menu.price * curr.value.quantity); return prev;
-        }, 0)
+            if (curr.value.menu !== null) {
+                prev += (curr.value.menu.price * curr.value.quantity);
+                return prev;
+            }
+        }, 0);
     }
 
     calculateAmount(i: number, control: FormArray) {
-        let val = control.controls[i].value;
-        control.controls[i].patchValue({ "amount": val.menu.price * val.quantity });
+        const val = control.controls[i].value;
+        control.controls[i].patchValue({ 'amount': val.menu.price * val.quantity });
         this.calculateTotalAmount(control);
     }
 
     addOrder(i: number) {
-        let control = <FormArray>this.orderForm.get('orders');
+        const control = <FormArray>this.orderForm.get('orders');
         this.calculateAmount(i, control);
-        if (control.controls[control.length - 1].value.amount !== null)
+        if (control.controls[control.length - 1].value.amount !== null) {
             control.push(this.initOrder());
+        }
     }
 
     removeOrder(i: number) {
-        let control = <FormArray>this.orderForm.get('orders');
+        const control = <FormArray>this.orderForm.get('orders');
         control.removeAt(i);
     }
 

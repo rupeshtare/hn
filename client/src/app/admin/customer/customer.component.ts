@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormArray } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -10,11 +10,11 @@ import * as moment from 'moment';
     templateUrl: './customer.component.html',
 })
 
-export class CustomerComponent {
-    customerForm: FormGroup;
-    loading = false;
-    private companies: Array<object> = [];
-    employeeTypeOptions = ['Employee', 'Contractor', 'Guest'];
+export class CustomerComponent implements OnInit {
+    private loading = false;
+    public companies: Array<object> = [];
+    public employeeTypeOptions = ['Employee', 'Contractor', 'Guest'];
+    public customerForm: FormGroup;
 
 
     constructor(
@@ -33,7 +33,7 @@ export class CustomerComponent {
             dob: moment().toDate(),
             email: '',
             employeeType: this.employeeTypeOptions[0],
-        })
+        });
     }
 
     ngOnInit(): void {
@@ -43,25 +43,23 @@ export class CustomerComponent {
             resp => {
                 ({ data: this.companies } = resp.json());
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
-            }
-        )
+            });
     }
 
-    submit(data) {
+    submit(value) {
         this.loading = true;
-        this.customerService.create(data)
+        this.customerService.create(value)
             .subscribe(
             data => {
                 this.router.navigate(['/admin/customers']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
-            }
-            );
+            });
     }
 
 }

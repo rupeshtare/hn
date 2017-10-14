@@ -2,28 +2,28 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 
 
 @Component({
-    moduleId: module.id,
-    selector: 'hnPagination',
+    moduleId: module.id,
+    selector: 'hn-pagination',
     templateUrl: './table-pagination.component.html',
 })
 
 
 export class TablePaginationComponent implements OnInit {
-    @Input() total : number = 0;
-    @Input() pageBy : number = 10;
+    @Input() total = 0;
+    @Input() pageBy = 10;
 
-    @Output() loadData : EventEmitter<any> = new EventEmitter<any>();
+    @Output() loadData: EventEmitter<any> = new EventEmitter<any>();
 
-    start : number = 1;
-    end : number = 0;
+    public start = 1;
+    public end = 0;
 
-    ngOnInit(){
+    ngOnInit() {
         this.loadTableData();
         this.end = this.pageBy;
     }
-    
+
     loadTableData() {
-        let data = {skip: this.start-1, limit: this.pageBy};
+        const data = { skip: this.start - 1, limit: this.pageBy };
         this.loadData.emit(data);
     }
 

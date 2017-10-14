@@ -10,11 +10,11 @@ import * as moment from 'moment';
 })
 
 export class MessMemberComponent implements OnInit {
-    messMemberForm : FormGroup;
-    loading : boolean = false;
-    timeingOptions = ['Lunch', 'Dinner', 'Both'];
-    daysOptions = [15, 30];
-    private customers: Array<object> = [];
+    private loading = false;
+    public messMemberForm: FormGroup;
+    public timeingOptions = ['Lunch', 'Dinner', 'Both'];
+    public daysOptions = [15, 30];
+    public customers: Array<object> = [];
 
 
     constructor(
@@ -23,50 +23,48 @@ export class MessMemberComponent implements OnInit {
         private messMemberService: MessService,
         private alertService: AlertService,
         private formBuilder: FormBuilder) { }
-    
-    ngOnInit() : void {
+
+    ngOnInit(): void {
 
         this.messMemberForm = this.formBuilder.group({
-            customer : [null, Validators.required],
-            timeing : 'Lunch',
-            days : '30',
-            startDate : moment(),
-            endDate : moment().add(29, 'days')
-        })
+            customer: [null, Validators.required],
+            timeing: 'Lunch',
+            days: '30',
+            startDate: moment(),
+            endDate: moment().add(29, 'days')
+        });
 
-        this.messMemberForm.get("days").valueChanges.subscribe(data=>{
+        this.messMemberForm.get('days').valueChanges.subscribe(data => {
             this.changeLastDate(data);
         });
 
         this.loading = true;
-        this.customerService.getAll({active: true, include: ['firstName', 'lastName', 'company.name']}).subscribe(
+        this.customerService.getAll({ active: true, include: ['firstName', 'lastName', 'company.name'] }).subscribe(
             resp => {
-                ({data: this.customers} = resp.json());
+                ({ data: this.customers } = resp.json());
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
-            }
-        )
+            });
     }
 
-    submit(data) {
+    submit(values) {
         this.loading = true;
-        this.messMemberService.create(data)
-        .subscribe(
+        this.messMemberService.create(values)
+            .subscribe(
             data => {
                 this.router.navigate(['/admin/mess-members']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
-            }
-        );
+            });
     }
 
     changeLastDate(days) {
         this.messMemberForm.patchValue({
-            endDate: moment().add(parseInt(days), "days").subtract(1, "days"),
+            endDate: moment().add(parseInt(days, 10), 'days').subtract(1, 'days'),
         });
     }
 

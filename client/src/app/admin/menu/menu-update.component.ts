@@ -10,12 +10,12 @@ import { AlertService, MenuService } from './../_services/index';
 })
 
 export class MenuUpdateComponent implements OnInit {
-    menuForm: FormGroup;
-    _id: string;
-    loading: boolean = false;
-    availableOptions = ['Morning', 'Noon', 'Evening', 'Night'];
-    tasteTypeOptions = ['Spicy', 'Sweet', 'Salty', 'Sweet N Salty'];
-    subTasteTypeOptions = ['Normal', 'Medium', 'High'];
+    private _id: string;
+    private loading = false;
+    public availableOptions = ['Morning', 'Noon', 'Evening', 'Night'];
+    public tasteTypeOptions = ['Spicy', 'Sweet', 'Salty', 'Sweet N Salty'];
+    public subTasteTypeOptions = ['Normal', 'Medium', 'High'];
+    public menuForm: FormGroup;
 
 
     constructor(
@@ -27,7 +27,7 @@ export class MenuUpdateComponent implements OnInit {
 
         this.route.params.subscribe(params => {
             this._id = params._id;
-        })
+        });
 
         this.menuForm = formBuilder.group({
             name: [null, Validators.required],
@@ -40,7 +40,7 @@ export class MenuUpdateComponent implements OnInit {
             tasteType: '',
             subTasteType: '',
             active: null,
-        })
+        });
     }
 
     ngOnInit() {
@@ -58,8 +58,8 @@ export class MenuUpdateComponent implements OnInit {
                     active: data.active,
                 });
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
             });
     }
 
@@ -71,8 +71,8 @@ export class MenuUpdateComponent implements OnInit {
             data => {
                 this.router.navigate(['/admin/menus']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
@@ -84,8 +84,8 @@ export class MenuUpdateComponent implements OnInit {
             data => {
                 this.router.navigate(['/admin/menus']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
@@ -97,8 +97,8 @@ export class MenuUpdateComponent implements OnInit {
             data => {
                 this.router.navigate(['/admin/menus']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }

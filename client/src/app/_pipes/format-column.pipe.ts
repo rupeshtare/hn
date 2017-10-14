@@ -12,34 +12,34 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 
 export class FormatColumnPipe implements PipeTransform {
-    transform(input: any): string{
+    transform(input: any): string {
         let output = '-';
-        switch(Object.prototype.toString.call(input)) { 
-            case "[object Array]": {
-                output = input.join(", ");
+        switch (Object.prototype.toString.call(input)) {
+            case '[object Array]': {
+                output = input.join(', ');
                 break;
             }
-            case "[object Object]": {
-                output = Object.keys(input).filter(key=>{return input[key];}).join(", ");
-                 break;
-            } 
-            case "[object String]": {
+            case '[object Object]': {
+                output = Object.keys(input).filter(key => input[key]).join(', ');
+                break;
+            }
+            case '[object String]': {
                 output = input;
-                 break;
-            }            
-            case "[object Number]": {
+                break;
+            }
+            case '[object Number]': {
                 output = input.toString();
-                 break;
-            }            
-            case "[object Boolean]": {
+                break;
+            }
+            case '[object Boolean]': {
                 output = input ? 'Yes' : 'No';
-                 break;
+                break;
             }
             default: {
                 break;
             }
         }
-        
+
         return output;
     }
 }

@@ -9,11 +9,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 
 export class MenuListComponent {
-    private menus: Array<object> = [];
-    private total: number = 0;
-    private menuColumns: Array<string> = ["name", "price", "active", "available", "category", "subCategory", "tasteType", "subTasteType"];
-    private defaultColumns: Array<string> = ["name", "price"];
-    loading = false;
+    private loading = false;
+    public menus: Array<object> = [];
+    public total = 0;
+    public menuColumns: Array<string> = ['name', 'price', 'active', 'available', 'category', 'subCategory', 'tasteType', 'subTasteType'];
+    public defaultColumns: Array<string> = ['name', 'price'];
 
 
     constructor(
@@ -26,8 +26,8 @@ export class MenuListComponent {
             resp => {
                 ({ total: this.total, data: this.menus } = resp.json());
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }

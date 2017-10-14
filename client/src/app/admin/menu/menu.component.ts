@@ -10,11 +10,11 @@ import { AlertService, MenuService } from './../_services/index';
 })
 
 export class MenuComponent {
-    menuForm: FormGroup;
-    loading: boolean = false;
-    availableOptions = ['Morning', 'Noon', 'Evening', 'Night'];
-    tasteTypeOptions = ['Spicy', 'Sweet', 'Salty', 'Sweet N Salty'];
-    subTasteTypeOptions = ['Normal', 'Medium', 'High'];
+    private loading = false;
+    public availableOptions = ['Morning', 'Noon', 'Evening', 'Night'];
+    public tasteTypeOptions = ['Spicy', 'Sweet', 'Salty', 'Sweet N Salty'];
+    public subTasteTypeOptions = ['Normal', 'Medium', 'High'];
+    public menuForm: FormGroup;
 
 
     constructor(
@@ -33,18 +33,18 @@ export class MenuComponent {
             subCategory: '',
             tasteType: '',
             subTasteType: ''
-        })
+        });
     }
 
-    submit(data) {
+    submit(values) {
         this.loading = true;
-        this.menuService.create(data)
+        this.menuService.create(values)
             .subscribe(
             data => {
                 this.router.navigate(['/admin/menus']);
             },
-            error => {
-                this.alertService.error(error);
+            err => {
+                this.alertService.error(err);
                 this.loading = false;
             });
     }
