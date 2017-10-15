@@ -10,7 +10,6 @@ import * as moment from 'moment';
 })
 
 export class CompanyBillingComponent implements OnInit {
-    private loading = false;
     private totalBill = 0;
     public companies: Array<object> = [];
     public orders: Array<object> = [];
@@ -33,26 +32,22 @@ export class CompanyBillingComponent implements OnInit {
             endDate: [moment().add(1, 'days').startOf('day').toDate(), Validators.required]
         });
 
-        this.loading = true;
         this.companyService.getAll({}).subscribe(
             resp => {
                 ({ data: this.companies } = resp.json());
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
     submit(values) {
-        this.loading = true;
         this.orderService.getOrders(values).subscribe(
             resp => {
                 ({ data: this.orders } = resp.json());
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 

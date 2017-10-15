@@ -12,7 +12,6 @@ import { CompanyService, AlertService } from './../_services/index';
 
 export class CompanyUpdateComponent implements OnInit {
     private _id: string;
-    private loading = false;
     public companyForm: FormGroup;
 
 
@@ -49,7 +48,6 @@ export class CompanyUpdateComponent implements OnInit {
     }
 
     update(value) {
-        this.loading = true;
         value._id = this._id;
         this.companyService.update(value)
             .subscribe(
@@ -58,12 +56,10 @@ export class CompanyUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
     deactive() {
-        this.loading = true;
         this.companyService.deactive(this._id)
             .subscribe(
             data => {
@@ -71,12 +67,10 @@ export class CompanyUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
     active() {
-        this.loading = true;
         this.companyService.active(this._id)
             .subscribe(
             data => {
@@ -84,7 +78,6 @@ export class CompanyUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 }

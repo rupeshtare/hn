@@ -8,7 +8,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 
 export class MessMemberListComponent {
-    private loading = false;
     public messMembers: Array<object> = [];
     public total = 0;
     public messMemberColumns: Array<string> = ['customer.firstName', 'customer.lastName', 'timeing',
@@ -21,7 +20,6 @@ export class MessMemberListComponent {
         private alertService: AlertService) { }
 
     loadMessMembers(event: object): void {
-        this.loading = true;
         this.messMemberService.getAll(event).subscribe(
             resp => {
                 ({ total: this.total, data: this.messMembers } = resp.json());

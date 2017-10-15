@@ -12,7 +12,6 @@ import * as moment from 'moment';
 
 export class CustomerUpdateComponent implements OnInit {
     private _id: string;
-    private loading = false;
     public companies: Array<object> = [];
     public employeeTypeOptions = ['Employee', 'Contractor', 'Guest'];
     public customerForm: FormGroup;
@@ -45,8 +44,6 @@ export class CustomerUpdateComponent implements OnInit {
 
     ngOnInit() {
 
-        this.loading = true;
-
         this.customerService.getById(this._id)
             .subscribe(
             data => {
@@ -72,12 +69,10 @@ export class CustomerUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
     update(value) {
-        this.loading = true;
         value._id = this._id;
         this.customerService.update(value)
             .subscribe(
@@ -86,7 +81,6 @@ export class CustomerUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
@@ -95,7 +89,6 @@ export class CustomerUpdateComponent implements OnInit {
     }
 
     deactive() {
-        this.loading = true;
         this.customerService.deactive(this._id)
             .subscribe(
             data => {
@@ -103,12 +96,10 @@ export class CustomerUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
     active() {
-        this.loading = true;
         this.customerService.active(this._id)
             .subscribe(
             data => {
@@ -116,7 +107,6 @@ export class CustomerUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 

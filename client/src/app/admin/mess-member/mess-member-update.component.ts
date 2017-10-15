@@ -11,7 +11,6 @@ import * as moment from 'moment';
 
 export class MessMemberUpdateComponent implements OnInit {
     private _id: string;
-    private loading = false;
     public timeingOptions = ['Lunch', 'Dinner', 'Both'];
     public daysOptions = [15, 30];
     public customers: Array<object> = [];
@@ -73,7 +72,6 @@ export class MessMemberUpdateComponent implements OnInit {
     }
 
     update(values) {
-        this.loading = true;
         values._id = this._id;
         this.messMemberService.update(values)
             .subscribe(
@@ -82,7 +80,6 @@ export class MessMemberUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
@@ -97,7 +94,6 @@ export class MessMemberUpdateComponent implements OnInit {
     }
 
     deactive() {
-        this.loading = true;
         this.messMemberService.deactive(this._id)
             .subscribe(
             data => {
@@ -105,12 +101,11 @@ export class MessMemberUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
     active() {
-        this.loading = true;
+
         this.messMemberService.active(this._id)
             .subscribe(
             data => {
@@ -118,7 +113,7 @@ export class MessMemberUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
+
             });
     }
 

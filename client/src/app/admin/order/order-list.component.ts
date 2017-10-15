@@ -8,7 +8,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 })
 
 export class OrderListComponent {
-    private loading = false;
     public orders: Array<object> = [];
     public total = 0;
     public orderColumns: Array<string> = ['customer.firstName', 'customer.lastName', 'order.name',
@@ -21,14 +20,12 @@ export class OrderListComponent {
         private alertService: AlertService) { }
 
     loadOrders(event: object): void {
-        this.loading = true;
         this.orderService.getAll(event).subscribe(
             resp => {
                 ({ total: this.total, data: this.orders } = resp.json());
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 

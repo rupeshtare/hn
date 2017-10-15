@@ -4,10 +4,11 @@ import {
     Response, Http, Headers, URLSearchParams
 } from '@angular/http';
 import { environment } from './../../environments/environment';
-import { SessionStorageService } from '../_services/index';
+import { SessionStorageService, LoaderService } from '../_services/index';
 
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
+import 'rxjs/add/operator/finally';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/observable/throw';
 
@@ -15,7 +16,8 @@ import 'rxjs/add/observable/throw';
 export class InterceptedHttp extends Http {
     constructor(
         backend: ConnectionBackend,
-        defaultOptions: RequestOptions) {
+        defaultOptions: RequestOptions,
+        private loaderService: LoaderService) {
         super(backend, defaultOptions);
     }
 
@@ -28,6 +30,7 @@ export class InterceptedHttp extends Http {
     }
 
     get(url: string, params?: object, options?: RequestOptionsArgs): Observable<Response> {
+        this.onStart();
         if (params !== undefined) {
             const myParams = new URLSearchParams();
             Object.keys(params).forEach(key => { myParams.set(key, params[key]); });
@@ -35,22 +38,25 @@ export class InterceptedHttp extends Http {
             options.params = myParams;
         }
         url = this.updateUrl(url);
-        return super.get(url, this.getRequestOptionArgs(options));
+        return super.get(url, this.getRequestOptionArgs(options)).finally(() => { this.onEnd(); });
     }
 
     post(url: string, body: string, options?: RequestOptionsArgs): Observable<Response> {
+        this.onStart();
         url = this.updateUrl(url);
-        return super.post(url, body, this.getRequestOptionArgs(options));
+        return super.post(url, body, this.getRequestOptionArgs(options)).finally(() => { this.onEnd(); });
     }
 
     put(url: string, body: string, options?: RequestOptionsArgs): Observable<Response> {
+        this.onStart();
         url = this.updateUrl(url);
-        return super.put(url, body, this.getRequestOptionArgs(options));
+        return super.put(url, body, this.getRequestOptionArgs(options)).finally(() => { this.onEnd(); });
     }
 
     delete(url: string, options?: RequestOptionsArgs): Observable<Response> {
+        this.onStart();
         url = this.updateUrl(url);
-        return super.delete(url, this.getRequestOptionArgs(options));
+        return super.delete(url, this.getRequestOptionArgs(options)).finally(() => { this.onEnd(); });
     }
 
     private updateUrl(req: string) {
@@ -82,14 +88,23 @@ export class InterceptedHttp extends Http {
         }
         return Observable.throw(error._body);
     }
+
+    private onStart() {
+        this.loaderService.show();
+    }
+
+    private onEnd() {
+        this.loaderService.hide();
+    }
+
 }
 
-export function customHttpFactory(xhrBackend: XHRBackend, requestOptions: RequestOptions): Http {
-    return new InterceptedHttp(xhrBackend, requestOptions);
+export function customHttpFactory(xhrBackend: XHRBackend, requestOptions: RequestOptions, loaderService: LoaderService): Http {
+    return new InterceptedHttp(xhrBackend, requestOptions, loaderService);
 }
 
 export let customHttpProvider = {
     provide: Http,
     useFactory: customHttpFactory,
-    deps: [XHRBackend, RequestOptions]
+    deps: [XHRBackend, RequestOptions, LoaderService]
 };

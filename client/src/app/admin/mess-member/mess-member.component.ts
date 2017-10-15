@@ -10,7 +10,6 @@ import * as moment from 'moment';
 })
 
 export class MessMemberComponent implements OnInit {
-    private loading = false;
     public messMemberForm: FormGroup;
     public timeingOptions = ['Lunch', 'Dinner', 'Both'];
     public daysOptions = [15, 30];
@@ -38,19 +37,16 @@ export class MessMemberComponent implements OnInit {
             this.changeLastDate(data);
         });
 
-        this.loading = true;
         this.customerService.getAll({ active: true, include: ['firstName', 'lastName', 'company.name'] }).subscribe(
             resp => {
                 ({ data: this.customers } = resp.json());
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
     submit(values) {
-        this.loading = true;
         this.messMemberService.create(values)
             .subscribe(
             data => {
@@ -58,7 +54,6 @@ export class MessMemberComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 

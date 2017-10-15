@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 })
 
 export class CompanyListComponent {
-    private loading = false;
     public total = 0;
     public companies: Array<object> = [];
     public companyColumns: Array<string> = ['name', 'active'];
@@ -23,14 +22,12 @@ export class CompanyListComponent {
         private alertService: AlertService) { }
 
     loadCompnies(event: object): void {
-        this.loading = true;
         this.companyService.getAll(event).subscribe(
             resp => {
                 ({ total: this.total, data: this.companies } = resp.json());
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 

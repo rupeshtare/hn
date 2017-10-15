@@ -14,7 +14,7 @@ function hours() {
 }
 
 function startOfDay(date) {
-    return typeof date !== 'undefined' ? moment(date, 'ddd MMM DD YYYY hh:mm:ss ZZ').startOf('day').toDate() : moment().startOf('day').toDate();
+    return typeof date !== 'undefined' ? moment(date, ['YYYY-MM-DD hh:mm:ss ZZ', 'ddd MMM DD YYYY hh:mm:ss ZZ']).startOf('day').toDate() : moment().startOf('day').toDate();
 }
 
 function currentDate() {

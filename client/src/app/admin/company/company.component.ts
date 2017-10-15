@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 })
 
 export class CompanyComponent implements OnInit {
-    private loading = false;
     public companyForm: FormGroup;
 
 
@@ -27,7 +26,6 @@ export class CompanyComponent implements OnInit {
     }
 
     submit(values) {
-        this.loading = true;
         this.companyService.create(values)
             .subscribe(
             data => {
@@ -35,7 +33,6 @@ export class CompanyComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 

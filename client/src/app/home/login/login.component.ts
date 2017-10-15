@@ -8,9 +8,8 @@ import { AlertService, AuthenticationService } from './../_services/index';
 })
 
 export class LoginComponent implements OnInit {
-    model: any = {};
-    loading = false;
-    returnUrl: string;
+    public model: any = {};
+    private returnUrl: string;
 
     constructor(
         private route: ActivatedRoute,
@@ -27,16 +26,13 @@ export class LoginComponent implements OnInit {
     }
 
     login() {
-        this.loading = true;
         this.authenticationService.login(this.model.username, this.model.password)
             .subscribe(
             data => {
                 this.router.navigate([this.returnUrl]);
-                this.loading = false;
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 }

@@ -1,2 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 @import '../node_modules/bootstrap/scss/bootstrap';
+.hn-alert {
+    position: fixed;    
+    z-index: 999;
+    top:0;
+    left:0;
+    width:100%;
+}
+
+.hn-progress-bar {
+    position: fixed;    
+    z-index: 1099;
+    top:0;
+    left:0;
+    width:100%;
+}

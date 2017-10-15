@@ -10,7 +10,6 @@ import { AlertService, MenuService } from './../_services/index';
 })
 
 export class MenuComponent {
-    private loading = false;
     public availableOptions = ['Morning', 'Noon', 'Evening', 'Night'];
     public tasteTypeOptions = ['Spicy', 'Sweet', 'Salty', 'Sweet N Salty'];
     public subTasteTypeOptions = ['Normal', 'Medium', 'High'];
@@ -37,7 +36,6 @@ export class MenuComponent {
     }
 
     submit(values) {
-        this.loading = true;
         this.menuService.create(values)
             .subscribe(
             data => {
@@ -45,7 +43,6 @@ export class MenuComponent {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 

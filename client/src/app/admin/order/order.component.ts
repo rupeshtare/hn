@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
 })
 
 export class OrderComponent implements OnInit {
-    private loading = false;
     public totalBill = 0;
     public menus: Array<object> = [];
     public customers: Array<object> = [];
@@ -33,7 +32,6 @@ export class OrderComponent implements OnInit {
             orders: this.formBuilder.array([this.initOrder()])
         });
 
-        this.loading = true;
         this.menuService.getAll({ active: true, include: ['name', 'price'] })
             .subscribe(
             resp => {
@@ -41,7 +39,6 @@ export class OrderComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
 
         this.customerService.getAll({ active: true, include: ['firstName', 'lastName', 'company.name'] })
@@ -51,12 +48,10 @@ export class OrderComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
     submit(values) {
-        this.loading = true;
         this.orderService.create(values)
             .subscribe(
             data => {
@@ -64,7 +59,6 @@ export class OrderComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 

@@ -11,7 +11,6 @@ import { AlertService, MenuService } from './../_services/index';
 
 export class MenuUpdateComponent implements OnInit {
     private _id: string;
-    private loading = false;
     public availableOptions = ['Morning', 'Noon', 'Evening', 'Night'];
     public tasteTypeOptions = ['Spicy', 'Sweet', 'Salty', 'Sweet N Salty'];
     public subTasteTypeOptions = ['Normal', 'Medium', 'High'];
@@ -64,7 +63,6 @@ export class MenuUpdateComponent implements OnInit {
     }
 
     update(value) {
-        this.loading = true;
         value._id = this._id;
         this.menuService.update(value)
             .subscribe(
@@ -73,12 +71,10 @@ export class MenuUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
     deactive() {
-        this.loading = true;
         this.menuService.deactive(this._id)
             .subscribe(
             data => {
@@ -86,12 +82,10 @@ export class MenuUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
     active() {
-        this.loading = true;
         this.menuService.active(this._id)
             .subscribe(
             data => {
@@ -99,7 +93,6 @@ export class MenuUpdateComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 

@@ -11,7 +11,6 @@ import * as _ from 'lodash';
 })
 
 export class MessListComponent implements OnInit {
-    private loading = false;
     public messMembers: Array<object> = [];
     public dineMembers: object = { members: [] };
     public total = 0;
@@ -26,7 +25,6 @@ export class MessListComponent implements OnInit {
         private alertService: AlertService) { }
 
     ngOnInit() {
-        this.loading = true;
         this.dineService.getActive({ include: ['members'] }).subscribe(
             resp => {
                 this.dineMembers = resp.json().data ? resp.json().data : this.dineMembers;
@@ -37,7 +35,6 @@ export class MessListComponent implements OnInit {
     }
 
     loadMessMembers(event: object): void {
-        this.loading = true;
         this.messMemberService.getAllActive({ include: ['customer'] }).subscribe(
             resp => {
                 ({ total: this.total, data: this.messMembers } = resp.json());

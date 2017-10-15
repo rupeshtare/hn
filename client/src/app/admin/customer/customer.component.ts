@@ -11,7 +11,6 @@ import * as moment from 'moment';
 })
 
 export class CustomerComponent implements OnInit {
-    private loading = false;
     public companies: Array<object> = [];
     public employeeTypeOptions = ['Employee', 'Contractor', 'Guest'];
     public customerForm: FormGroup;
@@ -38,19 +37,16 @@ export class CustomerComponent implements OnInit {
 
     ngOnInit(): void {
 
-        this.loading = true;
         this.companyService.getAll({ active: true, include: ['name'] }).subscribe(
             resp => {
                 ({ data: this.companies } = resp.json());
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
     submit(value) {
-        this.loading = true;
         this.customerService.create(value)
             .subscribe(
             data => {
@@ -58,7 +54,6 @@ export class CustomerComponent implements OnInit {
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 

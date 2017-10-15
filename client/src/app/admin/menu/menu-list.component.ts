@@ -9,7 +9,6 @@ import { HttpErrorResponse } from '@angular/common/http';
 
 
 export class MenuListComponent {
-    private loading = false;
     public menus: Array<object> = [];
     public total = 0;
     public menuColumns: Array<string> = ['name', 'price', 'active', 'available', 'category', 'subCategory', 'tasteType', 'subTasteType'];
@@ -21,14 +20,12 @@ export class MenuListComponent {
         private alertService: AlertService) { }
 
     loadMenus(event: object): void {
-        this.loading = true;
         this.menuService.getAll(event).subscribe(
             resp => {
                 ({ total: this.total, data: this.menus } = resp.json());
             },
             err => {
                 this.alertService.error(err);
-                this.loading = false;
             });
     }
 
