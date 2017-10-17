@@ -1,8 +1,12 @@
+import * as CryptoJS from 'crypto-js';
+
 const KEY_PREFIX = 'hn';
+const KEY = CryptoJS.enc.Base64.parse('ParseTwice2');
+const IV = { iv: CryptoJS.enc.Base64.parse('#base64IV#') };
 
 export class WebStorageUtility {
     static generateStorageKey(key: string): string {
-        return `${KEY_PREFIX}_${key}`;
+        return CryptoJS.AES.encrypt(`${KEY_PREFIX}_${key}`, KEY, IV).toString();
     }
 
     static get(storage: Storage, key: string): any {
@@ -26,10 +30,15 @@ export class WebStorageUtility {
     }
 
     private static getSettable(value: any): string {
-        return typeof value === 'string' ? value : JSON.stringify(value);
+        value = typeof value === 'string' ? value : JSON.stringify(value);
+        return CryptoJS.AES.encrypt(value, KEY, IV).toString();
     }
 
     private static getGettable(value: string): any {
+        if (value === null) {
+            return value;
+        }
+        value = CryptoJS.AES.decrypt(value, KEY, IV).toString(CryptoJS.enc.Utf8);
         try {
             return JSON.parse(value);
         } catch (e) {

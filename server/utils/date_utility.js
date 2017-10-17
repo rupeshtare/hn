@@ -2,6 +2,7 @@ var moment = require('moment');
 
 var date = {};
 
+date.moment = moment;
 date.hours = hours;
 date.startOfDay = startOfDay;
 date.currentDate = currentDate;

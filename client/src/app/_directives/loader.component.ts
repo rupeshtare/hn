@@ -17,7 +17,6 @@ export class LoaderComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.subscription = this.loaderService.getStatus().subscribe(data => { this.loading = data.status; });
-        this.loaderService.getStatus().subscribe(data => { console.log(data.status); });
     }
     ngOnDestroy() {
         this.subscription.unsubscribe();

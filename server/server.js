@@ -8,6 +8,8 @@ var config = require('config.json');
 var _ = require('lodash');
 var date = require('utils/date_utility');
 
+var schedule = require('schedule/hn.schedule');
+
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -31,28 +33,37 @@ app.get('*', function (req, res, next) {
 
     req.query.query = _.omit(req.query, ['skip', 'limit', 'include']);
 
-    if(req.query.query.hasOwnProperty("active"))
+    if (req.query.query.hasOwnProperty("active"))
         req.query.query["active"] = req.query["active"] === "true";
 
-    next();
+    setTimeout(() => {
+        next();
+    }, 500)
 })
 
 // Middleware to add created on & created by
 app.post('*', function (req, res, next) {
     req.body = _.merge(req.body, { createdBy: req.user, createdOn: date.currentDate(), active: true });
-    next();
+    setTimeout(() => {
+        next();
+    }, 500)
 })
 
 // Middleware to add updated on & updated by
 app.put('*', function (req, res, next) {
-    req.body = _.merge(req.body, { updatedBy: req.user, updatedOn: date.currentDate() });
-    next();
+    req.body = _.merge(req.body, { updatedBy: req.user, updatedOn: date.currentDate() })
+    setTimeout(() => {
+        next();
+    }, 500)
+
 })
 
 // Middleware to add updated on & updated by
 app.delete('*', function (req, res, next) {
     req.body = _.merge(req.body, { updatedBy: req.user, updatedOn: date.currentDate() });
-    next();
+    setTimeout(() => {
+        next();
+    }, 500)
 })
 
 // routes
