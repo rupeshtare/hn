@@ -12,8 +12,7 @@
             <div class="col-sm-10">
                 <div class="form-check" *ngFor="let option of timeingOptions">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="radio" formControlName="timeing" value="{{option}}">
-                        {{option}}
+                        <input class="form-check-input" type="radio" formControlName="timeing" value="{{option}}"> {{option}}
                     </label>
                 </div>
             </div>
@@ -25,13 +24,24 @@
             <div class="col-sm-10">
                 <div class="form-check" *ngFor="let option of daysOptions">
                     <label class="form-check-label">
-                        <input class="form-check-input" type="radio" formControlName="days" value="{{option}}">
-                        {{option}}
+                        <input class="form-check-input" type="radio" formControlName="days" value="{{option}}"> {{option}}
                     </label>
                 </div>
             </div>
         </div>
     </fieldset>
+    <div class="form-group row" *ngIf="messMemberForm.controls.days.value===customDays">
+        <label for="inputCustomDays" class="col-sm-2 col-form-label">Custom Days</label>
+        <div>
+            <input type="text" class="form-control" formControlName="customDays" [ngClass]="{ 'is-invalid': !messMemberForm.controls.customDays.valid }">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputPrice" class="col-sm-2 col-form-label">Price</label>
+        <div>
+            <input type="text" class="form-control" formControlName="price">
+        </div>
+    </div>
     <div class="form-group row">
         <label for="inputStartDate" class="col-sm-2 col-form-label">Start Date</label>
         <date-picker class="form-control col-3" format="DD-MM-YYYY" [showClearButton]="false" disabled="true" formControlName="startDate"></date-picker>
@@ -43,10 +53,10 @@
     <div class="form-group row p-3 mb-2 bg-dark text-white">
         <div class="col-sm-2"></div>
         <div>
-            <button type="submit" class="btn btn-primary" [disabled]="messMemberForm.invalid">Update</button>
+            <button *ngIf="messMemberForm.value.active" type="submit" class="btn btn-primary" [disabled]="messMemberForm.invalid">Update</button>
+            <button *ngIf="!messMemberForm.value.active" type="button" class="btn btn-primary" (click)="active()">Active</button>
             <button type="button" class="btn btn-light" routerLink="/admin/mess-members">Cancle</button>
             <button *ngIf="messMemberForm.value.active" type="button" class="btn btn-danger" (click)="deactive()">Deactive</button>
-            <button *ngIf="!messMemberForm.value.active" type="button" class="btn btn-success" (click)="active()">Active</button>
         </div>
     </div>
 </form>

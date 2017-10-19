@@ -58,10 +58,10 @@
     <div class="form-group row p-3 mb-2 bg-dark text-white">
         <div class="col-sm-2"></div>
         <div>
-            <button type="submit" class="btn btn-primary" [disabled]="customerForm.invalid">Update</button>
+            <button *ngIf="customerForm.value.active" type="submit" class="btn btn-primary" [disabled]="customerForm.invalid">Update</button>
+            <button *ngIf="!customerForm.value.active" type="button" class="btn btn-primary" (click)="active()">Active</button>
             <button type="button" class="btn btn-light" routerLink="/admin/customers">Cancle</button>
             <button *ngIf="customerForm.value.active" type="button" class="btn btn-danger" (click)="deactive()">Deactive</button>
-            <button *ngIf="!customerForm.value.active" type="button" class="btn btn-success" (click)="active()">Active</button>
         </div>
     </div>
 </form>

@@ -14,7 +14,7 @@ export class MessListComponent implements OnInit {
     public messMembers: Array<object> = [];
     public dineMembers: object = { members: [] };
     public total = 0;
-    public messMemberColumns: Array<string> = ['customer.firstName', 'customer.lastName', 'createdOn'];
+    public messMemberColumns: Array<string> = ['customer.firstName', 'customer.lastName', 'createdOn|ago'];
     public defaultColumns: Array<string> = ['customer.firstName', 'customer.lastName'];
     public selectedDine: object = null;
 

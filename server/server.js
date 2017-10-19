@@ -36,34 +36,25 @@ app.get('*', function (req, res, next) {
     if (req.query.query.hasOwnProperty("active"))
         req.query.query["active"] = req.query["active"] === "true";
 
-    setTimeout(() => {
-        next();
-    }, 500)
+    next();
 })
 
 // Middleware to add created on & created by
 app.post('*', function (req, res, next) {
     req.body = _.merge(req.body, { createdBy: req.user, createdOn: date.currentDate(), active: true });
-    setTimeout(() => {
-        next();
-    }, 500)
+    next();
 })
 
 // Middleware to add updated on & updated by
 app.put('*', function (req, res, next) {
     req.body = _.merge(req.body, { updatedBy: req.user, updatedOn: date.currentDate() })
-    setTimeout(() => {
-        next();
-    }, 500)
-
+    next();
 })
 
 // Middleware to add updated on & updated by
 app.delete('*', function (req, res, next) {
     req.body = _.merge(req.body, { updatedBy: req.user, updatedOn: date.currentDate() });
-    setTimeout(() => {
-        next();
-    }, 500)
+    next();
 })
 
 // routes

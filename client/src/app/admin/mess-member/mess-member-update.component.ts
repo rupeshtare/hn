@@ -1,20 +1,27 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ISubscription } from 'rxjs/Subscription';
 import { CustomerService, MessService, AlertService } from './../_services/index';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
-import * as moment from 'moment';
+import { DateUtility } from './../../_utils/index';
 
 @Component({
     templateUrl: './mess-member-update.component.html',
 })
 
-export class MessMemberUpdateComponent implements OnInit {
+export class MessMemberUpdateComponent implements OnInit, OnDestroy {
     private _id: string;
-    public timeingOptions = ['Lunch', 'Dinner', 'Both'];
-    public daysOptions = [15, 30];
+    public customDays: string;
+    private defaultDays: number;
+    private amounts: object;
+    public timeingOptions: Array<string>;
+    public daysOptions: Array<any>;
     public customers: Array<object> = [];
     public messMemberForm: FormGroup;
+    private daysSub: ISubscription;
+    private customDaysSub: ISubscription;
+    private timeingSub: ISubscription;
 
 
     constructor(
@@ -23,7 +30,14 @@ export class MessMemberUpdateComponent implements OnInit {
         private customerService: CustomerService,
         private messMemberService: MessService,
         private alertService: AlertService,
+        private dateUtility: DateUtility,
         private formBuilder: FormBuilder) {
+
+        this.customDays = this.messMemberService.customDays;
+        this.timeingOptions = this.messMemberService.timeingOptions;
+        this.daysOptions = this.messMemberService.daysOptions;
+        this.amounts = this.messMemberService.amounts;
+        this.defaultDays = this.messMemberService.defaultDays;
 
         this.route.params.subscribe(params => {
             this._id = params._id;
@@ -31,10 +45,12 @@ export class MessMemberUpdateComponent implements OnInit {
 
         this.messMemberForm = this.formBuilder.group({
             customer: [null, Validators.required],
-            timeing: 'Lunch',
-            days: '30',
-            startDate: moment(),
-            endDate: moment().add(29, 'days'),
+            timeing: this.timeingOptions[0],
+            days: this.defaultDays.toString(),
+            customDays: [0, Validators.required],
+            price: this.amounts[this.defaultDays],
+            startDate: this.dateUtility.startOfDay(),
+            endDate: this.dateUtility.addDays(this.defaultDays - 1),
             active: null
         });
 
@@ -42,8 +58,18 @@ export class MessMemberUpdateComponent implements OnInit {
 
     ngOnInit(): void {
 
-        this.messMemberForm.get('days').valueChanges.subscribe(data => {
+        this.daysSub = this.messMemberForm.get('days').valueChanges.subscribe(data => {
             this.changeLastDate(data);
+            this.changePrice();
+        });
+
+        this.customDaysSub = this.messMemberForm.get('customDays').valueChanges.subscribe(data => {
+            this.changeLastDate(data);
+            this.changePrice();
+        });
+
+        this.timeingSub = this.messMemberForm.get('timeing').valueChanges.subscribe(data => {
+            this.changePrice();
         });
 
         this.customerService.getAll({ include: ['firstName', 'lastName', 'company.name'] }).subscribe(
@@ -61,14 +87,22 @@ export class MessMemberUpdateComponent implements OnInit {
                     customer: data.customer,
                     timeing: data.timeing,
                     days: data.days,
-                    startDate: moment(data.startDate),
-                    endDate: moment(data.endDate),
+                    customDays: data.customDays,
+                    price: data.price,
+                    startDate: this.dateUtility.startOfDay(data.startDate),
+                    endDate: this.dateUtility.startOfDay(data.endDate),
                     active: data.active
                 });
             },
             err => {
                 this.alertService.error(err);
             });
+    }
+
+    ngOnDestroy() {
+        this.daysSub.unsubscribe();
+        this.customDaysSub.unsubscribe();
+        this.timeingSub.unsubscribe();
     }
 
     update(values) {
@@ -84,8 +118,29 @@ export class MessMemberUpdateComponent implements OnInit {
     }
 
     changeLastDate(days) {
+        if (days === this.customDays) {
+            days = this.messMemberForm.get('customDays').value;
+            days = days ? days : 0;
+        }
+        const startDate = this.messMemberForm.get('startDate').value;
         this.messMemberForm.patchValue({
-            endDate: moment().add(parseInt(days, 10), 'days').subtract(1, 'days')
+            endDate: this.messMemberService.getLastDate(startDate, days)
+        });
+    }
+
+    private changePrice() {
+        let days = this.messMemberForm.get('days').value;
+        if (days === this.customDays) {
+            days = this.messMemberForm.get('customDays').value;
+        }
+        if (this.messMemberForm.get('timeing').value === 'Both') {
+            days = days * 2;
+        }
+
+        let price = this.messMemberService.getPrice(days);
+
+        this.messMemberForm.patchValue({
+            price
         });
     }
 

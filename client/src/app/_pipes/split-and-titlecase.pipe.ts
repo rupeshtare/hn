@@ -13,7 +13,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 export class SplitAndTitlePipe implements PipeTransform {
     transform(input: string): string {
-        return input.length > 0 ? input.split(/(?=[.])/)[input.split(/(?=[.])/).length - 1]
+        return input.length > 0 ? input.split('|')[0].split(/(?=[.])/)[input.split(/(?=[.])/).length - 1]
             .split(/(?=[A-Z .])/)
             .map(txt => {
                 if (txt[0] === '.') {

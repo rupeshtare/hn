@@ -14,7 +14,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 export class ChainedAttributePipe implements PipeTransform {
     transform(path: string, data: object): any {
-        return path.split('.').reduce((prev, curr) => {
+        return path.split('|')[0].split('.').reduce((prev, curr) => {
             return prev ? prev[curr] : data[path];
         }, data || self);
     }

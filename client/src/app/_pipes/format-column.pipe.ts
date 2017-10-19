@@ -1,4 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
+import * as moment from 'moment';
 
 /*
  * Splits the given text by Upper Case Character
@@ -12,8 +13,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 
 export class FormatColumnPipe implements PipeTransform {
-    transform(input: any): string {
-        let output = '-';
+    transform(input: any, path: string): any {
+        let output: any = '-';
         switch (Object.prototype.toString.call(input)) {
             case '[object Array]': {
                 output = input.join(', ');
@@ -37,6 +38,24 @@ export class FormatColumnPipe implements PipeTransform {
             }
             default: {
                 break;
+            }
+        }
+
+        // check for format
+        const arr = path.split('|');
+        if (arr && arr.length > 1 && output !== '-') {
+            switch (arr[1]) {
+                case 'date': {
+                    output = moment(output).format('DD/MM/YYYY');
+                    break;
+                }
+                case 'ago': {
+                    output = moment.duration(moment().diff(moment(output))).humanize() + ' ago';
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
         }
 

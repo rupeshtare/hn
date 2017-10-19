@@ -7,6 +7,7 @@ import { customHttpProvider } from './_helpers/index';
 import { AlertComponent, LoaderComponent } from './_directives/index';
 import { AlertService, LoaderService, LocalStorageService, SessionStorageService } from './_services/index';
 import { AuthGuard } from './_guards/index';
+import { DateUtility } from './_utils/index';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { AuthGuard } from './_guards/index';
     SessionStorageService,
     AuthGuard,
     customHttpProvider,
-    LoaderService
+    LoaderService,
+    DateUtility
   ],
   bootstrap: [AppComponent]
 })

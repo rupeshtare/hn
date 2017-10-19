@@ -1,5 +1,5 @@
 
-var MongoClient = require("mongodb").MongoClient;
+var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 
 var db = {};
@@ -12,15 +12,17 @@ db.insert = insert;
 db.insertMany = insertMany;
 db.update = update;
 db.updateMany = updateMany;
+db.findOneAndUpdate = findOneAndUpdate;
 db.objectID = ObjectID;
 db.distinct = distinct;
 db.aggregate = aggregate;
+db.delete = _delete;
 
 module.exports = db;
 
 var dbObj;
 
-MongoClient.connect("mongodb://localhost:27017/hn", (err, database) => {
+MongoClient.connect('mongodb://localhost:27017/hn', (err, database) => {
     if (err) return console.log(err);
     dbObj = database;
 })
@@ -54,7 +56,7 @@ function count(coll, query, sort, skip, limit) {
     return dbObj
         .collection(coll)
         .find(query)
-        .project({ "_id": 1 })
+        .project({ '_id': 1 })
         .sort(sort)
         .skip(skip)
         .limit(limit)
@@ -88,6 +90,12 @@ function updateMany(coll, filter, doc, options) {
 
 }
 
+function findOneAndUpdate(coll, filter, update, options) {
+    options = options !== undefined ? options : {};
+    return dbObj.collection(coll).findAndModify(filter, update, options);
+
+}
+
 function distinct(coll, key, query, options) {
     options = options !== undefined ? options : {};
     return dbObj.collection(coll).distinct(key, query, options);
@@ -102,4 +110,9 @@ function aggregate(coll, key, _filter, _sum) {
             $group: { _id: key, total: { $sum: _sum } }
         }
     ]);
+}
+
+function _delete(coll, filter, options) {
+    options = options !== undefined ? options : {};
+    return dbObj.collection(coll).deleteOne(filter, options);
 }
