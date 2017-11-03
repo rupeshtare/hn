@@ -65,6 +65,7 @@ app.use('/orders', require('./controllers/orders.controller'));
 app.use('/companies', require('./controllers/companies.controller'));
 app.use('/mess-members', require('./controllers/mess-members.controller'));
 app.use('/dine', require('./controllers/dine.controller'));
+app.use('/timeing', require('./controllers/timeing.controller'));
 
 // start server
 var port = process.env.NODE_ENV === 'production' ? 80 : 4000;

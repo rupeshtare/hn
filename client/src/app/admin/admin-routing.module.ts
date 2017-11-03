@@ -8,6 +8,7 @@ import { CustomerBillingComponent, CompanyBillingComponent } from './billing/ind
 import { CompanyListComponent, CompanyComponent, CompanyUpdateComponent } from './company/index';
 import { MessMemberListComponent, MessMemberComponent, MessMemberUpdateComponent } from './mess-member/index';
 import { MessListComponent } from './mess/index';
+import { TimeingComponent } from './timeing/index';
 import { AuthGuard } from './../_guards/index';
 
 
@@ -120,6 +121,12 @@ import { AuthGuard } from './../_guards/index';
                         component: MessListComponent,
                         canActivate: [AuthGuard],
                         data: { roles: ['admin'], permissions: ['mess'] }
+                    },
+                    {
+                        path: 'timeing',
+                        component: TimeingComponent,
+                        canActivate: [AuthGuard],
+                        data: { roles: ['admin'], permissions: ['timeing'] }
                     },
                 ]
             }

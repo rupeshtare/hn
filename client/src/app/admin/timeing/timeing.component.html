@@ -1,0 +1,46 @@
+<hn-page-header header="Timeing" icon="fa-industry"></hn-page-header>
+<form [formGroup]="timeingForm" (ngSubmit)="submit(timeingForm.value)" novalidate>
+    <div class="form-group row">
+        <label for="inputName" class="col-sm-2 col-form-label">Morning</label>
+        <div>
+            <input type="time" class="form-control" formControlName="morningStart" useValueAsDate>
+        </div>
+        <div>
+            <input type="time" class="form-control" formControlName="morningEnd" useValueAsDate>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputName" class="col-sm-2 col-form-label">Noon</label>
+        <div>
+            <input type="time" class="form-control" formControlName="noonStart">
+        </div>
+        <div>
+            <input type="time" class="form-control" formControlName="noonEnd">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputName" class="col-sm-2 col-form-label">Evening</label>
+        <div>
+            <input type="time" class="form-control" formControlName="eveningStart">
+        </div>
+        <div>
+            <input type="time" class="form-control" formControlName="eveningEnd">
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="inputName" class="col-sm-2 col-form-label">Night</label>
+        <div>
+            <input type="time" class="form-control" formControlName="nightStart">
+        </div>
+        <div>
+            <input type="time" class="form-control" formControlName="nightEnd">
+        </div>
+    </div>
+    <div class="form-group row p-3 mb-2 bg-dark text-white">
+        <div class="col-sm-2"></div>
+        <div>
+            <button type="submit" class="btn btn-primary" [disabled]="timeingForm.invalid">Add</button>
+            <button type="button" class="btn btn-light" routerLink="/admin/companies">Cancle</button>
+        </div>
+    </div>
+</form>

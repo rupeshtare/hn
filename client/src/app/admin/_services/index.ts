@@ -6,3 +6,4 @@ export * from './user.service';
 export * from './company.service';
 export * from './mess.service';
 export * from './dine.service';
+export * from './timeing.service';

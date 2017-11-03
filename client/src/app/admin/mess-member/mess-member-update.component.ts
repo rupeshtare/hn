@@ -44,7 +44,7 @@ export class MessMemberUpdateComponent implements OnInit, OnDestroy {
         });
 
         this.messMemberForm = this.formBuilder.group({
-            customer: [null, Validators.required],
+            customer: [{}, Validators.required],
             timeing: this.timeingOptions[0],
             days: this.defaultDays.toString(),
             customDays: [0, Validators.required],
