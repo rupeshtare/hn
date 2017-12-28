@@ -32,7 +32,7 @@ export class OrderComponent implements OnInit {
             orders: this.formBuilder.array([this.initOrder()])
         });
 
-        this.menuService.getAll({ active: true, include: ['name', 'price'] })
+        this.menuService.getAll({ active: true, include: ['name', 'price'], sort: ['name'] })
             .subscribe(
             resp => {
                 ({ data: this.menus } = resp.json());
@@ -41,7 +41,7 @@ export class OrderComponent implements OnInit {
                 this.alertService.error(err);
             });
 
-        this.customerService.getAll({ active: true, include: ['firstName', 'lastName', 'company.name'] })
+        this.customerService.getAll({ active: true, include: ['firstName', 'lastName', 'company.name'], sort: ['+firstName', '+lastName'] })
             .subscribe(
             resp => {
                 ({ data: this.customers } = resp.json());
@@ -75,6 +75,8 @@ export class OrderComponent implements OnInit {
             if (curr.value.menu !== null) {
                 prev += (curr.value.menu.price * curr.value.quantity);
                 return prev;
+            } else {
+                return prev;
             }
         }, 0);
     }
@@ -96,6 +98,10 @@ export class OrderComponent implements OnInit {
     removeOrder(i: number) {
         const control = <FormArray>this.orderForm.get('orders');
         control.removeAt(i);
+    }
+
+    getCustomerFullName(customer: object) {
+        return customer['firstName'] + ' ' + customer['lastName'];
     }
 
 }

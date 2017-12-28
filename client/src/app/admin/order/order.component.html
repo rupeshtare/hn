@@ -5,7 +5,7 @@
         <label class="col-2">Customer</label>
         <div class="col-4">
             <select class="form-control" formControlName="customer" [ngClass]="{ 'is-invalid': !orderForm.controls.customer.valid }">
-                <option *ngFor="let customer of customers" [ngValue]="customer" [innerText]="customer.firstName"></option>
+                <option *ngFor="let customer of customers" [ngValue]="customer" [innerText]="getCustomerFullName(customer)"></option>
             </select>
         </div>
         <label class="col-2">Total Bill</label>

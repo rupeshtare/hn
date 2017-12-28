@@ -31,7 +31,18 @@ app.use(expressJwt({
 app.get('*', function (req, res, next) {
     req.query.include = req.query.hasOwnProperty('include') ? req.query['include'].split(',').reduce((prev, curr) => { prev[curr] = 1; return prev; }, {}) : {};
 
-    req.query.query = _.omit(req.query, ['skip', 'limit', 'include']);
+    req.query.sort = req.query.hasOwnProperty('sort') ? req.query.sort.split(',').reduce((prev, curr) => {
+        if (_.startsWith(curr, '+')) {
+            prev[_.trimLeft(curr, '+')] = 1
+        } else if (_.startsWith(curr, '-')) {
+            prev[_.trimLeft(curr, '-')] = -1
+        } else {
+            prev[_.trim(curr)] = 1
+        }
+        return prev;
+    }, {}) : { "createdOn": -1 }
+    
+    req.query.query = _.omit(req.query, ['skip', 'limit', 'include', 'sort']);
 
     if (req.query.query.hasOwnProperty("active"))
         req.query.query["active"] = req.query["active"] === "true";

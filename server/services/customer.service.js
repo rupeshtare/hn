@@ -18,7 +18,7 @@ var collection = "customer";
 function getAll(params) {
     var deferred = Q.defer();
 
-    db.find(collection, query = params.query, fields = params.include, sort = { "createdOn": -1 }, skip = params.skip, limit = params.limit)
+    db.find(collection, query = params.query, fields = params.include, sort = params.sort, skip = params.skip, limit = params.limit)
         .toArray(function (err, customer) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 
@@ -58,7 +58,6 @@ function create(req) {
         {
             company: customerParam.company._id,
             firstName: customerParam.firstName,
-            middleName: customerParam.middleName,
             lastName: customerParam.lastName
         })
         .then((customer) => {
@@ -96,14 +95,12 @@ function update(req) {
         .then((customer) => {
             if (customer.company._id !== customerParam.company._id ||
                 customer.firstName !== customerParam.firstName ||
-                customer.middleName !== customerParam.middleName ||
                 customer.lastName !== customerParam.lastName) {
                 // customer has changed so check if the new customer is already taken
                 db.findOne(collection,
                     {
                         company: customerParam.company,
                         firstName: customerParam.firstName,
-                        middleName: customerParam.middleName,
                         lastName: customerParam.lastName
                     })
                     .then((customer) => {

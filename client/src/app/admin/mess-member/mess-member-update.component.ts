@@ -137,7 +137,7 @@ export class MessMemberUpdateComponent implements OnInit, OnDestroy {
             days = days * 2;
         }
 
-        let price = this.messMemberService.getPrice(days);
+        const price = this.messMemberService.getPrice(days);
 
         this.messMemberForm.patchValue({
             price
