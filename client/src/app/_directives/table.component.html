@@ -1,10 +1,12 @@
+<hn-table-filter [tableColumns]="selectedColoumns"></hn-table-filter>
 <div class="pull-left primary">
     <i class="fa fa-align-justify" aria-hidden="true" [ngClass]="{ 'text-primary': grid, 'text-secondary': !grid }" (click)="toggleView(false)"></i>
     <i class="fa fa-th" aria-hidden="true" [ngClass]="{ 'text-primary': !grid, 'text-secondary': grid }" (click)="toggleView(true)"></i>
     <hn-pdf *ngIf="print"></hn-pdf>
 </div>
-<div class="pull-right"> 
-    <hn-table-column-selector (selectColumns)="setTableColoumns($event)" [defaultColumns]="defaultColumns" [tableColumns]="tableColumns" [selectedColoumns]="selectedColoumns"></hn-table-column-selector> 
+<div class="pull-right">
+    <hn-table-column-selector (selectColumns)="setTableColoumns($event)" [defaultColumns]="defaultColumns" [tableColumns]="tableColumns"
+        [selectedColoumns]="selectedColoumns"></hn-table-column-selector>
 </div>
 <br>
 <table *ngIf="!grid" [ngClass]="tableClass">
@@ -24,11 +26,12 @@
 <div *ngIf="grid" class="row">
     <div class="alert alert-primary col-md-3 col-sm-4" *ngFor="let data of tableData, let i = index" [routerLink]="data[selectableColumn]">
         <div class="card-body">
-            <p *ngFor="let column of selectedColoumns"><b>{{column | splitandtitle}} : </b>{{column | chainedattribute : data | formatcolumn : column}}</p>
+            <p *ngFor="let column of selectedColoumns">
+                <b>{{column | splitandtitle}} : </b>{{column | chainedattribute : data | formatcolumn : column}}</p>
         </div>
     </div>
 </div>
 <br>
-<div class="pull-right"> 
+<div class="pull-right">
     <hn-pagination (loadData)="loadTableData($event)" [total]="total" [pageBy]="pageBy"></hn-pagination>
 </div>

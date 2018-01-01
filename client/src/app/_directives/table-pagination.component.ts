@@ -1,4 +1,5 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
+import { TableService } from '../_services/table.service';
 
 
 @Component({
@@ -16,14 +17,22 @@ export class TablePaginationComponent implements OnInit {
 
     public start = 1;
     public end = 0;
+    private filter = null;
+
+    constructor(private tableService: TableService) { }
 
     ngOnInit() {
         this.loadTableData();
         this.end = this.pageBy;
+
+        this.tableService.notifyFilterObservable$.subscribe((data) => {
+            this.filter = data;
+            this.loadTableData();
+        });
     }
 
     loadTableData() {
-        const data = { skip: this.start - 1, limit: this.pageBy };
+        const data = { skip: this.start - 1, limit: this.pageBy, filters: this.filter };
         this.loadData.emit(data);
     }
 

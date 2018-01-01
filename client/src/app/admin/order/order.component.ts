@@ -98,6 +98,7 @@ export class OrderComponent implements OnInit {
     removeOrder(i: number) {
         const control = <FormArray>this.orderForm.get('orders');
         control.removeAt(i);
+        this.calculateTotalAmount(control);
     }
 
     getCustomerFullName(customer: object) {

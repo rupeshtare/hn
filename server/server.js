@@ -41,8 +41,22 @@ app.get('*', function (req, res, next) {
         }
         return prev;
     }, {}) : { "createdOn": -1 }
-    
-    req.query.query = _.omit(req.query, ['skip', 'limit', 'include', 'sort']);
+
+    if (req.query.hasOwnProperty("filters")) {
+        filterObj = JSON.parse(req.query.filters).reduce((prev, curr) => {
+            if (curr['tableColumn'] !== null && curr['operation'] !== null && curr['filterValue'] !== null) {
+                let tableColumn = curr['tableColumn'],
+                    operation = curr['operation'],
+                    filterValue = operation === '$in' || operation === '$nin' ? curr['filterValue'].split(','): curr['filterValue'];
+                newObj = curr['operation'] === '$regex' ? { $options: 'i' } : {}; newObj[curr['operation']] = filterValue;
+                prev[tableColumn] = newObj;
+            }
+            return prev;
+        }, {});
+        req.query = Object.assign(req.query, filterObj);
+    }
+
+    req.query.query = _.omit(req.query, ['skip', 'limit', 'include', 'sort', 'filters']);
 
     if (req.query.query.hasOwnProperty("active"))
         req.query.query["active"] = req.query["active"] === "true";

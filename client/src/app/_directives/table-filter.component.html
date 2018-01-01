@@ -1,0 +1,40 @@
+<div>
+    <span class="btn btn-outline-primary" *ngIf="!applyFilter" (click)="toggleFilter()">
+        <i class="fa fa-filter" aria-hidden="true"></i> Apply Filter</span>
+    <form *ngIf="applyFilter" class="alert alert-primary" [formGroup]="filterForm" (ngSubmit)="submit(filterForm.value)">
+        <div formArrayName="filters">
+            <div *ngFor="let order of filterForm.controls.filters.controls; let i=index">
+                <span *ngIf="filterForm.controls.filters.controls.length > 1" (click)="removeFilter(i)">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </span>
+                <div class="form-group row" [formGroupName]="i">
+                    <label class="col-1">Column</label>
+                    <div class="col-3">
+                        <select class="form-control" formControlName="tableColumn" [ngClass]="{ 'is-invalid': !filterForm.controls.filters.controls[i].controls.tableColumn.valid }"
+                            (change)="addFilter(i)">
+                            <option *ngFor="let tableColumn of tableColumns" [ngValue]="tableColumn" [innerText]="tableColumn | splitandtitle"></option>
+                        </select>
+                    </div>
+                    <label class="col-1">Operation</label>
+                    <div class="col-3">
+                        <select class="form-control" formControlName="operation" [ngClass]="{ 'is-invalid': !filterForm.controls.filters.controls[i].controls.operation.valid }"
+                            (change)="addFilter(i)">
+                            <option *ngFor="let key of objectKeys(operations)" [ngValue]="operations[key]" [innerText]="key"></option>
+                        </select>
+                    </div>
+                    <label class="col-1">Value</label>
+                    <div class="col-3">
+                        <input class="form-control" type="text" formControlName="filterValue" [ngClass]="{ 'is-invalid': !filterForm.controls.filters.controls[i].controls.filterValue.valid }"
+                            (change)="addFilter(i)">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="btn btn-grp">
+                <button type="submit" class="btn btn-primary" [disabled]="filterForm.invalid">Filter</button>
+                <button type="button" class="btn btn-secondary" (click)="toggleFilter()">Cancle</button>
+            </div>
+        </div>
+    </form>
+</div>
