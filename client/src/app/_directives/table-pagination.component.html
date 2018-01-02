@@ -1,7 +1,11 @@
-<div *ngIf="pageBy < total">
-    <span class="text-primary">{{start}} to {{end}} of {{total}}</span> &nbsp;
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-outline-primary" (click)="loadPreviousData()" [disabled]="start===1"><i class="fa fa-angle-left" aria-hidden="true"></i>&nbsp; prev</button>
-        <button type="button" class="btn btn-outline-primary" (click)="loadNextData()" [disabled]="end===total">next &nbsp;<i class="fa fa-angle-right" aria-hidden="true"></i></button>
+<div>
+    <span *ngIf="pageBy < total" class="text-primary">{{start}} to {{end}} of {{total}}</span> &nbsp;
+    <span *ngIf="pageBy >= total && total > 0" class="text-primary">{{start}} to {{total}} of {{total}}</span> &nbsp;
+    <div *ngIf="pageBy < total" class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-outline-primary" (click)="loadPreviousData()" [disabled]="start===1">
+            <i class="fa fa-angle-left" aria-hidden="true"></i>&nbsp; prev</button>
+        <button type="button" class="btn btn-outline-primary" (click)="loadNextData()" [disabled]="end===total">next &nbsp;
+            <i class="fa fa-angle-right" aria-hidden="true"></i>
+        </button>
     </div>
 </div>

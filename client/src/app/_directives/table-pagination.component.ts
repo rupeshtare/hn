@@ -27,6 +27,8 @@ export class TablePaginationComponent implements OnInit {
 
         this.tableService.notifyFilterObservable$.subscribe((data) => {
             this.filter = data;
+            this.start = 1;
+            this.end = this.pageBy;
             this.loadTableData();
         });
     }
