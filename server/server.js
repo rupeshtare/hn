@@ -47,8 +47,17 @@ app.get('*', function (req, res, next) {
             if (curr['tableColumn'] !== null && curr['operation'] !== null && curr['filterValue'] !== null) {
                 let tableColumn = curr['tableColumn'],
                     operation = curr['operation'],
-                    filterValue = operation === '$in' || operation === '$nin' ? curr['filterValue'].split(','): curr['filterValue'];
-                newObj = curr['operation'] === '$regex' ? { $options: 'i' } : {}; newObj[curr['operation']] = filterValue;
+                    filterValue = null;
+                if (operation === '$in' || operation === '$nin') {
+                    filterValue = curr['filterValue'].split(',')
+                } else if (operation === '$eq' || operation === '$lt' || operation === '$lte' || operation === '$gt' || operation === '$gte') {
+                    filterValue = _.isNaN(parseFloat(curr['filterValue'])) ? curr['filterValue'] : parseFloat(curr['filterValue']);
+                } else {
+                    filterValue = curr['filterValue'];
+                }
+
+                newObj = operation === '$regex' ? { $options: 'i' } : {};
+                newObj[operation] = filterValue;
                 prev[tableColumn] = newObj;
             }
             return prev;

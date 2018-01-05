@@ -31,7 +31,7 @@
         </div>
     </div>
 </div>
-<div *ngIf="total === 0" class="alert alert-primary">No records available.</div>
+<div *ngIf="total === 0" class="alert alert-danger">No records available.</div>
 <br>
 <div class="pull-right">
     <hn-pagination (loadData)="loadTableData($event)" [total]="total" [pageBy]="pageBy"></hn-pagination>
