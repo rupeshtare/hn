@@ -13,7 +13,7 @@
     <thead [ngClass]="tableHeaderClass">
         <tr>
             <th *ngIf="indexColumn">#</th>
-            <th *ngFor="let column of selectedColoumns" [innerText]="column | splitandtitle"></th>
+            <th *ngFor="let column of selectedColoumns" [innerText]="column | splitandtitle" [hnTableColumnSort]="column"></th>
         </tr>
     </thead>
     <tbody>

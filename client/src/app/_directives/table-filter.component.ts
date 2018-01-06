@@ -17,7 +17,7 @@ export class TableFilterComponent implements OnInit {
     @Output() applyFilters: EventEmitter<any> = new EventEmitter<any>();
 
     public objectKeys = Object.keys;
-    public applyFilter: boolean = false;
+    public applyFilter = false;
     public filterForm: FormGroup;
     public operations = {
         'CONTAINS': '$regex',
@@ -66,9 +66,9 @@ export class TableFilterComponent implements OnInit {
     submit(data) {
         data.filters = _.filter(data.filters,
             d => {
-                return d['tableColumn'] !== null && d['operation'] !== null && d['filterValue'] !== null
+                return d['tableColumn'] !== null && d['operation'] !== null && d['filterValue'] !== null;
             }
-        )
+        );
         this.tableService.notifyFilterOther(JSON.stringify(data.filters));
     }
 }

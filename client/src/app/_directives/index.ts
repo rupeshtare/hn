@@ -7,3 +7,4 @@ export * from './table-pagination.component';
 export * from './pdf.component';
 export * from './has-permission.directive';
 export * from './loader.component';
+export * from './table-column-sort.directive';

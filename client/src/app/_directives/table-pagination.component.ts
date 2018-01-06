@@ -18,6 +18,7 @@ export class TablePaginationComponent implements OnInit {
     public start = 1;
     public end = 0;
     private filter = null;
+    private sort = null;
 
     constructor(private tableService: TableService) { }
 
@@ -27,6 +28,15 @@ export class TablePaginationComponent implements OnInit {
 
         this.tableService.notifyFilterObservable$.subscribe((data) => {
             this.filter = data;
+            this.sort = this.sort;
+            this.start = 1;
+            this.end = this.pageBy;
+            this.loadTableData();
+        });
+
+        this.tableService.notifySortObservable$.subscribe((data) => {
+            this.filter = this.filter;
+            this.sort = data;
             this.start = 1;
             this.end = this.pageBy;
             this.loadTableData();
@@ -34,7 +44,7 @@ export class TablePaginationComponent implements OnInit {
     }
 
     loadTableData() {
-        const data = { skip: this.start - 1, limit: this.pageBy, filters: this.filter };
+        const data = { skip: this.start - 1, limit: this.pageBy, filters: this.filter, sort: this.sort };
         this.loadData.emit(data);
     }
 
