@@ -21,7 +21,7 @@ export class CompanyComponent implements OnInit {
     ngOnInit(): void {
 
         this.companyForm = this.formBuilder.group({
-            name: [null, Validators.required]
+            name: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]]
         });
     }
 

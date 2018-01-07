@@ -27,7 +27,7 @@ export class CompanyUpdateComponent implements OnInit {
         });
 
         this.companyForm = this.formBuilder.group({
-            name: [null, Validators.required],
+            name: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
             active: null
         });
     }

@@ -27,12 +27,12 @@ export class CustomerUpdateComponent implements OnInit {
 
         this.customerForm = formBuilder.group({
             company: [null, Validators.required],
-            firstName: [null, Validators.required],
-            middleName: '',
-            lastName: [null, Validators.required],
-            mobile: [null, Validators.required],
+            firstName: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+            middleName: ['', Validators.maxLength(20)],
+            lastName: [null, [Validators.required, Validators.minLength(1), Validators.maxLength(20)]],
+            mobile: [null, [Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]*')]],
             dob: '',
-            email: '',
+            email: ['', [Validators.maxLength(50), Validators.pattern('^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$')]],
             employeeType: '',
             active: null,
         });

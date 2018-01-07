@@ -29,13 +29,13 @@ export class MenuUpdateComponent implements OnInit {
         });
 
         this.menuForm = formBuilder.group({
-            name: [null, Validators.required],
-            price: [null, Validators.required],
+            name: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
+            price: [null, [Validators.required, Validators.min(1), Validators.max(1000), Validators.pattern('[0-9]*')]],
             available: formBuilder.group(
                 this.availableOptions.reduce((prev, curr) => { prev[curr] = [false, []]; return prev; }, {})
             ),
-            category: '',
-            subCategory: '',
+            category: ['', Validators.maxLength(20)],
+            subCategory: ['', Validators.maxLength(20)],
             tasteType: '',
             subTasteType: '',
             active: null,

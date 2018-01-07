@@ -1,5 +1,5 @@
 <hn-page-header header="Company" icon="fa-industry"></hn-page-header>
-<form [formGroup]="companyForm" (ngSubmit)="submit(companyForm.value)">
+<form [formGroup]="companyForm" (ngSubmit)="submit(companyForm.value)" novalidate>
     <div class="form-group row">
         <label for="inputName" class="col-sm-2 col-form-label">Name</label>
         <div>
