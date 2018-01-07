@@ -21,6 +21,8 @@ export class TableComponent implements OnInit {
     @Input() grid = false;
     @Input() selectable = true;
     @Input() print = false;
+    @Input() filter = true;
+    @Input() sort = true;
 
     @Output() loadData: EventEmitter<any> = new EventEmitter<any>();
     @Output() callBackFunction: EventEmitter<any> = new EventEmitter<any>();

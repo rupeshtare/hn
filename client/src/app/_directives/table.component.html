@@ -1,4 +1,4 @@
-<hn-table-filter [tableColumns]="selectedColoumns"></hn-table-filter>
+<hn-table-filter *ngIf="filter" [tableColumns]="selectedColoumns"></hn-table-filter>
 <div class="pull-left primary">
     <i class="fa fa-align-justify" aria-hidden="true" [ngClass]="{ 'text-primary': grid, 'text-secondary': !grid }" (click)="toggleView(false)"></i>
     <i class="fa fa-th" aria-hidden="true" [ngClass]="{ 'text-primary': !grid, 'text-secondary': grid }" (click)="toggleView(true)"></i>
@@ -11,9 +11,13 @@
 <br>
 <table *ngIf="!grid" [ngClass]="tableClass">
     <thead [ngClass]="tableHeaderClass">
-        <tr>
+        <tr *ngIf="sort">
             <th *ngIf="indexColumn">#</th>
             <th *ngFor="let column of selectedColoumns" [innerText]="column | splitandtitle" [hnTableColumnSort]="column"></th>
+        </tr>
+        <tr *ngIf="!sort">
+            <th *ngIf="indexColumn">#</th>
+            <th *ngFor="let column of selectedColoumns" [innerText]="column | splitandtitle"></th>
         </tr>
     </thead>
     <tbody>
@@ -31,7 +35,7 @@
         </div>
     </div>
 </div>
-<div *ngIf="total === 0" class="alert alert-danger">No records available.</div>
+<div *ngIf="tableData.length === 0" class="alert alert-danger">No records available.</div>
 <br>
 <div class="pull-right">
     <hn-pagination (loadData)="loadTableData($event)" [total]="total" [pageBy]="pageBy"></hn-pagination>

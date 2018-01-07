@@ -52,7 +52,7 @@ function getAllCurrent(params) {
 function getAll(params) {
     var deferred = Q.defer();
 
-    db.find(collection, query = params.query, fields = params.include, sort = { "active": -1, "createdOn": -1 }, skip = params.skip, limit = params.limit)
+    db.find(collection, query = params.query, fields = params.include, sort = params.sort, skip = params.skip, limit = params.limit)
         .toArray(function (err, messMember) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 

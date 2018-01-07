@@ -26,7 +26,7 @@ function getAll(params) {
 
     var deferred = Q.defer();
 
-    db.find(collection, query = params.query, fields = params.include, sort = { "createdOn": -1 }, skip = params.skip, limit = params.limit)
+    db.find(collection, query = params.query, fields = params.include, sort = params.sort, skip = params.skip, limit = params.limit)
         .toArray(function (err, order) {
             if (err) deferred.reject(err.name + ': ' + err.message);
 
