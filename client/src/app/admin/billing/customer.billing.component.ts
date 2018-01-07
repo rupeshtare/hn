@@ -33,9 +33,9 @@ export class CustomerBillingComponent implements OnInit {
             endDate: [moment().add(1, 'days').startOf('day').toDate(), Validators.required]
         });
 
-        this.customerService.getAll({}).subscribe(
+        this.customerService.getAll({ include: ['firstName', 'lastName', 'company.name'], sort: ['+firstName', '+lastName'] }).subscribe(
             resp => {
-                ({ data: this.customers } = resp.json());
+                ({ data: this.customers } = this.customerService.fullName(resp.json()));
             },
             err => {
                 this.alertService.error(err);

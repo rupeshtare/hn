@@ -31,4 +31,9 @@ export class CustomerService {
     deactive(_id: string) {
         return this.http.delete('/customers/deactive/' + _id);
     }
+
+    fullName(data) {
+        data.data.map(o => { o.fullName = o.firstName + ' ' + o.lastName; return o; });
+        return data;
+    }
 }

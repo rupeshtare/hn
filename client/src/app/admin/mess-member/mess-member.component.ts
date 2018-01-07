@@ -64,9 +64,9 @@ export class MessMemberComponent implements OnInit, OnDestroy {
             this.changePrice();
         });
 
-        this.customerService.getAll({ active: true, include: ['firstName', 'lastName', 'company.name'] }).subscribe(
+        this.customerService.getAll({ active: true, include: ['firstName', 'lastName', 'company.name'], sort: ['+firstName', '+lastName'] }).subscribe(
             resp => {
-                ({ data: this.customers } = resp.json());
+                ({ data: this.customers } = this.customerService.fullName(resp.json()));
             },
             err => {
                 this.alertService.error(err);

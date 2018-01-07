@@ -3,7 +3,7 @@
     <div class="form-group row">
         <label for="inputCustomer" class="col-sm-2 col-form-label">Customer</label>
         <select class="form-control  col-3" formControlName="customer" [compareWith]="byUserName" [ngClass]="{ 'is-invalid': !messMemberForm.controls.customer.valid }">
-            <option *ngFor="let customer of customers" [ngValue]="customer" [innerText]="customer.firstName"></option>
+            <option *ngFor="let customer of customers" [ngValue]="customer" [innerText]="customer.fullName"></option>
         </select>
     </div>
     <fieldset class="form-group">

@@ -44,7 +44,7 @@ export class OrderComponent implements OnInit {
         this.customerService.getAll({ active: true, include: ['firstName', 'lastName', 'company.name'], sort: ['+firstName', '+lastName'] })
             .subscribe(
             resp => {
-                ({ data: this.customers } = resp.json());
+                ({ data: this.customers } = this.customerService.fullName(resp.json()));
             },
             err => {
                 this.alertService.error(err);
@@ -100,9 +100,4 @@ export class OrderComponent implements OnInit {
         control.removeAt(i);
         this.calculateTotalAmount(control);
     }
-
-    getCustomerFullName(customer: object) {
-        return customer['firstName'] + ' ' + customer['lastName'];
-    }
-
 }

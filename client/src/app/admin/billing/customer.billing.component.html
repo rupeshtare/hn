@@ -3,7 +3,7 @@
     <div class="form-group row">
         <label id="customer-label" class="col-1">Customer </label>
         <select class="form-control col-3" formControlName="customer" [ngClass]="{ 'is-invalid': !customerBillingForm.controls.customer.valid }">
-            <option *ngFor="let customer of customers" [ngValue]="customer._id" [innerText]="customer.firstName"></option>
+            <option *ngFor="let customer of customers" [ngValue]="customer._id" [innerText]="customer.fullName"></option>
         </select>
         <label id="customer-label" class="col-1">Start Date </label>
         <date-picker class="form-control col-3" format="DD-MM-YYYY" [showClearButton]="false" formControlName="startDate" [ngClass]="{ 'is-invalid': !customerBillingForm.controls.startDate.valid }"></date-picker>
