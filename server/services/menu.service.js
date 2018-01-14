@@ -68,7 +68,7 @@ function create(req) {
         });
 
     function createMenu() {
-        menuParam = parseFloat(menuParam.price)
+        menuParam.price = parseFloat(menuParam.price)
         db.insert(collection, menuParam)
             .then((doc) => {
                 deferred.resolve();

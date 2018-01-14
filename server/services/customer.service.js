@@ -56,9 +56,9 @@ function create(req) {
     // validation
     db.findOne(collection,
         {
-            company: customerParam.company._id,
-            firstName: customerParam.firstName,
-            lastName: customerParam.lastName
+            'company._id': customerParam.company._id,
+            'firstName': customerParam.firstName,
+            'lastName': customerParam.lastName
         })
         .then((customer) => {
             if (customer) {
@@ -99,9 +99,9 @@ function update(req) {
                 // customer has changed so check if the new customer is already taken
                 db.findOne(collection,
                     {
-                        company: customerParam.company,
-                        firstName: customerParam.firstName,
-                        lastName: customerParam.lastName
+                        'company._id': customerParam.company._id,
+                        'firstName': customerParam.firstName,
+                        'lastName': customerParam.lastName
                     })
                     .then((customer) => {
                         if (customer) {
