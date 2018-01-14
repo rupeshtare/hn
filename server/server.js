@@ -25,7 +25,7 @@ app.use(expressJwt({
         }
         return null;
     }
-}).unless({ path: ['/users/authenticate', '/users/register'] }));
+}).unless({ path: ['/api/users/authenticate', '/api/users/register'] }));
 
 // Middleware to filter query params
 app.get('*', function (req, res, next) {
@@ -92,14 +92,14 @@ app.delete('*', function (req, res, next) {
 })
 
 // routes
-app.use('/users', require('./controllers/users.controller'));
-app.use('/customers', require('./controllers/customers.controller'));
-app.use('/menus', require('./controllers/menus.controller'));
-app.use('/orders', require('./controllers/orders.controller'));
-app.use('/companies', require('./controllers/companies.controller'));
-app.use('/mess-members', require('./controllers/mess-members.controller'));
-app.use('/dine', require('./controllers/dine.controller'));
-app.use('/timeing', require('./controllers/timeing.controller'));
+app.use('/api/users', require('./controllers/users.controller'));
+app.use('/api/customers', require('./controllers/customers.controller'));
+app.use('/api/menus', require('./controllers/menus.controller'));
+app.use('/api/orders', require('./controllers/orders.controller'));
+app.use('/api/companies', require('./controllers/companies.controller'));
+app.use('/api/mess-members', require('./controllers/mess-members.controller'));
+app.use('/api/dine', require('./controllers/dine.controller'));
+app.use('/api/timeing', require('./controllers/timeing.controller'));
 
 // start server
 var port = process.env.NODE_ENV === 'production' ? 80 : 4000;

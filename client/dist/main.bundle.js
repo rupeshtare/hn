@@ -1670,7 +1670,7 @@ AppModule = __decorate([
 // The file contents for the current environment will overwrite these during build.
 var environment = {
     production: false,
-    origin: 'http://localhost:4000'
+    origin: 'http://localhost:4000/api'
 };
 //# sourceMappingURL=environment.js.map
 
