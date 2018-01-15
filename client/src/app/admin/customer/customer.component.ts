@@ -12,7 +12,7 @@ import * as moment from 'moment';
 
 export class CustomerComponent implements OnInit {
     public companies: Array<object> = [];
-    public employeeTypeOptions = ['Employee', 'Contractor', 'Guest'];
+    public employeeTypeOptions = ['Staff', 'Worker', 'Contractor', 'Guest'];
     public customerForm: FormGroup;
 
 
