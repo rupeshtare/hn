@@ -7,6 +7,7 @@ date.hours = hours;
 date.startOfDay = startOfDay;
 date.currentDate = currentDate;
 date.dateInString = dateInString;
+date.addDays = addDays;
 
 module.exports = date;
 
@@ -32,4 +33,11 @@ function yestreday() {
 
 function yestredayStartOfDay() {
     return startOfDay(moment().subtract(1, "days"));
+}
+
+function addDays(days, date) {
+    days = parseInt(days, 10);
+    return typeof date !== 'undefined' ?
+        this.startOfDay(moment(date).add(days, 'days')) :
+        this.startOfDay(moment().add(days, 'days'));
 }

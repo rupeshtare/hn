@@ -13,6 +13,7 @@ service.create = create;
 service.update = update;
 service.delete = _delete;
 service.messOrder = messOrder;
+service.addRecursiveMessMember = addRecursiveMessMember;
 
 module.exports = service;
 
@@ -188,6 +189,7 @@ function update(req) {
             days: messMemberParam.days,
             customDays: messMemberParam.days === "Other" ? messMemberParam.customDays : 0,
             price: messMemberParam.price,
+            recursive: messMemberParam.recursive,
             timeing: messMemberParam.timeing,
             startDate: date.startOfDay(messMemberParam.startDate),
             endDate: date.startOfDay(messMemberParam.endDate),
@@ -339,4 +341,34 @@ function closestHighest(days, arr) {
         }
     });
     return next;
+}
+
+function addRecursiveMessMember(_id) {
+    var deferred = Q.defer();
+
+    db.findById(collection, _id)
+        .then((messMember) => {
+            if (messMember.active !== false) {
+                deferred.reject('Mess member ' + messMember.customer.firstName + ' should be deactivated.');
+            } else {
+                let days = messMember.days === "Other" ? messMember.customDays : messMember.days;
+                let newMessMember = _.omit(messMember, ['_id', 'active', 'startDate', 'endDate', 'createdOn', 'updatedOn', 'updatedBy']);
+                newMessMember.active = true;
+                newMessMember.createdOn = date.startOfDay();
+                newMessMember.startDate = date.startOfDay();
+                newMessMember.endDate = date.addDays(days - 1, newMessMember.startDate);
+
+                db.insert(collection, newMessMember)
+                    .then((doc) => {
+                        deferred.resolve();
+                    })
+                    .catch((err) => {
+                        deferred.reject(err.name + ': ' + err.message);
+                    });
+            }
+        })
+        .catch((err) => {
+            deferred.reject(err.name + ': ' + err.message);
+        });
+    return deferred.promise;
 }

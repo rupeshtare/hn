@@ -42,6 +42,17 @@
             <input type="text" class="form-control" formControlName="price">
         </div>
     </div>
+    <fieldset class="form-group">
+        <div class="row">
+            <legend class="col-form-legend col-sm-2">Recursive</legend>
+            <div class="col-sm-10">
+                <label class="form-check-label">
+                    <input class="form-check-input" type="checkbox" formControlName="recursive">
+                    Add recursively.
+                </label>
+            </div>
+        </div>
+    </fieldset>
     <div class="form-group row">
         <label for="inputStartDate" class="col-sm-2 col-form-label">Start Date</label>
         <date-picker class="form-control col-3" format="DD-MM-YYYY" [showClearButton]="false" disabled="true" formControlName="startDate"></date-picker>

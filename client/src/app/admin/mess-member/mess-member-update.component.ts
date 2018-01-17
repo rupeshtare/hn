@@ -49,6 +49,7 @@ export class MessMemberUpdateComponent implements OnInit, OnDestroy {
             days: this.defaultDays.toString(),
             customDays: [0, Validators.required],
             price: this.amounts[this.defaultDays],
+            recursive: false,
             startDate: this.dateUtility.startOfDay(),
             endDate: this.dateUtility.addDays(this.defaultDays - 1),
             active: null
@@ -89,6 +90,7 @@ export class MessMemberUpdateComponent implements OnInit, OnDestroy {
                     days: data.days,
                     customDays: data.customDays,
                     price: data.price,
+                    recursive: data.recursive,
                     startDate: this.dateUtility.startOfDay(data.startDate),
                     endDate: this.dateUtility.startOfDay(data.endDate),
                     active: data.active
@@ -168,7 +170,6 @@ export class MessMemberUpdateComponent implements OnInit, OnDestroy {
             },
             err => {
                 this.alertService.error(err);
-
             });
     }
 

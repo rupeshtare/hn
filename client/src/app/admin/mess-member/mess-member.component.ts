@@ -46,6 +46,7 @@ export class MessMemberComponent implements OnInit, OnDestroy {
             days: this.defaultDays.toString(),
             customDays: [0, Validators.required],
             price: this.amounts[this.defaultDays],
+            recursive: false,
             startDate: this.dateUtility.startOfDay(),
             endDate: this.dateUtility.addDays(this.defaultDays - 1)
         });
@@ -64,7 +65,10 @@ export class MessMemberComponent implements OnInit, OnDestroy {
             this.changePrice();
         });
 
-        this.customerService.getAll({ active: true, include: ['firstName', 'lastName', 'company.name'], sort: ['+firstName', '+lastName'] }).subscribe(
+        this.customerService.getAll({
+            active: true, include: ['firstName', 'lastName', 'company.name'],
+            sort: ['+firstName', '+lastName']
+        }).subscribe(
             resp => {
                 ({ data: this.customers } = this.customerService.fullName(resp.json()));
             },

@@ -11,7 +11,7 @@ export class MessMemberListComponent {
     public messMembers: Array<object> = [];
     public total = 0;
     public messMemberColumns: Array<string> = ['customer.firstName', 'customer.lastName', 'timeing',
-        'days', 'startDate|date', 'endDate|date', 'active', 'customDays', 'price'];
+        'days', 'startDate|date', 'endDate|date', 'active', 'customDays', 'price', 'recursive'];
     public defaultColumns: Array<string> = ['customer.firstName', 'customer.lastName', 'timeing'];
 
 
