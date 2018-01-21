@@ -45,6 +45,7 @@ export class CompanyBillingComponent implements OnInit {
         this.orderService.getOrders(values).subscribe(
             resp => {
                 ({ data: this.orders } = resp.json());
+                this.totalBill = this.orders.reduce((prev, curr) => prev + curr['total'], 0);
             },
             err => {
                 this.alertService.error(err);
